@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TraderU — The Memecoin Trading System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "secondary-fixed": "#e2e2e2",
+          "primary-container": "#ff5540",
+          "on-secondary-fixed": "#1a1c1c",
+          "secondary": "#c6c6c7",
+          "on-surface": "#e2e2e2",
+          "secondary-container": "#454747",
+          "primary": "#ffb4a8",
+          "background": "#131313",
+          "on-primary-container": "#5c0000",
+          "on-primary": "#690100",
+          "surface": "#131313",
+          "inverse-on-surface": "#303030",
+          "inverse-surface": "#e2e2e2",
+        },
+        borderRadius: {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        spacing: {
+          "lg": "48px",
+          "container-max": "1440px",
+          "sm": "12px",
+          "gutter": "24px",
+          "md": "24px",
+          "base": "8px",
+          "xs": "4px",
+          "xl": "80px"
+        },
+        fontFamily: {
+          "headline-lg": ["Space Grotesk"],
+          "mono-data": ["Space Grotesk"],
+          "display-xl": ["Space Grotesk"],
+          "label-caps": ["Space Grotesk"],
+          "headline-md": ["Space Grotesk"],
+          "body-lg": ["Inter"],
+          "body-md": ["Inter"]
+        },
+        fontSize: {
+          "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "mono-data": ["14px", {"lineHeight": "1", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+          "display-xl": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+          "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+          "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "0em", "fontWeight": "500"}],
+          "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+          "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .glass-panel {
+    background-color: rgba(26, 26, 26, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px 0 16px 0;
+  }
+  .active-apex {
+    border: 1px solid #FF0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .card-radius { border-radius: 16px 0 16px 0; }
+  .btn-radius  { border-radius: 16px 0 16px 0 !important; }
+  .step-arrow  { color: #3f3f46; font-size: 20px; }
+  #mobile-menu-panel {
+    transform: translateY(-100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #mobile-menu.open #mobile-menu-panel {
+    transform: translateY(0);
+  }
+  #mobile-menu {
+    transition: visibility 0s linear 0.32s, opacity 0.32s;
+    opacity: 0;
+    visibility: hidden;
+  }
+  #mobile-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+</style>
+</head>
+
+<body class="bg-black text-on-surface font-body-md overflow-x-hidden">
+
+<!-- ─── NAV ─── -->
+<nav class="fixed top-0 w-full z-50 bg-zinc-950/40 backdrop-blur-xl border-b border-white/10">
+  <div class="flex justify-between items-center max-w-[1440px] mx-auto px-6 md:px-12 py-5">
+    <div class="text-2xl font-black text-white tracking-tighter font-headline-lg uppercase">TRADER U</div>
+    <div class="hidden md:flex items-center gap-8 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold">
+      <a class="text-zinc-400 hover:text-white transition-all duration-300" href="#curriculum">Curriculum</a>
+      <a class="text-zinc-400 hover:text-white transition-all duration-300" href="#proof">Results</a>
+      <a class="text-zinc-400 hover:text-white transition-all duration-300" href="#founders">Foundation</a>
+      <a class="text-zinc-400 hover:text-white transition-all duration-300" href="#pricing">Pricing</a>
+      <a class="text-zinc-400 hover:text-white transition-all duration-300" href="#faq">FAQ</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <a class="btn-radius bg-primary-container text-on-primary-container px-6 py-2 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold active:scale-95 transform transition-transform hidden md:inline-block" href="#pricing">
+        JOIN
+      </a>
+      <button id="hamburger-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 group" aria-label="Open menu" aria-expanded="false">
+        <span class="block w-6 h-0.5 bg-white transition-all duration-300"></span>
+        <span class="block w-6 h-0.5 bg-white transition-all duration-300"></span>
+        <span class="block w-6 h-0.5 bg-white transition-all duration-300"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── MOBILE MENU ─── -->
+<div id="mobile-menu" aria-hidden="true" class="fixed inset-0 z-40">
+  <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+  <div id="mobile-menu-panel" class="absolute top-0 left-0 right-0 bg-zinc-950 border-b border-white/10 shadow-2xl">
+    <div class="flex justify-between items-center px-6 py-5 border-b border-white/10">
+      <div class="text-2xl font-black text-white tracking-tighter font-headline-lg uppercase">TRADER U</div>
+      <button id="mobile-menu-close" class="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors" aria-label="Close menu">
+        <span class="material-symbols-outlined" style="font-size: 22px;">close</span>
+      </button>
+    </div>
+    <nav class="px-6 pt-4 pb-2">
+      <a href="#curriculum" class="mobile-link flex items-center justify-between py-4 text-zinc-300 hover:text-white font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold border-b border-white/5 transition-colors">
+        Curriculum <span class="material-symbols-outlined text-zinc-700" style="font-size: 18px;">chevron_right</span>
+      </a>
+      <a href="#proof" class="mobile-link flex items-center justify-between py-4 text-zinc-300 hover:text-white font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold border-b border-white/5 transition-colors">
+        Results <span class="material-symbols-outlined text-zinc-700" style="font-size: 18px;">chevron_right</span>
+      </a>
+      <a href="#founders" class="mobile-link flex items-center justify-between py-4 text-zinc-300 hover:text-white font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold border-b border-white/5 transition-colors">
+        Foundation <span class="material-symbols-outlined text-zinc-700" style="font-size: 18px;">chevron_right</span>
+      </a>
+      <a href="#pricing" class="mobile-link flex items-center justify-between py-4 text-zinc-300 hover:text-white font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold border-b border-white/5 transition-colors">
+        Pricing <span class="material-symbols-outlined text-zinc-700" style="font-size: 18px;">chevron_right</span>
+      </a>
+      <a href="#faq" class="mobile-link flex items-center justify-between py-4 text-zinc-300 hover:text-white font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold transition-colors">
+        FAQ <span class="material-symbols-outlined text-zinc-700" style="font-size: 18px;">chevron_right</span>
+      </a>
+    </nav>
+    <div class="px-6 pt-4 pb-10">
+      <a href="#pricing" class="mobile-link btn-radius bg-primary-container text-on-primary-container block w-full py-5 text-center font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform">
+        JOIN NOW — GET ACCESS
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="relative min-h-screen flex items-center pt-24 overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-black"></div>
+    <img class="w-full h-full object-cover opacity-40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMpNfobI0FWkExh0bYKoM-x0hGfo01G9RaFsYu938Nkn0o9OwYuiyVkP6hR8a5hfdUMPSzRcW6_BNNQhXx0Bp4ejU2E0FQUDN97BNOOzk9EpUJuxNBRb5aUNMKQkeUGnbrmwdF0KE4GgpqJiTiUx1D0w3g_eEmq3gq91E2dYr_ZtLXps_pciMWZAsQijQVf_U9CqVIcZvdyo_fVDQpHnKtx7q3PK65qtzDy9HQWMQn5zmtYw-AVdiIYuBt0KLjnFFdb9LYKxDtFYID" alt=""/>
+  </div>
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
+    <div class="max-w-3xl">
+
+      <!-- Live badge row -->
+      <div class="mb-8 flex items-center gap-4">
+        <span class="btn-radius bg-primary-container/20 border border-primary-container text-primary-container px-3 py-1 text-label-caps font-label-caps uppercase tracking-[0.2em]">Live System Access</span>
+        <div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+        <span class="text-zinc-500 text-xs font-['Space_Grotesk'] uppercase tracking-widest">April · Limited Entry Window</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="font-display-xl text-white mb-6 leading-[1.05]" style="font-size: clamp(40px, 8vw, 68px); letter-spacing: -0.04em;">
+        THE MARKET<br/>DOES NOT WAIT.<br/>
+        <span class="text-primary-container">NEITHER SHOULD YOU.</span>
+      </h1>
+
+      <!-- Tension line -->
+      <p class="text-zinc-300 mb-4" style="font-size: 18px; line-height: 1.7;">
+        Most traders are reacting.<br/>
+        Our members are already positioned.
+      </p>
+      <p class="text-zinc-500 mb-10 max-w-xl" style="font-size: 16px; line-height: 1.75;">
+        This is not signals. This is the exact framework we use to scan, identify, and execute before moves happen.
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex flex-wrap gap-4 mb-12">
+        <a class="btn-radius bg-primary-container text-on-primary-container px-10 py-5 font-headline-md uppercase tracking-wider font-bold hover:bg-white hover:text-black transition-all duration-300 active:scale-95" href="#pricing">
+          Join Live Access
+        </a>
+        <a class="btn-radius border border-white/20 text-zinc-400 px-10 py-5 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:border-white/40 hover:text-white transition-all duration-300" href="#system">
+          See How It Works
+        </a>
+      </div>
+
+      <!-- Social proof strip -->
+      <div class="flex flex-wrap items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="text-white font-['Space_Grotesk'] font-bold text-lg">1,200+</span>
+          <span class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk']">Traders Inside</span>
+        </div>
+        <div class="w-px h-4 bg-white/10"></div>
+        <div class="flex items-center gap-2">
+          <span class="text-white font-['Space_Grotesk'] font-bold text-lg">Daily</span>
+          <span class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk']">Live Voice Chat</span>
+        </div>
+        <div class="w-px h-4 bg-white/10"></div>
+        <div class="flex items-center gap-2">
+          <span class="text-white font-['Space_Grotesk'] font-bold text-lg">Real Time</span>
+          <span class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk']">Market Breakdowns</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHAT YOU'LL LEARN ─── -->
+<section class="py-xl bg-zinc-950 border-t border-white/5">
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12">
+    <div class="mb-14">
+      <h2 class="font-label-caps text-label-caps text-primary-container mb-4 uppercase tracking-[0.3em]">The Blueprint</h2>
+      <h3 class="font-headline-lg text-headline-lg text-white">WHAT YOU'LL LEARN</h3>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 border border-white/5 card-radius overflow-hidden">
+
+      <div class="bg-zinc-950 p-8 flex flex-col justify-between min-h-[220px] hover:bg-zinc-900 transition-colors duration-200">
+        <div class="mb-6">
+          <span class="font-['Space_Grotesk'] font-bold text-primary-container" style="font-size: 56px; line-height: 1; letter-spacing: -0.04em;">01</span>
+        </div>
+        <div>
+          <h4 class="font-['Space_Grotesk'] text-white font-bold uppercase text-sm mb-2 tracking-wide">THE EDGE</h4>
+          <p class="text-zinc-500 text-sm leading-relaxed">Why most traders lose in memecoins and how to position before the move.</p>
+        </div>
+      </div>
+
+      <div class="bg-zinc-950 p-8 flex flex-col justify-between min-h-[220px] hover:bg-zinc-900 transition-colors duration-200">
+        <div class="mb-6">
+          <span class="font-['Space_Grotesk'] font-bold text-primary-container" style="font-size: 56px; line-height: 1; letter-spacing: -0.04em;">02</span>
+        </div>
+        <div>
+          <h4 class="font-['Space_Grotesk'] text-white font-bold uppercase text-sm mb-2 tracking-wide">THE SYSTEM</h4>
+          <p class="text-zinc-500 text-sm leading-relaxed">The exact framework used to scan, filter, and execute trades daily.</p>
+        </div>
+      </div>
+
+      <div class="bg-zinc-950 p-8 flex flex-col justify-between min-h-[220px] hover:bg-zinc-900 transition-colors duration-200">
+        <div class="mb-6">
+          <span class="font-['Space_Grotesk'] font-bold text-primary-container" style="font-size: 56px; line-height: 1; letter-spacing: -0.04em;">03</span>
+        </div>
+        <div>
+          <h4 class="font-['Space_Grotesk'] text-white font-bold uppercase text-sm mb-2 tracking-wide">THE EXECUTION</h4>
+          <p class="text-zinc-500 text-sm leading-relaxed">How to enter with a plan, manage risk, and exit correctly. Every time.</p>
+        </div>
+      </div>
+
+      <div class="bg-zinc-950 p-8 flex flex-col justify-between min-h-[220px] hover:bg-zinc-900 transition-colors duration-200">
+        <div class="mb-6">
+          <span class="font-['Space_Grotesk'] font-bold text-primary-container" style="font-size: 56px; line-height: 1; letter-spacing: -0.04em;">04</span>
+        </div>
+        <div>
+          <h4 class="font-['Space_Grotesk'] text-white font-bold uppercase text-sm mb-2 tracking-wide">THE ADVANTAGE</h4>
+          <p class="text-zinc-500 text-sm leading-relaxed">How to think like a trader instead of reacting like everyone else.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOUNDATION (FOUNDERS) ─── -->
+<section class="py-xl relative overflow-hidden bg-black" id="founders">
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-start gap-xl">
+
+    <!-- Photo -->
+    <div class="lg:w-5/12 relative flex-shrink-0">
+      <div class="aspect-[3/4] glass-panel p-2 relative z-10 overflow-hidden">
+        <img class="w-full h-full object-cover object-top" src="https://github.com/user-attachments/assets/fb935206-fd64-4089-9add-2adbd1d7a0f1" alt="Chepeex — Founder, TraderU"/>
+      </div>
+      <div class="absolute -bottom-10 -right-10 w-64 h-64 border border-primary-container/30 -z-0"></div>
+      <div class="absolute -top-10 -left-10 w-32 h-32 bg-primary-container/10 -z-0"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="lg:w-7/12 pt-4">
+      <p class="font-['Space_Grotesk'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-5">Your Host</p>
+
+      <!-- Name block -->
+      <h3 class="font-['Space_Grotesk'] text-white font-black uppercase mb-1" style="font-size: clamp(36px, 5vw, 60px); letter-spacing: -0.03em; line-height: 1;">CHEPEEX</h3>
+      <p class="text-zinc-500 text-sm font-['Space_Grotesk'] uppercase tracking-widest mb-8">Founder, TraderU</p>
+
+      <!-- Divider -->
+      <div class="mb-8 pb-8 border-b border-white/10"></div>
+
+      <!-- Personal narrative -->
+      <div class="space-y-4 text-zinc-400" style="font-size: 16px; line-height: 1.85;">
+        <p>My name is Chepeex. I've been trading memecoins long enough to watch the same pattern destroy accounts over and over. Not because the traders were dumb. Because they had no structure.</p>
+        <p>I built TraderU to fix that. Not signals. A system. One that teaches you how to think, how to read a narrative before it moves, and how to execute without flinching.</p>
+        <p class="text-zinc-300 font-semibold">The traders who win here aren't lucky. They're consistent. That's what we build.</p>
+      </div>
+
+      <div class="mt-10 border-l-4 border-primary-container pl-6 py-2">
+        <p class="text-white font-bold italic" style="font-size: 18px; line-height: 1.5;">"The market doesn't care how smart you are. It rewards the people who have a system."</p>
+        <p class="text-zinc-500 text-xs mt-3 uppercase tracking-widest font-['Space_Grotesk']">— Chepeex</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── PROOF OF PROCESS ─── -->
+<section class="py-xl bg-zinc-950 border-y border-white/5" id="proof">
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12">
+
+    <!-- Section header -->
+    <div class="mb-16">
+      <div class="flex flex-col md:flex-row justify-between items-end gap-8">
+        <div>
+          <h2 class="font-label-caps text-label-caps text-primary-container mb-4 uppercase tracking-[0.3em]">Proof of Process</h2>
+          <h3 class="font-headline-lg text-headline-lg text-white">CALLED EARLY.<br/>EXECUTED WITH STRUCTURE.</h3>
+        </div>
+        <div class="max-w-md space-y-2 text-sm" style="line-height: 1.8;">
+          <p class="text-zinc-300">These weren't lucky entries.</p>
+          <p class="text-zinc-500">The narrative was tracked. The liquidity was read. The entry was defined before we touched it.</p>
+          <p class="text-primary-container font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest mt-4">You don't need every trade. You need the right ones.</p>
+        </div>
+      </div>
+      <!-- Disclaimer bar -->
+      <div class="mt-8 border border-white/10 px-6 py-3 card-radius flex items-start gap-3">
+        <span class="material-symbols-outlined text-zinc-500 text-base flex-shrink-0 mt-0.5">info</span>
+        <p class="text-zinc-500 text-xs leading-relaxed">We don't post wins to flex. We post them to show the decision-making behind each trade. Understanding the why is more valuable than the result.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+
+      <!-- Testimonial Video — Capi -->
+      <div class="glass-panel overflow-hidden relative group aspect-[9/16] max-h-[600px] mx-auto w-full flex flex-col">
+        <video class="w-full h-full object-cover" src="https://kqbbyhzfbxttnsjmppqz.supabase.co/storage/v1/object/public/TRDRU/1110458d98a24ca1920661b9ecd6ed0e.mov" controls playsinline preload="metadata"></video>
+        <div class="absolute top-0 left-0 right-0 px-4 py-3 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+          <span class="font-label-caps text-primary-container text-[10px] uppercase tracking-widest">Member Story</span>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black to-transparent pointer-events-none">
+          <p class="text-white font-bold font-['Space_Grotesk'] text-base mb-1">Capi</p>
+          <p class="text-primary-container font-mono-data text-xs">Caught $Elon early. Built position from the narrative call.</p>
+        </div>
+      </div>
+
+      <!-- Testimonial Video — Community Member -->
+      <div class="glass-panel overflow-hidden relative group aspect-[9/16] max-h-[600px] mx-auto w-full active-apex flex flex-col">
+        <video class="w-full h-full object-cover" src="https://kqbbyhzfbxttnsjmppqz.supabase.co/storage/v1/object/public/TRDRU/Video.mov" controls playsinline preload="metadata"></video>
+        <div class="absolute top-0 left-0 right-0 px-4 py-3 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+          <span class="font-label-caps text-primary-container text-[10px] uppercase tracking-widest">Member Story</span>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black to-transparent pointer-events-none">
+          <p class="text-white font-bold font-['Space_Grotesk'] text-base mb-1">Community Member</p>
+          <p class="text-primary-container font-mono-data text-xs">3 months in. Built enough consistency to leave her 9-5.</p>
+        </div>
+      </div>
+
+      <!-- Trade Breakdowns Column -->
+      <div class="flex flex-col gap-gutter">
+
+        <!-- Scam Coin Breakdown -->
+        <div class="glass-panel p-5 flex flex-col flex-1">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-label-caps text-primary-container uppercase tracking-widest text-[10px]">Trade Breakdown</h4>
+            <span class="bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider card-radius">383x</span>
+          </div>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="bg-zinc-800 px-2 py-1 font-mono-data text-white text-sm card-radius">$SCAM</span>
+            <span class="text-zinc-500 text-xs">Called at 42k market cap</span>
+          </div>
+          <div class="space-y-2 mb-4">
+            <div class="flex gap-2 text-xs">
+              <span class="text-zinc-600 uppercase tracking-wider font-['Space_Grotesk'] w-20 flex-shrink-0">Narrative</span>
+              <span class="text-zinc-400">Ironic memecoin meta, community-driven momentum</span>
+            </div>
+            <div class="flex gap-2 text-xs">
+              <span class="text-zinc-600 uppercase tracking-wider font-['Space_Grotesk'] w-20 flex-shrink-0">Signal</span>
+              <span class="text-zinc-400">Volume spike + wallet clustering at low cap</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-1 mb-3">
+            <img class="w-full aspect-video object-cover card-radius" src="https://github.com/user-attachments/assets/c6e8c3de-fb49-4b40-bf35-a7b91975be1f" alt="$Scam Coin"/>
+            <img class="w-full aspect-video object-cover card-radius" src="https://github.com/user-attachments/assets/270e360f-4f38-4baa-9d5f-24f20ad9faca" alt="$Burnie Coin"/>
+            <img class="w-full aspect-video object-cover card-radius" src="https://github.com/user-attachments/assets/fd48bc50-0cf4-41d9-acd3-0832dd4cf75f" alt="$Musk Coin"/>
+          </div>
+          <div class="flex gap-2 text-[10px] font-label-caps text-zinc-600 uppercase tracking-wider">
+            <span>$Scam</span><span class="text-zinc-800">·</span><span>$Burnie</span><span class="text-zinc-800">·</span><span>$Musk</span>
+          </div>
+        </div>
+
+        <!-- Burnie Breakdown -->
+        <div class="glass-panel p-5 flex flex-col flex-1">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-label-caps text-primary-container uppercase tracking-widest text-[10px]">Trade Breakdown</h4>
+            <span class="bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider card-radius">20–30x</span>
+          </div>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="bg-zinc-800 px-2 py-1 font-mono-data text-white text-sm card-radius">$BURNIE</span>
+            <span class="text-zinc-500 text-xs">Early entry, long hold</span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex gap-2 text-xs">
+              <span class="text-zinc-600 uppercase tracking-wider font-['Space_Grotesk'] w-20 flex-shrink-0">Narrative</span>
+              <span class="text-zinc-400">Burn-supply meta gaining traction across CT</span>
+            </div>
+            <div class="flex gap-2 text-xs">
+              <span class="text-zinc-600 uppercase tracking-wider font-['Space_Grotesk'] w-20 flex-shrink-0">Signal</span>
+              <span class="text-zinc-400">Liquidity building quietly, no pump and dump pattern</span>
+            </div>
+            <div class="flex gap-2 text-xs">
+              <span class="text-zinc-600 uppercase tracking-wider font-['Space_Grotesk'] w-20 flex-shrink-0">Outcome</span>
+              <span class="text-zinc-400">Members who sized in early captured the full move</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat -->
+        <div class="bg-primary-container p-6 flex flex-col justify-center items-center text-center card-radius">
+          <p class="font-display-xl text-4xl text-black mb-1">94%</p>
+          <p class="font-label-caps text-black text-[10px] uppercase tracking-widest">Member Retention</p>
+        </div>
+
+      </div>
+    </div>
+    <!-- Post-proof CTA -->
+    <div class="mt-16 text-center">
+      <p class="text-zinc-500 text-sm mb-6 uppercase tracking-widest font-['Space_Grotesk']">See the system behind every win</p>
+      <a class="btn-radius bg-primary-container text-on-primary-container px-10 py-4 font-['Space_Grotesk'] uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-black transition-all duration-300 inline-block" href="#pricing">
+        Join TraderU
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CURRICULUM ─── -->
+<section class="py-xl bg-black" id="curriculum">
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12">
+    <div class="text-center mb-20">
+      <h2 class="font-label-caps text-label-caps text-primary-container mb-4 uppercase tracking-[0.3em]">The Curriculum</h2>
+      <h3 class="font-headline-lg text-headline-lg text-white mb-4">THE 4-MONTH SYSTEM</h3>
+      <p class="text-zinc-500 max-w-2xl mx-auto">A month-by-month structure built for memecoin trading. No filler. No theory for theory's sake. Just the skills that actually move the needle.</p>
+    </div>
+    <div class="relative">
+      <div class="absolute top-[28px] left-0 w-full h-[1px] bg-white/10 hidden lg:block"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter relative z-10">
+
+        <div class="card-radius bg-zinc-950 border border-white/10 p-8 hover:border-primary-container transition-all">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-zinc-900 flex items-center justify-center text-primary-container font-headline-md border border-white/5 card-radius flex-shrink-0">01</div>
+            <span class="text-zinc-600 text-xs uppercase tracking-widest font-['Space_Grotesk']">Month 1</span>
+          </div>
+          <h4 class="font-headline-md text-white mb-2">FOUNDATION</h4>
+          <p class="text-zinc-500 text-xs uppercase tracking-wider mb-5 font-['Space_Grotesk']">Get the base right</p>
+          <ul class="text-zinc-400 text-sm space-y-2">
+            <li>• Wallet setup &amp; tools</li>
+            <li>• Understanding memecoins</li>
+            <li>• Spotting rugs vs. real plays</li>
+            <li>• First entries &amp; exits</li>
+          </ul>
+        </div>
+
+        <div class="card-radius bg-zinc-950 border border-white/10 p-8 hover:border-primary-container transition-all">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-zinc-900 flex items-center justify-center text-primary-container font-headline-md border border-white/5 card-radius flex-shrink-0">02</div>
+            <span class="text-zinc-600 text-xs uppercase tracking-widest font-['Space_Grotesk']">Month 2</span>
+          </div>
+          <h4 class="font-headline-md text-white mb-2">EXECUTION</h4>
+          <p class="text-zinc-500 text-xs uppercase tracking-wider mb-5 font-['Space_Grotesk']">Trade with intent</p>
+          <ul class="text-zinc-400 text-sm space-y-2">
+            <li>• Finding coins early</li>
+            <li>• Volume &amp; liquidity reads</li>
+            <li>• Entry timing principles</li>
+            <li>• Risk per trade rules</li>
+          </ul>
+        </div>
+
+        <div class="card-radius bg-zinc-950 border border-white/10 p-8 active-apex">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-primary-container flex items-center justify-center text-black font-headline-md card-radius flex-shrink-0">03</div>
+            <span class="text-zinc-400 text-xs uppercase tracking-widest font-['Space_Grotesk']">Month 3</span>
+          </div>
+          <h4 class="font-headline-md text-white mb-2">PATTERN RECOGNITION</h4>
+          <p class="text-zinc-500 text-xs uppercase tracking-wider mb-5 font-['Space_Grotesk']">See it before it forms</p>
+          <ul class="text-zinc-400 text-sm space-y-2">
+            <li>• Narrative cycle mapping</li>
+            <li>• Repeating setups</li>
+            <li>• Scaling into positions</li>
+            <li>• Cutting emotional trades</li>
+          </ul>
+        </div>
+
+        <div class="card-radius bg-zinc-950 border border-white/10 p-8 hover:border-primary-container transition-all">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 bg-zinc-900 flex items-center justify-center text-primary-container font-headline-md border border-white/5 card-radius flex-shrink-0 text-sm">04+</div>
+            <span class="text-zinc-600 text-xs uppercase tracking-widest font-['Space_Grotesk']">Month 4+</span>
+          </div>
+          <h4 class="font-headline-md text-white mb-2">ADVANCED</h4>
+          <p class="text-zinc-500 text-xs uppercase tracking-wider mb-5 font-['Space_Grotesk']">Build your edge, keep it</p>
+          <ul class="text-zinc-400 text-sm space-y-2">
+            <li>• Wallet tracking strategies</li>
+            <li>• Advanced position builds</li>
+            <li>• Building a repeatable system</li>
+            <li>• Consistency over home runs</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── FOR YOU / NOT FOR YOU ─── -->
+<section class="py-xl bg-black border-t border-white/5">
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-5xl mx-auto">
+
+      <!-- This IS for you -->
+      <div>
+        <h3 class="font-['Space_Grotesk'] text-white font-black uppercase mb-10" style="font-size: clamp(20px, 2.5vw, 28px); letter-spacing: -0.01em;">THIS IS FOR YOU IF...</h3>
+        <ul class="space-y-5">
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-green-400" style="font-size: 14px; font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <span class="text-zinc-300 text-base leading-relaxed">You're tired of guessing trades and want a repeatable process</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-green-400" style="font-size: 14px; font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <span class="text-zinc-300 text-base leading-relaxed">You want structure, not hype. And you're willing to do the work.</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-green-400" style="font-size: 14px; font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <span class="text-zinc-300 text-base leading-relaxed">You actually want to improve your execution, not just win once</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-green-400" style="font-size: 14px; font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <span class="text-zinc-300 text-base leading-relaxed">You're ready to take this seriously, not treat it like a lottery ticket</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- NOT for you -->
+      <div>
+        <h3 class="font-['Space_Grotesk'] text-zinc-500 font-black uppercase mb-10" style="font-size: clamp(20px, 2.5vw, 28px); letter-spacing: -0.01em;">THIS IS NOT FOR YOU IF...</h3>
+        <ul class="space-y-5">
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-primary-container" style="font-size: 14px; font-variation-settings: 'FILL' 1;">close</span>
+            </div>
+            <span class="text-zinc-600 text-base leading-relaxed">You're looking for easy money with no learning curve</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-primary-container" style="font-size: 14px; font-variation-settings: 'FILL' 1;">close</span>
+            </div>
+            <span class="text-zinc-600 text-base leading-relaxed">You want someone to just tell you what to buy with no context</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-primary-container" style="font-size: 14px; font-variation-settings: 'FILL' 1;">close</span>
+            </div>
+            <span class="text-zinc-600 text-base leading-relaxed">You don't follow a process and don't plan to start one</span>
+          </li>
+          <li class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-primary-container/10 border border-primary-container/30 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-primary-container" style="font-size: 14px; font-variation-settings: 'FILL' 1;">close</span>
+            </div>
+            <span class="text-zinc-600 text-base leading-relaxed">You quit after the first loss and look for someone to blame</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ─── -->
+<section class="bg-zinc-950 border-t border-white/5 overflow-hidden" id="pricing">
+
+  <!-- Gradient header -->
+  <div class="relative pt-20 pb-14 text-center" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,0,0,0.18) 0%, transparent 70%);">
+    <p class="font-['Space_Grotesk'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Enrollment Open Now</p>
+    <h3 class="font-['Space_Grotesk'] text-white font-bold uppercase mb-3" style="font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.01em;">Every Day You Wait,<br/>You're Entering Later Than Everyone Else.</h3>
+    <p class="text-zinc-500 text-sm max-w-md mx-auto px-6 mt-4">The market rewards positioning. Not hesitation. Two ways in. Both built on the same system.</p>
+  </div>
+
+  <!-- Psychology line -->
+  <p class="text-center text-zinc-500 text-sm font-['Space_Grotesk'] pb-10 px-6">Most people start with Live Access. The ones who get results upgrade to Full System.</p>
+
+  <!-- Cards -->
+  <div class="container max-w-5xl mx-auto px-6 md:px-12 pb-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+      <!-- Tier 1: Live Access -->
+      <div class="card-radius bg-zinc-900 border border-white/10 p-8 flex flex-col hover:border-white/20 transition-all duration-300">
+        <p class="font-['Space_Grotesk'] text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-5">Live Access</p>
+
+        <!-- Price -->
+        <div class="mb-1 flex items-end gap-2">
+          <span class="text-white font-['Space_Grotesk'] font-bold leading-none" style="font-size: clamp(38px, 10vw, 52px);">$159.99</span>
+          <span class="text-zinc-500 text-sm pb-2 font-['Space_Grotesk']">/month</span>
+        </div>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-1">For traders who want to stay plugged in and move with the market.</p>
+        <p class="text-zinc-600 text-sm leading-relaxed mb-7">You're not on your own. You're inside the environment where things happen in real time.</p>
+
+        <!-- CTA -->
+        <a class="btn-radius border border-white/20 text-white w-full py-4 text-center font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:bg-white hover:text-black transition-all duration-200 mb-8" href="https://whop.com/checkout/plan_kPFBWPKqUWO8T" target="_blank" rel="noopener noreferrer">
+          Get Live Access
+        </a>
+
+        <!-- Divider -->
+        <div class="border-t border-white/10 mb-7"></div>
+
+        <!-- Features -->
+        <p class="text-zinc-500 text-xs font-['Space_Grotesk'] uppercase tracking-widest mb-4">Includes:</p>
+        <ul class="space-y-3 flex-1">
+          <li class="flex items-center gap-3 text-zinc-300 text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0"></span>
+            Bi-Weekly Live Scanning Sessions
+          </li>
+          <li class="flex items-center gap-3 text-zinc-300 text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0"></span>
+            Narrative and Watchlist Tracking
+          </li>
+          <li class="flex items-center gap-3 text-zinc-300 text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0"></span>
+            Active Community Discussion
+          </li>
+          <li class="flex items-center gap-3 text-zinc-300 text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0"></span>
+            Real Time Meta Updates
+          </li>
+          <li class="flex items-center gap-3 text-zinc-300 text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0"></span>
+            Group Q&amp;A Sessions
+          </li>
+        </ul>
+
+        <!-- Best for -->
+        <p class="text-zinc-600 text-xs font-['Space_Grotesk'] mt-8 pt-6 border-t border-white/5 italic">Best for: staying involved and learning as you go</p>
+      </div>
+
+      <!-- Tier 2: Full System -->
+      <div class="card-radius bg-zinc-900 border border-primary-container/40 p-8 flex flex-col relative" style="box-shadow: 0 0 40px rgba(255,0,0,0.08);">
+        <!-- Badge -->
+        <div class="absolute -top-3 left-8">
+          <span class="btn-radius bg-primary-container text-black text-[10px] font-['Space_Grotesk'] font-bold py-1 px-3 uppercase tracking-widest">Best Value</span>
+        </div>
+
+        <p class="font-['Space_Grotesk'] text-white uppercase tracking-[0.2em] text-xs font-bold mb-5 mt-2">Full System</p>
+
+        <!-- Price -->
+        <div class="mb-1 flex items-end gap-2">
+          <span class="text-white font-['Space_Grotesk'] font-bold leading-none" style="font-size: clamp(38px, 10vw, 52px);">$449.99</span>
+          <span class="text-zinc-500 text-sm pb-2 font-['Space_Grotesk']">one time</span>
+        </div>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-1">For traders who want to actually understand the system and execute with confidence.</p>
+        <p class="text-zinc-600 text-sm leading-relaxed mb-2">You're not just watching trades anymore. You understand why they work and when to act.</p>
+        <p class="text-primary-container text-xs font-['Space_Grotesk'] font-bold mb-7">Less than 3 months of the monthly plan. One payment. No recurring charge.</p>
+
+        <!-- CTA -->
+        <a class="btn-radius bg-primary-container text-on-primary-container w-full py-4 text-center font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_30px_rgba(255,0,0,0.4)] transition-all duration-200 mb-8" href="https://whop.com/checkout/plan_eiTP1sfLye2DP" target="_blank" rel="noopener noreferrer">
+          Get the Full System
+        </a>
+
+        <!-- Divider -->
+        <div class="border-t border-white/10 mb-7"></div>
+
+        <!-- Features -->
+        <p class="text-zinc-500 text-xs font-['Space_Grotesk'] uppercase tracking-widest mb-4">Everything in Live Access, plus:</p>
+        <ul class="space-y-3 flex-1">
+          <li class="flex items-center gap-3 text-white text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container shrink-0"></span>
+            Live Access (6 Months Included)
+          </li>
+          <li class="flex items-center gap-3 text-white text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container shrink-0"></span>
+            Full Memecoin Trading Curriculum
+          </li>
+          <li class="flex items-center gap-3 text-white text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container shrink-0"></span>
+            Bi-Weekly Live Strategy Sessions
+          </li>
+          <li class="flex items-center gap-3 text-white text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container shrink-0"></span>
+            Proprietary Tool Access
+          </li>
+          <li class="flex items-center gap-3 text-white text-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-container shrink-0"></span>
+            Trade Breakdown Library
+          </li>
+        </ul>
+
+        <!-- Best for -->
+        <p class="text-zinc-600 text-xs font-['Space_Grotesk'] mt-8 pt-6 border-t border-white/5 italic">Best for: serious traders who want real skill, not just access</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="py-xl bg-black" id="faq">
+  <div class="container max-w-[1440px] mx-auto px-6 md:px-12">
+
+    <!-- Section header + positioning statement -->
+    <div class="text-center mb-16">
+      <h2 class="font-label-caps text-label-caps text-primary-container mb-4 uppercase tracking-[0.3em]">FAQ</h2>
+      <h3 class="font-headline-lg text-headline-lg text-white mb-6">FREQUENTLY ASKED</h3>
+      <p class="text-zinc-400 max-w-2xl mx-auto" style="font-size: 16px; line-height: 1.7;">
+        The one stop system for memecoins. Top tier education, live scanning sessions, and proprietary tools. All built to help you make smarter, more consistent decisions in the market.
+      </p>
+    </div>
+
+    <div class="max-w-3xl mx-auto space-y-0">
+
+      <div class="border-b border-white/10 py-6">
+        <button class="faq-btn flex justify-between items-center w-full text-left group">
+          <span class="font-['Space_Grotesk'] text-white font-semibold text-lg group-hover:text-primary-container transition-colors">What is TraderU?</span>
+          <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div class="faq-answer hidden mt-3 text-zinc-400 text-sm leading-relaxed">
+          TraderU is a structured memecoin trading system. We combine daily live voice chat access, bi-weekly structured teaching sessions, a proven education curriculum, proprietary tools, and an active community. Everything you need to find opportunities early and execute with confidence.
+        </div>
+      </div>
+
+      <div class="border-b border-white/10 py-6">
+        <button class="faq-btn flex justify-between items-center w-full text-left group">
+          <span class="font-['Space_Grotesk'] text-white font-semibold text-lg group-hover:text-primary-container transition-colors">Is TraderU suitable for beginners?</span>
+          <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div class="faq-answer hidden mt-3 text-zinc-400 text-sm leading-relaxed">
+          Yes. Our curriculum starts from the ground up: wallet setup, reading on chain data, identifying opportunities, and managing risk. You don't need a background in trading to get started.
+        </div>
+      </div>
+
+      <div class="border-b border-white/10 py-6">
+        <button class="faq-btn flex justify-between items-center w-full text-left group">
+          <span class="font-['Space_Grotesk'] text-white font-semibold text-lg group-hover:text-primary-container transition-colors">Do you provide live trading signals?</span>
+          <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div class="faq-answer hidden mt-3 text-zinc-400 text-sm leading-relaxed">
+          Yes. We run bi-weekly live scanning sessions where we walk through new memecoin opportunities in real time. Beyond that, the daily live voice chat keeps you in the environment where opportunities surface and decisions get made. Every session includes the reasoning behind each call — the narrative, the liquidity, the risk. Not just the ticker.
+        </div>
+      </div>
+
+      <div class="border-b border-white/10 py-6">
+        <button class="faq-btn flex justify-between items-center w-full text-left group">
+          <span class="font-['Space_Grotesk'] text-white font-semibold text-lg group-hover:text-primary-container transition-colors">How can I benefit from joining?</span>
+          <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div class="faq-answer hidden mt-3 text-zinc-400 text-sm leading-relaxed">
+          You get access to exclusive scanning tools, a structured education system, daily live voice chat, bi-weekly structured teaching sessions, and a community of active traders all working the same market. Whether you're trying to catch your first win or build a repeatable edge, the system is built to accelerate that.
+        </div>
+      </div>
+
+      <div class="border-b border-white/10 py-6">
+        <button class="faq-btn flex justify-between items-center w-full text-left group">
+          <span class="font-['Space_Grotesk'] text-white font-semibold text-lg group-hover:text-primary-container transition-colors">How much capital do I need to start?</span>
+          <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div class="faq-answer hidden mt-3 text-zinc-400 text-sm leading-relaxed">
+          Most members start with $100 to $500 on chain and scale as their skills develop. There's no minimum. The focus early on is building pattern recognition and execution discipline. Position size is secondary to getting the process right.
+        </div>
+      </div>
+
+      <div class="py-6">
+        <button class="faq-btn flex justify-between items-center w-full text-left group">
+          <span class="font-['Space_Grotesk'] text-white font-semibold text-lg group-hover:text-primary-container transition-colors">What is the risk involved?</span>
+          <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 transition-transform duration-200">expand_more</span>
+        </button>
+        <div class="faq-answer hidden mt-3 text-zinc-400 text-sm leading-relaxed">
+          Memecoins are high risk assets and most lose value quickly. We teach structured risk management from day one: proper position sizing, knowing your exit before you enter, and never holding through a loss of conviction. The system is built to protect capital first. Profit follows consistency.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="bg-zinc-950 border-t border-white/10 w-full py-16 px-6 md:px-12">
+  <div class="flex flex-col items-center text-center gap-6 max-w-[1440px] mx-auto">
+    <div class="text-3xl font-black text-white tracking-tighter uppercase mb-2">TRADER U</div>
+    <div class="flex flex-wrap justify-center gap-8 font-['Space_Grotesk'] text-[10px] uppercase tracking-wider text-zinc-600">
+      <a class="hover:text-primary-container transition-colors" href="/terms.html">Terms of Service</a>
+      <a class="hover:text-primary-container transition-colors" href="/privacy.html">Privacy Policy</a>
+      <a class="hover:text-primary-container transition-colors" href="/refund.html">Refund Policy</a>
+      <a class="hover:text-primary-container transition-colors" href="/eula.html">EULA</a>
+    </div>
+    <p class="font-['Space_Grotesk'] text-[10px] uppercase tracking-wider leading-relaxed text-zinc-600 max-w-2xl mt-4">
+      © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
+    </p>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const answer = btn.nextElementSibling;
+      const icon = btn.querySelector('.material-symbols-outlined');
+      const isOpen = !answer.classList.contains('hidden');
+      document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
+      document.querySelectorAll('.faq-btn .material-symbols-outlined').forEach(i => i.style.transform = '');
+      if (!isOpen) {
+        answer.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    });
+  });
+
+  // Mobile menu
+  const mobileMenu = document.getElementById('mobile-menu');
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const closeBtn = document.getElementById('mobile-menu-close');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    hamburgerBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  document.getElementById('mobile-menu-backdrop').addEventListener('click', closeMenu);
+  mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+  });
+</script>
+</body>
+</html>
