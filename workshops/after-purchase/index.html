@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<script>
+!function(w,d,s,u,n,a,b){if(w[n])return;a=w[n]={q:[],t:+new Date,s:[],o:u,track:function(){a.q.push([+new Date].concat([].slice.call(arguments)))},setScope:function(){a.s=[].slice.call(arguments).filter(function(x){return typeof x==="string"});a.q.push([+new Date,"setScope"].concat(a.s))},scope:function(){var c=[].slice.call(arguments);return{track:function(){a.q.push([+new Date].concat([].slice.call(arguments)).concat([{__scope:c}]))}}}};b=d.createElement(s);b.async=1;b.src=u+"/s.js";d.getElementsByTagName(s)[0].parentNode.insertBefore(b,d.getElementsByTagName(s)[0])}(window,document,"script","https://t.whop.tw","whop");whop.setScope("biz_3eVJUF2cOGYU3z");whop.track("page");
+</script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Workshop Information Form — Trader U</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary-container": "#ff5540",
+          "on-primary-container": "#5c0000",
+          "on-surface": "#e2e2e2",
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .card-radius { border-radius: 16px 0 16px 0; }
+  .btn-radius  { border-radius: 16px 0 16px 0 !important; }
+
+  .glass-panel {
+    background-color: rgba(26, 26, 26, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px 0 16px 0;
+  }
+
+  /* 16px minimum prevents iOS Safari auto-zoom on focus */
+  .field-input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e4e4e7;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 14px 16px;
+    border-radius: 8px 0 8px 0;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+  }
+  .field-input::placeholder {
+    color: #52525b;
+  }
+  .field-input:focus {
+    border-color: rgba(255, 85, 64, 0.5);
+    background-color: rgba(255, 85, 64, 0.04);
+  }
+
+  select.field-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 44px;
+    cursor: pointer;
+  }
+  select.field-input option {
+    background-color: #18181b;
+    color: #e4e4e7;
+  }
+
+  textarea.field-input {
+    resize: vertical;
+    min-height: 110px;
+  }
+
+  .field-label {
+    display: block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #a1a1aa;
+    margin-bottom: 8px;
+  }
+  .field-required { color: #ff5540; margin-left: 2px; }
+  .field-hint {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #52525b;
+    margin-top: 6px;
+  }
+  .field-error { border-color: rgba(255, 85, 64, 0.6) !important; }
+
+  #submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  #success-card { display: none; }
+  #success-card.visible { display: block; }
+</style>
+</head>
+
+<body class="bg-black text-on-surface overflow-x-hidden min-h-screen" style="font-family: 'Inter', sans-serif;">
+
+<!-- ─── NAV ─── -->
+<nav class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl border-b border-white/10">
+  <div class="flex justify-between items-center max-w-3xl mx-auto px-5 py-4">
+    <a href="../../" class="text-xl font-black text-white tracking-tighter uppercase" style="font-family: 'Space Grotesk', sans-serif;">TRADER U</a>
+    <a href="../../workshops/" class="text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-bold flex items-center gap-1.5" style="font-family: 'Space Grotesk', sans-serif;">
+      <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span>
+      Workshop
+    </a>
+  </div>
+</nav>
+
+<!-- ─── PAGE HEADER ─── -->
+<section class="pt-28 pb-8 px-5 relative overflow-hidden">
+  <div class="absolute inset-0 z-0" style="background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,85,64,0.07) 0%, transparent 70%);"></div>
+  <div class="max-w-3xl mx-auto relative z-10">
+    <div class="mb-5">
+      <span class="bg-primary-container/20 border border-primary-container text-primary-container px-3 py-1 text-xs font-bold uppercase tracking-[0.15em] inline-block" style="font-family: 'Space Grotesk', sans-serif; border-radius: 16px 0 16px 0;">Post-Purchase</span>
+    </div>
+    <h1 class="text-white font-black uppercase mb-3 leading-tight" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 6vw, 46px); letter-spacing: -0.03em;">Workshop Information Form</h1>
+    <p class="text-zinc-400 mb-1" style="font-size: 17px; line-height: 1.6;">Thanks for reserving your Trader U Workshop session.</p>
+    <p class="text-zinc-500" style="font-size: 15px; line-height: 1.7;">Complete the information below so we can prepare your session and send updates.</p>
+  </div>
+</section>
+
+<!-- ─── FORM SECTION ─── -->
+<section class="pb-20 px-5">
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Success card -->
+    <div id="success-card" class="glass-panel p-6 mb-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-green-500/10 border border-green-500/30 flex items-center justify-center shrink-0 card-radius">
+          <span class="material-symbols-outlined text-green-400" style="font-size: 20px; font-variation-settings: 'FILL' 1;">check_circle</span>
+        </div>
+        <div>
+          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Workshop info received successfully.</h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">Our team will review your submission and provide session updates if needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="workshop-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+
+      <input type="hidden" name="access_key" value="cee11b39-c02c-4177-b529-4090c22e2171"/>
+      <input type="hidden" name="subject" value="New Workshop Info Submission — Trader U"/>
+      <input type="hidden" name="from_name" value="Trader U Workshop Form"/>
+      <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off"/>
+
+      <div class="glass-panel p-5 md:p-8">
+
+        <div class="mb-7 pb-5 border-b border-white/10">
+          <h2 class="text-white font-bold uppercase text-sm tracking-widest mb-1" style="font-family: 'Space Grotesk', sans-serif;">Session Information</h2>
+          <p class="text-zinc-600 text-xs uppercase tracking-wider" style="font-family: 'Space Grotesk', sans-serif;">Fields marked <span class="text-primary-container">*</span> are required</p>
+        </div>
+
+        <div class="space-y-6">
+
+          <!-- Full Name -->
+          <div>
+            <label for="full_name" class="field-label">Full Name<span class="field-required">*</span></label>
+            <input type="text" id="full_name" name="full_name" class="field-input" placeholder="Your full name" required autocomplete="name"/>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="field-label">Email Address<span class="field-required">*</span></label>
+            <input type="email" id="email" name="email" class="field-input" placeholder="your@email.com" required autocomplete="email"/>
+          </div>
+
+          <!-- Discord -->
+          <div>
+            <label for="discord_username" class="field-label">Discord Username<span class="field-required">*</span></label>
+            <input type="text" id="discord_username" name="discord_username" class="field-input" placeholder="username or username#0000" required autocomplete="off"/>
+            <p class="field-hint">The username you use on Discord.</p>
+          </div>
+
+          <!-- Whop Email -->
+          <div>
+            <label for="whop_email" class="field-label">Whop / Order Email<span class="field-required">*</span></label>
+            <input type="email" id="whop_email" name="whop_email" class="field-input" placeholder="Email used at Whop checkout" required autocomplete="off"/>
+            <p class="field-hint">The email address associated with your Whop purchase.</p>
+          </div>
+
+          <!-- 3 Questions -->
+          <div>
+            <label for="workshop_questions" class="field-label">What are 3 questions you want answered during the workshop?<span class="field-required">*</span></label>
+            <textarea id="workshop_questions" name="workshop_questions" class="field-input" rows="5" placeholder="1. &#10;2. &#10;3. " required></textarea>
+            <p class="field-hint">Be specific. The more detail you give, the more value you get out of the session.</p>
+          </div>
+
+          <!-- Experience Level -->
+          <div>
+            <label for="experience_level" class="field-label">Experience Level<span class="field-required">*</span></label>
+            <select id="experience_level" name="experience_level" class="field-input" required>
+              <option value="" disabled selected>Select your level</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+
+          <!-- Specific Help -->
+          <div>
+            <label for="specific_help" class="field-label">Anything specific you want help with?</label>
+            <textarea id="specific_help" name="specific_help" class="field-input" rows="3" placeholder="Any particular area, chart pattern, tool, or situation..."></textarea>
+          </div>
+
+          <!-- Optional divider -->
+          <div class="pt-1 pb-1 border-t border-white/5">
+            <p class="text-zinc-700 text-xs uppercase tracking-widest font-bold" style="font-family: 'Space Grotesk', sans-serif;">Optional</p>
+          </div>
+
+          <!-- Trading Style -->
+          <div>
+            <label for="trading_style" class="field-label">Current Trading Style</label>
+            <input type="text" id="trading_style" name="trading_style" class="field-input" placeholder="e.g. scalping, swing, narrative-based, no system yet..." autocomplete="off"/>
+          </div>
+
+          <!-- Biggest Struggle -->
+          <div>
+            <label for="biggest_struggle" class="field-label">Biggest Struggle With Trading</label>
+            <textarea id="biggest_struggle" name="biggest_struggle" class="field-input" rows="3" placeholder="What keeps tripping you up? Exits, emotions, finding entries..."></textarea>
+          </div>
+
+        </div>
+
+        <!-- Submit -->
+        <div class="mt-8 pt-7 border-t border-white/10">
+          <button
+            id="submit-btn"
+            type="submit"
+            class="btn-radius bg-primary-container text-on-primary-container w-full py-5 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform flex items-center justify-center gap-2"
+            style="font-family: 'Space Grotesk', sans-serif; touch-action: manipulation;"
+          >
+            <span id="submit-text">Submit Workshop Info</span>
+            <span id="submit-spinner" class="hidden">
+              <span class="material-symbols-outlined" style="font-size: 17px; animation: spin 1s linear infinite;">progress_activity</span>
+            </span>
+          </button>
+          <p class="text-zinc-700 text-xs uppercase tracking-wider text-center mt-4" style="font-family: 'Space Grotesk', sans-serif;">Your information is only used to prepare your session.</p>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="bg-zinc-950 border-t border-white/10 w-full py-14 px-5">
+  <div class="flex flex-col items-center text-center gap-5 max-w-3xl mx-auto">
+    <a href="../../" class="text-2xl font-black text-white tracking-tighter uppercase" style="font-family: 'Space Grotesk', sans-serif;">TRADER U</a>
+    <div class="flex flex-wrap justify-center gap-5 text-[10px] uppercase tracking-wider text-zinc-600" style="font-family: 'Space Grotesk', sans-serif;">
+      <a class="hover:text-primary-container transition-colors" href="../../terms.html">Terms of Service</a>
+      <a class="hover:text-primary-container transition-colors" href="../../privacy.html">Privacy Policy</a>
+      <a class="hover:text-primary-container transition-colors" href="../../refund.html">Refund Policy</a>
+      <a class="hover:text-primary-container transition-colors" href="../../eula.html">EULA</a>
+    </div>
+    <p class="text-[10px] uppercase tracking-wider leading-relaxed text-zinc-600 max-w-xl" style="font-family: 'Space Grotesk', sans-serif;">
+      © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
+    </p>
+  </div>
+</footer>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<script>
+  const form = document.getElementById('workshop-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const submitText = document.getElementById('submit-text');
+  const submitSpinner = document.getElementById('submit-spinner');
+  const successCard = document.getElementById('success-card');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const required = form.querySelectorAll('[required]');
+    let valid = true;
+    required.forEach(field => {
+      field.classList.remove('field-error');
+      if (!field.value.trim()) {
+        field.classList.add('field-error');
+        valid = false;
+      }
+    });
+    if (!valid) {
+      form.querySelector('.field-error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitText.textContent = 'Submitting...';
+    submitSpinner.classList.remove('hidden');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: new FormData(form)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        form.style.display = 'none';
+        successCard.classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        submitText.textContent = 'Something went wrong. Try again.';
+        submitSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    } catch {
+      submitText.textContent = 'Connection error. Try again.';
+      submitSpinner.classList.add('hidden');
+      submitBtn.disabled = false;
+    }
+  });
+
+  form.querySelectorAll('[required]').forEach(field => {
+    field.addEventListener('input', function() {
+      this.classList.remove('field-error');
+    });
+  });
+</script>
+</body>
+</html>
