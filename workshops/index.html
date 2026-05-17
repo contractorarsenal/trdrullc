@@ -7,266 +7,145 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Trader U Workshop — Reserve Your Session</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "primary-container": "#ff5540",
-          "on-primary-container": "#5c0000",
-          "on-surface": "#e2e2e2",
-        },
-        fontFamily: {
-          "headline-lg": ["Space Grotesk"],
-          "display-xl": ["Space Grotesk"],
-          "label-caps": ["Space Grotesk"],
-          "headline-md": ["Space Grotesk"],
-          "body-md": ["Inter"]
-        },
-        fontSize: {
-          "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
-        }
-      }
-    }
-  }
-</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  * { box-sizing: border-box; }
+  body {
+    background: #000;
+    color: #e4e4e7;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
   }
-  .card-radius { border-radius: 16px 0 16px 0; }
-  .btn-radius  { border-radius: 16px 0 16px 0 !important; }
-  #mobile-menu-panel {
-    transform: translateY(-100%);
-    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  .sg { font-family: 'Space Grotesk', sans-serif; }
+  .btn-main {
+    display: block;
+    width: 100%;
+    background: #ff5540;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 18px 24px;
+    border-radius: 16px 0 16px 0;
+    transition: background 0.2s, transform 0.1s;
+    touch-action: manipulation;
   }
-  #mobile-menu.open #mobile-menu-panel { transform: translateY(0); }
-  #mobile-menu {
-    transition: visibility 0s linear 0.32s, opacity 0.32s;
-    opacity: 0;
-    visibility: hidden;
+  .btn-main:active { transform: scale(0.98); }
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin: 28px 0;
   }
-  #mobile-menu.open {
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(255,85,64,0.12);
+    border: 1px solid rgba(255,85,64,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-icon::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #ff5540;
+    border-radius: 50%;
   }
 </style>
 </head>
 
-<body class="bg-black text-on-surface font-body-md overflow-x-hidden" style="font-family: 'Inter', sans-serif;">
+<body>
 
 <!-- ─── NAV ─── -->
-<nav class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl border-b border-white/10">
-  <div class="flex justify-between items-center max-w-5xl mx-auto px-6 py-5">
-    <a href="../" class="text-xl font-black text-white tracking-tighter uppercase" style="font-family: 'Space Grotesk', sans-serif;">TRADER U</a>
-    <div class="flex items-center gap-4">
-      <a class="btn-radius bg-primary-container text-on-primary-container px-5 py-2 font-bold uppercase tracking-widest text-xs active:scale-95 transform transition-transform" style="font-family: 'Space Grotesk', sans-serif;" href="https://whop.com/checkout/plan_ixsAyhNSR5jCU" target="_blank" rel="noopener noreferrer">
-        Reserve Ticket
-      </a>
-    </div>
+<nav style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 18px 24px;">
+  <div style="max-width: 520px; margin: 0 auto; display: flex; justify-content: center;">
+    <a href="../" class="sg" style="font-size: 20px; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.03em; text-transform: uppercase;">TRADER U</a>
   </div>
 </nav>
 
-<!-- ─── HERO ─── -->
-<section class="min-h-screen flex items-center pt-20 pb-20 relative overflow-hidden">
-  <div class="absolute inset-0 z-0" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,85,64,0.10) 0%, transparent 70%);"></div>
-  <div class="max-w-5xl mx-auto px-6 relative z-10 w-full">
+<!-- ─── MAIN ─── -->
+<main style="max-width: 520px; margin: 0 auto; padding: 48px 24px 64px;">
 
-    <div class="mb-7 flex items-center gap-3">
-      <span class="btn-radius bg-primary-container/20 border border-primary-container text-primary-container px-3 py-1 text-xs font-bold uppercase tracking-[0.15em]" style="font-family: 'Space Grotesk', sans-serif;">Live Workshop</span>
-      <div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
-      <span class="text-zinc-500 text-xs uppercase tracking-widest" style="font-family: 'Space Grotesk', sans-serif;">Limited Seats Per Session</span>
-    </div>
-
-    <h1 class="text-white font-black uppercase mb-5 leading-[1.05]" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(38px, 8vw, 72px); letter-spacing: -0.04em;">
-      ONE SESSION.<br/>BUILT AROUND<br/>
-      <span class="text-primary-container">YOUR QUESTIONS.</span>
-    </h1>
-
-    <p class="text-zinc-400 mb-10 max-w-lg" style="font-size: 17px; line-height: 1.75;">
-      A focused, live workshop prepared specifically around your trading questions, experience level, and what you want to fix.
-    </p>
-
-    <a class="btn-radius bg-primary-container text-on-primary-container inline-block px-10 py-5 font-bold uppercase tracking-wider text-base hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform" style="font-family: 'Space Grotesk', sans-serif;" href="https://whop.com/checkout/plan_ixsAyhNSR5jCU" target="_blank" rel="noopener noreferrer">
-      Reserve Your Workshop Ticket
-    </a>
-
-    <div class="mt-6 flex items-start gap-3 max-w-md">
-      <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 16px;">info</span>
-      <p class="text-zinc-600 text-sm leading-relaxed">
-        After purchasing, you will be redirected to complete your workshop information form.
-        <span class="block mt-1 text-zinc-700 text-xs uppercase tracking-wider" style="font-family: 'Space Grotesk', sans-serif;">One ticket = one workshop meeting.</span>
-      </p>
-    </div>
-
+  <!-- Badge -->
+  <div style="text-align: center; margin-bottom: 24px;">
+    <span class="sg" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,85,64,0.4); background: rgba(255,85,64,0.08); color: #ff5540; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px;">
+      <span style="width: 7px; height: 7px; background: #ff5540; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0;"></span>
+      Live Group Workshop — Limited Seats
+    </span>
   </div>
-</section>
 
-<!-- ─── WHAT YOU'LL LEARN ─── -->
-<section class="py-20 border-t border-white/5 bg-zinc-950">
-  <div class="max-w-5xl mx-auto px-6">
+  <!-- Headline -->
+  <h1 class="sg" style="text-align: center; font-size: clamp(30px, 8vw, 46px); font-weight: 900; line-height: 1.1; letter-spacing: -0.03em; color: #fff; margin: 0 0 16px;">
+    Live Memecoin Trading<br/><span style="color: #ff5540;">Workshop</span>
+  </h1>
 
-    <p class="text-primary-container text-xs font-bold uppercase tracking-[0.3em] mb-3" style="font-family: 'Space Grotesk', sans-serif;">The Session</p>
-    <h2 class="text-white font-bold uppercase mb-12" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.02em;">WHAT YOU'LL LEARN</h2>
+  <!-- Subheadline -->
+  <p style="text-align: center; color: #71717a; font-size: 15px; line-height: 1.75; margin: 0 0 28px;">
+    A live group session covering the framework, questions from attendees, and real market breakdowns. All experience levels welcome.
+  </p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl">
+  <hr class="divider"/>
 
-      <div class="flex items-start gap-4">
-        <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5" style="font-size: 22px;">search</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">How to Read the Market</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">Narrative cycles, liquidity signals, and where to look before a move starts.</p>
-        </div>
-      </div>
+  <!-- What's covered -->
+  <p class="sg" style="color: #52525b; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin: 0 0 16px;">What's Covered</p>
 
-      <div class="flex items-start gap-4">
-        <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5" style="font-size: 22px;">trending_up</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Entry and Exit Framework</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">How to define a trade before you take it and when to walk away.</p>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-4">
-        <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5" style="font-size: 22px;">shield</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Risk Management</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">Position sizing, risk per trade, and why protecting capital comes first.</p>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-4">
-        <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5" style="font-size: 22px;">psychology</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Your Specific Questions</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">Every session is built around what you submit. No generic answers.</p>
-        </div>
-      </div>
-
-    </div>
+  <div class="check-row">
+    <div class="check-icon"></div>
+    <p style="color: #a1a1aa; font-size: 14px; line-height: 1.5; margin: 0;">How to read narratives and find coins before they move</p>
   </div>
-</section>
-
-<!-- ─── HOW IT WORKS ─── -->
-<section class="py-20 border-t border-white/5 bg-black">
-  <div class="max-w-5xl mx-auto px-6">
-
-    <p class="text-primary-container text-xs font-bold uppercase tracking-[0.3em] mb-3" style="font-family: 'Space Grotesk', sans-serif;">The Process</p>
-    <h2 class="text-white font-bold uppercase mb-12" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.02em;">HOW IT WORKS</h2>
-
-    <div class="max-w-xl space-y-8">
-
-      <div class="flex items-start gap-5">
-        <span class="text-primary-container font-black text-2xl leading-none shrink-0 w-8" style="font-family: 'Space Grotesk', sans-serif;">01</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Reserve Your Ticket</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">Purchase your workshop seat through Whop. One ticket covers one live session.</p>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-5">
-        <span class="text-primary-container font-black text-2xl leading-none shrink-0 w-8" style="font-family: 'Space Grotesk', sans-serif;">02</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Complete Your Info Form</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">After checkout you're redirected to submit your questions and experience level. We review every submission before the session.</p>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-5">
-        <span class="text-primary-container font-black text-2xl leading-none shrink-0 w-8" style="font-family: 'Space Grotesk', sans-serif;">03</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Receive Session Details</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">The team sends scheduling and connection details to the email you provide.</p>
-        </div>
-      </div>
-
-      <div class="flex items-start gap-5">
-        <span class="text-primary-container font-black text-2xl leading-none shrink-0 w-8" style="font-family: 'Space Grotesk', sans-serif;">04</span>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Attend Your Workshop</h3>
-          <p class="text-zinc-500 text-sm leading-relaxed">Show up with your questions. Leave with a clearer framework and a plan you can execute.</p>
-        </div>
-      </div>
-
-    </div>
+  <div class="check-row">
+    <div class="check-icon"></div>
+    <p style="color: #a1a1aa; font-size: 14px; line-height: 1.5; margin: 0;">Entry, exit, and risk management framework</p>
   </div>
-</section>
-
-<!-- ─── IMPORTANT DETAILS ─── -->
-<section class="py-20 border-t border-white/5 bg-zinc-950">
-  <div class="max-w-5xl mx-auto px-6">
-
-    <p class="text-primary-container text-xs font-bold uppercase tracking-[0.3em] mb-3" style="font-family: 'Space Grotesk', sans-serif;">Before You Book</p>
-    <h2 class="text-white font-bold uppercase mb-10" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.02em;">IMPORTANT DETAILS</h2>
-
-    <div class="max-w-xl space-y-5">
-      <div class="flex items-start gap-3 text-sm">
-        <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 18px;">arrow_right</span>
-        <p class="text-zinc-400 leading-relaxed"><span class="text-white font-semibold">One ticket = one session.</span> Not transferable or shareable.</p>
-      </div>
-      <div class="flex items-start gap-3 text-sm">
-        <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 18px;">arrow_right</span>
-        <p class="text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Scheduling happens after purchase.</span> Availability is confirmed by the team via email.</p>
-      </div>
-      <div class="flex items-start gap-3 text-sm">
-        <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 18px;">arrow_right</span>
-        <p class="text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Sessions are limited per week.</span> Reserve early to secure your spot.</p>
-      </div>
-      <div class="flex items-start gap-3 text-sm">
-        <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 18px;">arrow_right</span>
-        <p class="text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Discord is required.</span> Have your username ready when completing the form.</p>
-      </div>
-      <div class="flex items-start gap-3 text-sm">
-        <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 18px;">arrow_right</span>
-        <p class="text-zinc-400 leading-relaxed"><span class="text-white font-semibold">All experience levels welcome.</span> Beginner through advanced. The session is shaped around where you are.</p>
-      </div>
-    </div>
-
+  <div class="check-row">
+    <div class="check-icon"></div>
+    <p style="color: #a1a1aa; font-size: 14px; line-height: 1.5; margin: 0;">Live Q&amp;A — attendee questions answered in real time</p>
   </div>
-</section>
 
-<!-- ─── BOTTOM CTA ─── -->
-<section class="py-20 border-t border-white/5 bg-black">
-  <div class="max-w-5xl mx-auto px-6">
+  <hr class="divider"/>
 
-    <h2 class="text-white font-black uppercase mb-4" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 5vw, 48px); letter-spacing: -0.03em;">READY TO BOOK?</h2>
-    <p class="text-zinc-500 mb-8 max-w-sm text-sm leading-relaxed">One seat. One session. Prepared around your questions.</p>
+  <!-- CTA -->
+  <a class="btn-main" href="https://whop.com/checkout/plan_ixsAyhNSR5jCU" target="_blank" rel="noopener noreferrer">
+    Reserve Your Workshop Ticket
+  </a>
 
-    <a class="btn-radius bg-primary-container text-on-primary-container inline-block px-10 py-5 font-bold uppercase tracking-wider text-base hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform" style="font-family: 'Space Grotesk', sans-serif;" href="https://whop.com/checkout/plan_ixsAyhNSR5jCU" target="_blank" rel="noopener noreferrer">
-      Reserve Your Workshop Ticket
-    </a>
+  <!-- Post-purchase note -->
+  <p style="text-align: center; color: #3f3f46; font-size: 12px; margin: 14px 0 0; line-height: 1.7;">
+    After purchasing, you will be redirected to complete your workshop information form.<br/>
+    <span class="sg" style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;">One ticket = one workshop meeting.</span>
+  </p>
 
-    <div class="mt-6 flex items-start gap-3 max-w-md">
-      <span class="material-symbols-outlined text-zinc-600 shrink-0 mt-0.5" style="font-size: 16px;">info</span>
-      <p class="text-zinc-600 text-sm leading-relaxed">
-        After purchasing, you will be redirected to complete your workshop information form.
-        <span class="block mt-1 text-zinc-700 text-xs uppercase tracking-wider" style="font-family: 'Space Grotesk', sans-serif;">One ticket = one workshop meeting.</span>
-      </p>
-    </div>
-
-  </div>
-</section>
+</main>
 
 <!-- ─── FOOTER ─── -->
-<footer class="bg-zinc-950 border-t border-white/10 w-full py-14 px-6">
-  <div class="flex flex-col items-center text-center gap-5 max-w-5xl mx-auto">
-    <a href="../" class="text-2xl font-black text-white tracking-tighter uppercase" style="font-family: 'Space Grotesk', sans-serif;">TRADER U</a>
-    <div class="flex flex-wrap justify-center gap-6 text-[10px] uppercase tracking-wider text-zinc-600" style="font-family: 'Space Grotesk', sans-serif;">
-      <a class="hover:text-primary-container transition-colors" href="../terms.html">Terms of Service</a>
-      <a class="hover:text-primary-container transition-colors" href="../privacy.html">Privacy Policy</a>
-      <a class="hover:text-primary-container transition-colors" href="../refund.html">Refund Policy</a>
-      <a class="hover:text-primary-container transition-colors" href="../eula.html">EULA</a>
-    </div>
-    <p class="text-[10px] uppercase tracking-wider leading-relaxed text-zinc-600 max-w-2xl" style="font-family: 'Space Grotesk', sans-serif;">
-      © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
-    </p>
-  </div>
+<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 28px 24px; text-align: center;">
+  <p class="sg" style="color: #3f3f46; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.8; max-width: 420px; margin: 0 auto;">
+    © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
+  </p>
 </footer>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+</style>
 
 </body>
 </html>
