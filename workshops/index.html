@@ -1,45 +1,46 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
 <script>
 !function(w,d,s,u,n,a,b){if(w[n])return;a=w[n]={q:[],t:+new Date,s:[],o:u,track:function(){a.q.push([+new Date].concat([].slice.call(arguments)))},setScope:function(){a.s=[].slice.call(arguments).filter(function(x){return typeof x==="string"});a.q.push([+new Date,"setScope"].concat(a.s))},scope:function(){var c=[].slice.call(arguments);return{track:function(){a.q.push([+new Date].concat([].slice.call(arguments)).concat([{__scope:c}]))}}}};b=d.createElement(s);b.async=1;b.src=u+"/s.js";d.getElementsByTagName(s)[0].parentNode.insertBefore(b,d.getElementsByTagName(s)[0])}(window,document,"script","https://t.whop.tw","whop");whop.setScope("biz_3eVJUF2cOGYU3z");whop.track("page");
 </script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Trader U Workshop — Reserve Your Session</title>
+<title>Trader U Workshop | Reserve Your Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
   * { box-sizing: border-box; }
   body {
-    background: #000;
-    color: #e4e4e7;
+    background: #090909;
+    color: #c9c7c3;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     margin: 0;
   }
-  .sg { font-family: 'Space Grotesk', sans-serif; }
+  .ht { font-family: 'Inter Tight', sans-serif; }
   .btn-main {
     display: block;
     width: 100%;
-    background: #ff5540;
+    background: #FF5A36;
     color: #fff;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     font-size: 15px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     text-align: center;
     text-decoration: none;
     padding: 18px 24px;
-    border-radius: 16px 0 16px 0;
+    border-radius: 999px;
     transition: background 0.2s, transform 0.1s;
     touch-action: manipulation;
   }
+  .btn-main:hover { background: #E8462B; }
   .btn-main:active { transform: scale(0.98); }
   .divider {
     border: none;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid rgba(255,255,255,0.14);
     margin: 28px 0;
   }
   .check-row {
@@ -51,8 +52,8 @@
   .check-icon {
     width: 20px;
     height: 20px;
-    background: rgba(255,85,64,0.12);
-    border: 1px solid rgba(255,85,64,0.3);
+    background: rgba(255,90,54,0.15);
+    border: 1px solid rgba(255,90,54,0.35);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -64,18 +65,19 @@
     content: '';
     width: 6px;
     height: 6px;
-    background: #ff5540;
+    background: #FF5A36;
     border-radius: 50%;
   }
+  a:focus-visible, button:focus-visible { outline: 2px solid #FF5A36; outline-offset: 3px; }
 </style>
 </head>
 
 <body>
 
 <!-- ─── NAV ─── -->
-<nav style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 18px 24px;">
+<nav style="border-bottom: 1px solid rgba(255,255,255,0.14); padding: 18px 24px;">
   <div style="max-width: 520px; margin: 0 auto; display: flex; justify-content: center;">
-    <a href="../" class="sg" style="font-size: 20px; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: -0.03em; text-transform: uppercase;">TRADER U</a>
+    <a href="../" class="ht" style="font-size: 18px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -0.01em;">TRADER U</a>
   </div>
 </nav>
 
@@ -84,38 +86,38 @@
 
   <!-- Badge -->
   <div style="text-align: center; margin-bottom: 24px;">
-    <span class="sg" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,85,64,0.4); background: rgba(255,85,64,0.08); color: #ff5540; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px;">
-      <span style="width: 7px; height: 7px; background: #ff5540; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0;"></span>
-      Live Group Workshop — Limited Seats
+    <span class="ht" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,90,54,0.4); background: rgba(255,90,54,0.1); color: #FF5A36; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px;">
+      <span style="width: 7px; height: 7px; background: #FF5A36; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0;"></span>
+      Live Group Workshop &middot; Limited Seats
     </span>
   </div>
 
   <!-- Headline -->
-  <h1 class="sg" style="text-align: center; font-size: clamp(30px, 8vw, 46px); font-weight: 900; line-height: 1.1; letter-spacing: -0.03em; color: #fff; margin: 0 0 16px;">
-    Live Memecoin Trading<br/><span style="color: #ff5540;">Workshop</span>
+  <h1 class="ht" style="text-align: center; font-size: clamp(30px, 8vw, 46px); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: #fff; margin: 0 0 16px;">
+    Live Memecoin Trading<br/><span style="color: #FF5A36;">Workshop</span>
   </h1>
 
   <!-- Subheadline -->
-  <p style="text-align: center; color: #71717a; font-size: 15px; line-height: 1.75; margin: 0 0 28px;">
+  <p style="text-align: center; color: #8f8d89; font-size: 15px; line-height: 1.75; margin: 0 0 28px;">
     A live group session covering the framework, questions from attendees, and real market breakdowns. All experience levels welcome.
   </p>
 
   <hr class="divider"/>
 
   <!-- What's covered -->
-  <p class="sg" style="color: #52525b; font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin: 0 0 16px;">What's Covered</p>
+  <p class="ht" style="color: #6b6966; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 16px;">What's Covered</p>
 
   <div class="check-row">
     <div class="check-icon"></div>
-    <p style="color: #a1a1aa; font-size: 14px; line-height: 1.5; margin: 0;">How to read narratives and find coins before they move</p>
+    <p style="color: #a7a5a1; font-size: 14px; line-height: 1.5; margin: 0;">How to read narratives and find coins before they move</p>
   </div>
   <div class="check-row">
     <div class="check-icon"></div>
-    <p style="color: #a1a1aa; font-size: 14px; line-height: 1.5; margin: 0;">Entry, exit, and risk management framework</p>
+    <p style="color: #a7a5a1; font-size: 14px; line-height: 1.5; margin: 0;">Entry, exit, and risk management framework</p>
   </div>
   <div class="check-row">
     <div class="check-icon"></div>
-    <p style="color: #a1a1aa; font-size: 14px; line-height: 1.5; margin: 0;">Live Q&amp;A — attendee questions answered in real time</p>
+    <p style="color: #a7a5a1; font-size: 14px; line-height: 1.5; margin: 0;">Live Q&amp;A: attendee questions answered in real time</p>
   </div>
 
   <hr class="divider"/>
@@ -126,17 +128,17 @@
   </a>
 
   <!-- Post-purchase note -->
-  <p style="text-align: center; color: #3f3f46; font-size: 12px; margin: 14px 0 0; line-height: 1.7;">
+  <p style="text-align: center; color: #5a5854; font-size: 12px; margin: 14px 0 0; line-height: 1.7;">
     After purchasing, you will be redirected to complete your workshop information form.<br/>
-    <span class="sg" style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;">One ticket = one workshop meeting.</span>
+    <span class="ht" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">One ticket = one workshop meeting.</span>
   </p>
 
 </main>
 
 <!-- ─── FOOTER ─── -->
-<footer style="border-top: 1px solid rgba(255,255,255,0.06); padding: 28px 24px; text-align: center;">
-  <p class="sg" style="color: #3f3f46; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.8; max-width: 420px; margin: 0 auto;">
-    © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
+<footer style="border-top: 1px solid rgba(255,255,255,0.1); padding: 28px 24px; text-align: center;">
+  <p class="ht" style="color: #4a4844; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.8; max-width: 420px; margin: 0 auto;">
+    © 2026 Trader U. Memecoin trading involves significant risk. Past performance is not indicative of future results. All content is for educational purposes only. Never trade more than you can afford to lose.
   </p>
 </footer>
 

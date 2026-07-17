@@ -1,4 +1,4 @@
-wh<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
 <script>
@@ -6,9 +6,9 @@ wh<!DOCTYPE html>
 </script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Workshop Information Form — Trader U</title>
+<title>Workshop Information Form | Trader U</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
   tailwind.config = {
@@ -16,7 +16,7 @@ wh<!DOCTYPE html>
     theme: {
       extend: {
         colors: {
-          "primary-container": "#ff5540",
+          "primary-container": "#FF5A36",
           "on-primary-container": "#5c0000",
           "on-surface": "#e2e2e2",
         }
@@ -28,27 +28,27 @@ wh<!DOCTYPE html>
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
-  .card-radius { border-radius: 16px 0 16px 0; }
-  .btn-radius  { border-radius: 16px 0 16px 0 !important; }
+  .card-radius { border-radius: 14px; }
+  .btn-radius  { border-radius: 14px !important; }
 
   .glass-panel {
-    background-color: rgba(26, 26, 26, 0.5);
+    background-color: rgba(21, 21, 23, 0.5);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 16px 0 16px 0;
+    border-radius: 14px;
   }
 
   /* 16px minimum prevents iOS Safari auto-zoom on focus */
   .field-input {
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05) !important;
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: #e4e4e7;
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     line-height: 1.5;
     padding: 14px 16px;
-    border-radius: 8px 0 8px 0;
+    border-radius: 8px;
     outline: none;
     transition: border-color 0.2s, background-color 0.2s;
     -webkit-appearance: none;
@@ -59,8 +59,8 @@ wh<!DOCTYPE html>
     color: #52525b;
   }
   .field-input:focus {
-    border-color: rgba(255, 85, 64, 0.5);
-    background-color: rgba(255, 85, 64, 0.04);
+    border-color: rgba(255, 90, 54, 0.5);
+    background-color: rgba(255, 90, 54, 0.04);
   }
 
   select.field-input {
@@ -71,7 +71,7 @@ wh<!DOCTYPE html>
     cursor: pointer;
   }
   select.field-input option {
-    background-color: #18181b;
+    background-color: #151517;
     color: #e4e4e7;
   }
 
@@ -82,7 +82,7 @@ wh<!DOCTYPE html>
 
   .field-label {
     display: block;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -90,14 +90,14 @@ wh<!DOCTYPE html>
     color: #a1a1aa;
     margin-bottom: 8px;
   }
-  .field-required { color: #ff5540; margin-left: 2px; }
+  .field-required { color: #FF5A36; margin-left: 2px; }
   .field-hint {
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     color: #52525b;
     margin-top: 6px;
   }
-  .field-error { border-color: rgba(255, 85, 64, 0.6) !important; }
+  .field-error { border-color: rgba(255, 90, 54, 0.6) !important; }
 
   #submit-btn:disabled {
     opacity: 0.5;
@@ -115,8 +115,8 @@ wh<!DOCTYPE html>
 <!-- ─── NAV ─── -->
 <nav class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl border-b border-white/10">
   <div class="flex justify-between items-center max-w-3xl mx-auto px-5 py-4">
-    <a href="../../" class="text-xl font-black text-white tracking-tighter uppercase" style="font-family: 'Space Grotesk', sans-serif;">TRADER U</a>
-    <a href="../../workshops/" class="text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-bold flex items-center gap-1.5" style="font-family: 'Space Grotesk', sans-serif;">
+    <a href="../../" class="text-xl font-black text-white tracking-tighter uppercase" style="font-family: 'Inter Tight', sans-serif;">TRADER U</a>
+    <a href="../../workshops/" class="text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-bold flex items-center gap-1.5" style="font-family: 'Inter Tight', sans-serif;">
       <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span>
       Workshop
     </a>
@@ -125,12 +125,12 @@ wh<!DOCTYPE html>
 
 <!-- ─── PAGE HEADER ─── -->
 <section class="pt-28 pb-8 px-5 relative overflow-hidden">
-  <div class="absolute inset-0 z-0" style="background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,85,64,0.07) 0%, transparent 70%);"></div>
+  <div class="absolute inset-0 z-0" style="background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 90, 54,0.07) 0%, transparent 70%);"></div>
   <div class="max-w-3xl mx-auto relative z-10">
     <div class="mb-5">
-      <span class="bg-primary-container/20 border border-primary-container text-primary-container px-3 py-1 text-xs font-bold uppercase tracking-[0.15em] inline-block" style="font-family: 'Space Grotesk', sans-serif; border-radius: 16px 0 16px 0;">Post-Purchase</span>
+      <span class="bg-primary-container/20 border border-primary-container text-primary-container px-3 py-1 text-xs font-bold uppercase tracking-[0.15em] inline-block" style="font-family: 'Inter Tight', sans-serif; border-radius: 14px;">Post-Purchase</span>
     </div>
-    <h1 class="text-white font-black uppercase mb-3 leading-tight" style="font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 6vw, 46px); letter-spacing: -0.03em;">Workshop Information Form</h1>
+    <h1 class="text-white font-black uppercase mb-3 leading-tight" style="font-family: 'Inter Tight', sans-serif; font-size: clamp(28px, 6vw, 46px); letter-spacing: -0.03em;">Workshop Information Form</h1>
     <p class="text-zinc-400 mb-1" style="font-size: 17px; line-height: 1.6;">Thanks for reserving your Trader U Workshop session.</p>
     <p class="text-zinc-500" style="font-size: 15px; line-height: 1.7;">Complete the information below so we can prepare your session and send updates.</p>
   </div>
@@ -147,7 +147,7 @@ wh<!DOCTYPE html>
           <span class="material-symbols-outlined text-green-400" style="font-size: 20px; font-variation-settings: 'FILL' 1;">check_circle</span>
         </div>
         <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Space Grotesk', sans-serif;">Workshop info received successfully.</h3>
+          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Inter Tight', sans-serif;">Workshop info received successfully.</h3>
           <p class="text-zinc-400 text-sm leading-relaxed">Our team will review your submission and provide session updates if needed.</p>
         </div>
       </div>
@@ -157,15 +157,15 @@ wh<!DOCTYPE html>
     <form id="workshop-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
 
       <input type="hidden" name="access_key" value="cee11b39-c02c-4177-b529-4090c22e2171"/>
-      <input type="hidden" name="subject" value="New Workshop Info Submission — Trader U"/>
+      <input type="hidden" name="subject" value="New Workshop Info Submission - Trader U"/>
       <input type="hidden" name="from_name" value="Trader U Workshop Form"/>
       <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off"/>
 
       <div class="glass-panel p-5 md:p-8">
 
         <div class="mb-7 pb-5 border-b border-white/10">
-          <h2 class="text-white font-bold uppercase text-sm tracking-widest mb-1" style="font-family: 'Space Grotesk', sans-serif;">Session Information</h2>
-          <p class="text-zinc-600 text-xs uppercase tracking-wider" style="font-family: 'Space Grotesk', sans-serif;">Fields marked <span class="text-primary-container">*</span> are required</p>
+          <h2 class="text-white font-bold uppercase text-sm tracking-widest mb-1" style="font-family: 'Inter Tight', sans-serif;">Session Information</h2>
+          <p class="text-zinc-600 text-xs uppercase tracking-wider" style="font-family: 'Inter Tight', sans-serif;">Fields marked <span class="text-primary-container">*</span> are required</p>
         </div>
 
         <div class="space-y-6">
@@ -222,7 +222,7 @@ wh<!DOCTYPE html>
 
           <!-- Optional divider -->
           <div class="pt-1 pb-1 border-t border-white/5">
-            <p class="text-zinc-700 text-xs uppercase tracking-widest font-bold" style="font-family: 'Space Grotesk', sans-serif;">Optional</p>
+            <p class="text-zinc-700 text-xs uppercase tracking-widest font-bold" style="font-family: 'Inter Tight', sans-serif;">Optional</p>
           </div>
 
           <!-- Trading Style -->
@@ -244,15 +244,15 @@ wh<!DOCTYPE html>
           <button
             id="submit-btn"
             type="submit"
-            class="btn-radius bg-primary-container text-on-primary-container w-full py-5 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform flex items-center justify-center gap-2"
-            style="font-family: 'Space Grotesk', sans-serif; touch-action: manipulation;"
+            class="btn-radius bg-primary-container text-white w-full py-5 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform flex items-center justify-center gap-2"
+            style="font-family: 'Inter Tight', sans-serif; touch-action: manipulation;"
           >
             <span id="submit-text">Submit Workshop Info</span>
             <span id="submit-spinner" class="hidden">
               <span class="material-symbols-outlined" style="font-size: 17px; animation: spin 1s linear infinite;">progress_activity</span>
             </span>
           </button>
-          <p class="text-zinc-700 text-xs uppercase tracking-wider text-center mt-4" style="font-family: 'Space Grotesk', sans-serif;">Your information is only used to prepare your session.</p>
+          <p class="text-zinc-700 text-xs uppercase tracking-wider text-center mt-4" style="font-family: 'Inter Tight', sans-serif;">Your information is only used to prepare your session.</p>
         </div>
 
       </div>
@@ -265,14 +265,14 @@ wh<!DOCTYPE html>
 <!-- ─── FOOTER ─── -->
 <footer class="bg-zinc-950 border-t border-white/10 w-full py-14 px-5">
   <div class="flex flex-col items-center text-center gap-5 max-w-3xl mx-auto">
-    <a href="../../" class="text-2xl font-black text-white tracking-tighter uppercase" style="font-family: 'Space Grotesk', sans-serif;">TRADER U</a>
-    <div class="flex flex-wrap justify-center gap-5 text-[10px] uppercase tracking-wider text-zinc-600" style="font-family: 'Space Grotesk', sans-serif;">
+    <a href="../../" class="text-2xl font-black text-white tracking-tighter uppercase" style="font-family: 'Inter Tight', sans-serif;">TRADER U</a>
+    <div class="flex flex-wrap justify-center gap-5 text-[10px] uppercase tracking-wider text-zinc-600" style="font-family: 'Inter Tight', sans-serif;">
       <a class="hover:text-primary-container transition-colors" href="../../terms.html">Terms of Service</a>
       <a class="hover:text-primary-container transition-colors" href="../../privacy.html">Privacy Policy</a>
       <a class="hover:text-primary-container transition-colors" href="../../refund.html">Refund Policy</a>
       <a class="hover:text-primary-container transition-colors" href="../../eula.html">EULA</a>
     </div>
-    <p class="text-[10px] uppercase tracking-wider leading-relaxed text-zinc-600 max-w-xl" style="font-family: 'Space Grotesk', sans-serif;">
+    <p class="text-[10px] uppercase tracking-wider leading-relaxed text-zinc-600 max-w-xl" style="font-family: 'Inter Tight', sans-serif;">
       © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
     </p>
   </div>

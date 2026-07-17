@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Video Editor — Careers at TraderUInsider</title>
+<title>Video Editor | Careers at TraderUInsider</title>
 <meta name="robots" content="noindex, nofollow"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
   tailwind.config = {
@@ -15,16 +15,16 @@
       extend: {
         colors: {
           "secondary-fixed": "#e2e2e2",
-          "primary-container": "#ff5540",
-          "on-secondary-fixed": "#1a1c1c",
+          "primary-container": "#FF5A36",
+          "on-secondary-fixed": "#151517",
           "secondary": "#c6c6c7",
           "on-surface": "#e2e2e2",
           "secondary-container": "#454747",
           "primary": "#ffb4a8",
-          "background": "#131313",
+          "background": "#090909",
           "on-primary-container": "#5c0000",
           "on-primary": "#690100",
-          "surface": "#131313",
+          "surface": "#090909",
           "inverse-on-surface": "#303030",
           "inverse-surface": "#e2e2e2",
         },
@@ -45,11 +45,11 @@
           "xl": "80px"
         },
         fontFamily: {
-          "headline-lg": ["Space Grotesk"],
-          "mono-data": ["Space Grotesk"],
-          "display-xl": ["Space Grotesk"],
-          "label-caps": ["Space Grotesk"],
-          "headline-md": ["Space Grotesk"],
+          "headline-lg": ["Inter Tight"],
+          "mono-data": ["Inter Tight"],
+          "display-xl": ["Inter Tight"],
+          "label-caps": ["Inter Tight"],
+          "headline-md": ["Inter Tight"],
           "body-lg": ["Inter"],
           "body-md": ["Inter"]
         },
@@ -68,36 +68,36 @@
 </script>
 <style>
   .glass-panel {
-    background-color: rgba(26, 26, 26, 0.4);
+    background-color: rgba(21, 21, 23, 0.4);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px 0 16px 0;
+    border-radius: 14px;
   }
   .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
-  .card-radius { border-radius: 16px 0 16px 0; }
-  .btn-radius  { border-radius: 16px 0 16px 0 !important; }
+  .card-radius { border-radius: 14px; }
+  .btn-radius  { border-radius: 14px !important; }
 
   .tag {
     display: inline-flex;
     align-items: center;
     padding: 4px 12px;
-    border-radius: 4px 0 4px 0;
-    font-family: 'Space Grotesk', sans-serif;
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  .tag--dept     { background: rgba(255,85,64,.12); border:1px solid rgba(255,85,64,.3); color:#ff5540; }
+  .tag--dept     { background: rgba(255, 90, 54,.12); border:1px solid rgba(255, 90, 54,.3); color:#FF5A36; }
   .tag--type     { background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:#a1a1aa; }
   .tag--location { background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:#71717a; }
 
   .hero-glow {
     position: absolute; top: 0; left: 50%; transform: translateX(-50%);
     width: 900px; height: 500px;
-    background: radial-gradient(ellipse 55% 45% at 50% 0%, rgba(255,85,64,.10) 0%, transparent 70%);
+    background: radial-gradient(ellipse 55% 45% at 50% 0%, rgba(255, 90, 54,.10) 0%, transparent 70%);
     pointer-events: none;
   }
 
@@ -107,12 +107,12 @@
     padding-left: 24px;
   }
   .content-block h4 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #ff5540;
+    color: #FF5A36;
     margin-bottom: 16px;
   }
 
@@ -122,7 +122,7 @@
 
   .form-label {
     display: block;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -132,9 +132,9 @@
   }
   .form-input {
     width: 100%;
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.04) !important;
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px 0 12px 0;
+    border-radius: 10px;
     padding: 14px 16px;
     color: #e2e2e2;
     font-family: 'Inter', sans-serif;
@@ -143,7 +143,7 @@
     transition: border-color 0.2s ease, background 0.2s ease;
   }
   .form-input:focus {
-    border-color: rgba(255, 85, 64, 0.5);
+    border-color: rgba(255, 90, 54, 0.5);
     background: rgba(255,255,255,0.06);
   }
   .form-input::placeholder { color: #52525b; }
@@ -159,7 +159,7 @@
     background-size: 16px;
     padding-right: 44px;
   }
-  .form-select option { background: #18181b; color: #e2e2e2; }
+  .form-select option { background: #151517; color: #e2e2e2; }
 
   .radio-option {
     display: flex;
@@ -168,15 +168,15 @@
     padding: 14px 18px;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px 0 12px 0;
+    border-radius: 10px;
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease;
   }
-  .radio-option:hover { border-color: rgba(255,85,64,0.3); background: rgba(255,85,64,0.04); }
-  .radio-option input[type="radio"] { accent-color: #ff5540; width: 16px; height: 16px; }
+  .radio-option:hover { border-color: rgba(255, 90, 54,0.3); background: rgba(255, 90, 54,0.04); }
+  .radio-option input[type="radio"] { accent-color: #FF5A36; width: 16px; height: 16px; }
   .radio-option.selected {
-    border-color: rgba(255,85,64,0.5);
-    background: rgba(255,85,64,0.08);
+    border-color: rgba(255, 90, 54,0.5);
+    background: rgba(255, 90, 54,0.08);
   }
   .radio-option span {
     font-family: 'Inter', sans-serif;
@@ -190,8 +190,8 @@
     background: rgba(255,255,255,0.1);
     transition: background 0.3s ease, transform 0.3s ease;
   }
-  .step-dot.done { background: rgba(255,85,64,0.5); }
-  .step-dot.active { background: #ff5540; transform: scale(1.4); }
+  .step-dot.done { background: rgba(255, 90, 54,0.5); }
+  .step-dot.active { background: #FF5A36; transform: scale(1.4); }
 
   /* Error state */
   .form-input.error { border-color: rgba(239,68,68,0.6); }
@@ -243,16 +243,16 @@
   .req-block {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px 0 12px 0;
+    border-radius: 10px;
     padding: 20px 24px;
   }
   .req-block h5 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter Tight', sans-serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #ff5540;
+    color: #FF5A36;
     margin-bottom: 8px;
   }
   .req-block p {
@@ -280,7 +280,7 @@
 <nav class="fixed top-0 w-full z-50 bg-zinc-950/40 backdrop-blur-xl border-b border-white/10">
   <div class="flex justify-between items-center max-w-[1440px] mx-auto px-6 md:px-12 py-5">
     <a href="../../index.html" class="text-2xl font-black text-white tracking-tighter font-headline-lg uppercase hover:text-primary-container transition-colors duration-200">TRADER U</a>
-    <a href="../index.html" class="hidden md:flex items-center gap-2 text-zinc-500 hover:text-white font-['Space_Grotesk'] uppercase tracking-widest text-xs font-bold transition-colors duration-200">
+    <a href="../index.html" class="hidden md:flex items-center gap-2 text-zinc-500 hover:text-white font-['Inter_Tight'] uppercase tracking-widest text-xs font-bold transition-colors duration-200">
       <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
       All Positions
     </a>
@@ -294,9 +294,9 @@
 
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2 mb-8 fade-up">
-      <a href="../index.html" class="text-zinc-600 hover:text-zinc-400 font-['Space_Grotesk'] text-xs uppercase tracking-widest transition-colors">Careers</a>
+      <a href="../index.html" class="text-zinc-600 hover:text-zinc-400 font-['Inter_Tight'] text-xs uppercase tracking-widest transition-colors">Careers</a>
       <span class="text-zinc-800 text-xs">/</span>
-      <span class="text-primary-container font-['Space_Grotesk'] text-xs uppercase tracking-widest">Video Editor</span>
+      <span class="text-primary-container font-['Inter_Tight'] text-xs uppercase tracking-widest">Video Editor</span>
     </div>
 
     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
@@ -306,25 +306,25 @@
           <span class="tag tag--type">Full-Time</span>
           <span class="tag tag--location">In-Person</span>
         </div>
-        <h1 class="font-['Space_Grotesk'] text-white font-black uppercase leading-tight mb-5" style="font-size: clamp(36px, 6vw, 60px); letter-spacing: -0.03em;">Video Editor</h1>
+        <h1 class="font-['Inter_Tight'] text-white font-black uppercase leading-tight mb-5" style="font-size: clamp(36px, 6vw, 60px); letter-spacing: -0.03em;">Video Editor</h1>
         <div class="flex flex-wrap gap-6 text-sm">
           <div class="flex items-center gap-2 text-zinc-500">
-            <span class="material-symbols-outlined" style="font-size: 16px; color: #ff5540;">location_on</span>
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #FF5A36;">location_on</span>
             Greater Seattle Area, Washington
           </div>
           <div class="flex items-center gap-2 text-zinc-500">
-            <span class="material-symbols-outlined" style="font-size: 16px; color: #ff5540;">work</span>
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #FF5A36;">work</span>
             Full-Time Employment
           </div>
           <div class="flex items-center gap-2 text-zinc-500">
-            <span class="material-symbols-outlined" style="font-size: 16px; color: #ff5540;">apartment</span>
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #FF5A36;">apartment</span>
             In-Person
           </div>
         </div>
       </div>
       <!-- Desktop apply CTA -->
       <div class="hidden md:block flex-shrink-0 fade-up fade-up-2">
-        <a href="#apply" class="btn-radius inline-flex items-center gap-3 bg-primary-container text-black px-8 py-4 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_30px_rgba(255,85,64,0.35)] transition-all duration-200">
+        <a href="#apply" class="btn-radius inline-flex items-center gap-3 bg-primary-container text-white px-8 py-4 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_30px_rgba(255, 90, 54,0.35)] transition-all duration-200">
           Apply Now
           <span class="material-symbols-outlined" style="font-size: 18px;">arrow_downward</span>
         </a>
@@ -518,39 +518,39 @@
 
       <!-- Meta card -->
       <div class="glass-panel p-6 mb-6 fade-up fade-up-3">
-        <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-5">Position Details</p>
+        <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-5">Position Details</p>
         <div class="space-y-4">
           <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">work</span>
             <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk'] mb-0.5">Employment Type</p>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Employment Type</p>
               <p class="text-zinc-300 text-sm">Full-Time</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">category</span>
             <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk'] mb-0.5">Department</p>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Department</p>
               <p class="text-zinc-300 text-sm">Content</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">location_on</span>
             <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk'] mb-0.5">Location</p>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Location</p>
               <p class="text-zinc-300 text-sm">Greater Seattle Area, WA</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">apartment</span>
             <div>
-              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Space_Grotesk'] mb-0.5">Work Environment</p>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Work Environment</p>
               <p class="text-zinc-300 text-sm">In-Person</p>
             </div>
           </div>
         </div>
         <div class="mt-6 pt-5 border-t border-white/8">
-          <a href="#apply" class="btn-radius bg-primary-container text-black w-full py-4 text-center font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_24px_rgba(255,85,64,0.35)] transition-all duration-200 block">
+          <a href="#apply" class="btn-radius bg-primary-container text-white w-full py-4 text-center font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_24px_rgba(255, 90, 54,0.35)] transition-all duration-200 block">
             Apply for This Role
           </a>
         </div>
@@ -562,13 +562,13 @@
 </div>
 
 <!-- ─── APPLICATION FORM ─── -->
-<section id="apply" class="relative py-20 border-t border-white/5" style="background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,85,64,0.07) 0%, transparent 65%);">
+<section id="apply" class="relative py-20 border-t border-white/5" style="background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 90, 54,0.07) 0%, transparent 65%);">
   <div class="max-w-[700px] mx-auto px-6">
 
     <!-- Form header -->
     <div class="text-center mb-14">
-      <p class="font-['Space_Grotesk'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Apply Now</p>
-      <h2 class="font-['Space_Grotesk'] text-white font-black uppercase mb-4" style="font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.02em;">Video Editor Application</h2>
+      <p class="font-['Inter_Tight'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Apply Now</p>
+      <h2 class="font-['Inter_Tight'] text-white font-black uppercase mb-4" style="font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.02em;">Video Editor Application</h2>
       <p class="text-zinc-500 text-sm max-w-md mx-auto" style="line-height: 1.7;">Fill out the form below. Every application is reviewed carefully by our team.</p>
     </div>
 
@@ -592,7 +592,7 @@
 
         <!-- ── STEP 1: Personal Info ── -->
         <div class="form-step active" data-step="0">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 1 of 7 — Personal Information</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 1 of 7: Personal Information</p>
           <div class="space-y-5">
             <div>
               <label class="form-label" for="first_name">First Name <span class="text-primary-container">*</span></label>
@@ -624,7 +624,7 @@
 
         <!-- ── STEP 2: Country ── -->
         <div class="form-step" data-step="1">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 2 of 7 — Location</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 2 of 7: Location</p>
           <div>
             <label class="form-label" for="country">What country are you currently based in? <span class="text-primary-container">*</span></label>
             <input class="form-input" type="text" id="country" name="country" placeholder="e.g. United States" autocomplete="country-name"/>
@@ -634,7 +634,7 @@
 
         <!-- ── STEP 3: Age ── -->
         <div class="form-step" data-step="2">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 3 of 7 — About You</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 3 of 7: About You</p>
           <div>
             <label class="form-label" for="age">How old are you? <span class="text-primary-container">*</span></label>
             <input class="form-input" type="number" id="age" name="age" placeholder="e.g. 24" min="16" max="99"/>
@@ -644,7 +644,7 @@
 
         <!-- ── STEP 4: Portfolio ── -->
         <div class="form-step" data-step="3">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 4 of 7 — Portfolio</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 4 of 7: Portfolio</p>
           <div>
             <label class="form-label" for="portfolio">Link to your best work or portfolio <span class="text-primary-container">*</span></label>
             <input class="form-input" type="url" id="portfolio" name="portfolio" placeholder="https://"/>
@@ -658,7 +658,7 @@
 
         <!-- ── STEP 5: Why TraderUInsider ── -->
         <div class="form-step" data-step="4">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 5 of 7 — Your Motivation</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 5 of 7: Your Motivation</p>
           <div>
             <label class="form-label" for="why_us">Why do you want to work with TraderUInsider? <span class="text-primary-container">*</span></label>
             <textarea class="form-input form-textarea" id="why_us" name="why_us" placeholder="Tell us what draws you to TraderUInsider specifically..."></textarea>
@@ -668,7 +668,7 @@
 
         <!-- ── STEP 6: Why a fit ── -->
         <div class="form-step" data-step="5">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 6 of 7 — Your Fit</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 6 of 7: Your Fit</p>
           <div>
             <label class="form-label" for="why_fit">What makes you a great fit for this role? <span class="text-primary-container">*</span></label>
             <textarea class="form-input form-textarea" id="why_fit" name="why_fit" placeholder="Describe your relevant experience, skills, and what you bring..."></textarea>
@@ -678,7 +678,7 @@
 
         <!-- ── STEP 7: Seattle ── -->
         <div class="form-step" data-step="6">
-          <p class="font-['Space_Grotesk'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 7 of 7 — Location Confirmation</p>
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 7 of 7: Location Confirmation</p>
           <div>
             <label class="form-label">Are you currently located within the Greater Seattle Area? <span class="text-primary-container">*</span></label>
             <div class="space-y-3 mt-2" id="seattle-options">
@@ -698,15 +698,15 @@
 
         <!-- Nav buttons -->
         <div class="flex items-center justify-between mt-10 pt-8 border-t border-white/8">
-          <button type="button" id="btn-prev" class="btn-radius border border-white/15 text-zinc-500 hover:text-white hover:border-white/30 px-6 py-3 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold transition-all duration-200 hidden">
+          <button type="button" id="btn-prev" class="btn-radius border border-white/15 text-zinc-500 hover:text-white hover:border-white/30 px-6 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold transition-all duration-200 hidden">
             ← Back
           </button>
           <div class="ml-auto flex items-center gap-4">
-            <span id="step-counter" class="text-zinc-600 text-xs font-['Space_Grotesk'] uppercase tracking-wider">Step 1 / 7</span>
-            <button type="button" id="btn-next" class="btn-radius bg-primary-container text-black px-8 py-3 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_20px_rgba(255,85,64,0.3)] transition-all duration-200">
+            <span id="step-counter" class="text-zinc-600 text-xs font-['Inter_Tight'] uppercase tracking-wider">Step 1 / 7</span>
+            <button type="button" id="btn-next" class="btn-radius bg-primary-container text-white px-8 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_20px_rgba(255, 90, 54,0.3)] transition-all duration-200">
               Next →
             </button>
-            <button type="submit" id="btn-submit" class="btn-radius bg-primary-container text-black px-8 py-3 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_20px_rgba(255,85,64,0.3)] transition-all duration-200 hidden">
+            <button type="submit" id="btn-submit" class="btn-radius bg-primary-container text-white px-8 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_20px_rgba(255, 90, 54,0.3)] transition-all duration-200 hidden">
               Submit Application
             </button>
           </div>
@@ -725,15 +725,15 @@
       <div class="w-20 h-20 mx-auto mb-8 relative">
         <div class="absolute inset-0 rounded-full bg-primary-container/10 border border-primary-container/30"></div>
         <svg class="absolute inset-0 w-full h-full" viewBox="0 0 80 80" fill="none">
-          <path class="check-path" d="M22 40 L34 52 L58 28" stroke="#ff5540" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="check-path" d="M22 40 L34 52 L58 28" stroke="#FF5A36" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <p class="font-['Space_Grotesk'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Received</p>
-      <h3 class="font-['Space_Grotesk'] text-white font-black uppercase mb-5" style="font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.02em;">Application Submitted</h3>
+      <p class="font-['Inter_Tight'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Received</p>
+      <h3 class="font-['Inter_Tight'] text-white font-black uppercase mb-5" style="font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.02em;">Application Submitted</h3>
       <p class="text-zinc-500 max-w-sm mx-auto mb-10" style="font-size: 16px; line-height: 1.7;">
         Thank you for applying to TraderUInsider. Our team reviews every application carefully. If we believe you're a fit, we'll reach out regarding next steps.
       </p>
-      <a href="../index.html" class="btn-radius border border-white/15 text-zinc-400 hover:text-white hover:border-white/30 px-8 py-3 font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold transition-all duration-200 inline-block">
+      <a href="../index.html" class="btn-radius border border-white/15 text-zinc-400 hover:text-white hover:border-white/30 px-8 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold transition-all duration-200 inline-block">
         Back to Careers
       </a>
     </div>
@@ -743,7 +743,7 @@
 
 <!-- ─── MOBILE STICKY APPLY ─── -->
 <div class="apply-bar md:hidden">
-  <a href="#apply" class="btn-radius bg-primary-container text-black block w-full py-4 text-center font-['Space_Grotesk'] uppercase tracking-widest text-sm font-bold">
+  <a href="#apply" class="btn-radius bg-primary-container text-white block w-full py-4 text-center font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold">
     Apply for This Role
   </a>
 </div>
@@ -752,7 +752,7 @@
 <footer class="bg-zinc-950 border-t border-white/10 w-full py-12 px-6 md:px-12">
   <div class="flex flex-col items-center text-center gap-4 max-w-[1440px] mx-auto">
     <div class="text-xl font-black text-white tracking-tighter uppercase mb-1">TRADER U</div>
-    <p class="font-['Space_Grotesk'] text-[10px] uppercase tracking-wider text-zinc-600">
+    <p class="font-['Inter_Tight'] text-[10px] uppercase tracking-wider text-zinc-600">
       © 2026 TraderUInsider. All rights reserved.
     </p>
   </div>
@@ -891,7 +891,7 @@
 
     const payload = {
       access_key: W3F_ACCESS_KEY,
-      subject:    'New Application — Video Editor | TraderUInsider',
+      subject:    'New Application - Video Editor | TraderUInsider',
       from_name:  'TraderUInsider Careers',
       'Position':          'Video Editor',
       'First Name':        document.getElementById('first_name').value.trim(),
