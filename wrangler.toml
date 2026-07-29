@@ -10,4 +10,4 @@ run_worker_first = ["/checkout"]
 [[d1_databases]]
 binding = "CHECKOUT_DB"
 database_name = "traderu-checkout"
-database_id = "REAL_D1_DATABASE_ID"
+database_id = "8eac8fc1-a39d-4562-9f59-dda70f303a3e"
