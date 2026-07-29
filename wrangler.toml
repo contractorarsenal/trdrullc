@@ -1,0 +1,12 @@
+name = "traderu"
+pages_build_output_dir = "."
+compatibility_date = "2024-01-01"
+
+# Used by `wrangler pages dev` for local emulation. This binding also has to
+# be added in the Cloudflare Pages dashboard (Settings -> Functions -> D1
+# database bindings) for Production and Preview - git-connected Pages
+# deployments do not read bindings from this file.
+[[d1_databases]]
+binding = "CHECKOUT_DB"
+database_name = "traderu-checkout"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
