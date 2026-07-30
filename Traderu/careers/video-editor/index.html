@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Editor | Careers at TraderUInsider</title>
+<meta name="robots" content="noindex, nofollow"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "secondary-fixed": "#e2e2e2",
+          "primary-container": "#FF5A36",
+          "on-secondary-fixed": "#151517",
+          "secondary": "#c6c6c7",
+          "on-surface": "#e2e2e2",
+          "secondary-container": "#454747",
+          "primary": "#ffb4a8",
+          "background": "#090909",
+          "on-primary-container": "#5c0000",
+          "on-primary": "#690100",
+          "surface": "#090909",
+          "inverse-on-surface": "#303030",
+          "inverse-surface": "#e2e2e2",
+        },
+        borderRadius: {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        spacing: {
+          "lg": "48px",
+          "container-max": "1440px",
+          "sm": "12px",
+          "gutter": "24px",
+          "md": "24px",
+          "base": "8px",
+          "xs": "4px",
+          "xl": "80px"
+        },
+        fontFamily: {
+          "headline-lg": ["Inter Tight"],
+          "mono-data": ["Inter Tight"],
+          "display-xl": ["Inter Tight"],
+          "label-caps": ["Inter Tight"],
+          "headline-md": ["Inter Tight"],
+          "body-lg": ["Inter"],
+          "body-md": ["Inter"]
+        },
+        fontSize: {
+          "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "mono-data": ["14px", {"lineHeight": "1", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+          "display-xl": ["72px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+          "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+          "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "0em", "fontWeight": "500"}],
+          "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}],
+          "body-md": ["16px", {"lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400"}]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .glass-panel {
+    background-color: rgba(21, 21, 23, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+  }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .card-radius { border-radius: 14px; }
+  .btn-radius  { border-radius: 14px !important; }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tag--dept     { background: rgba(255, 90, 54,.12); border:1px solid rgba(255, 90, 54,.3); color:#FF5A36; }
+  .tag--type     { background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:#a1a1aa; }
+  .tag--location { background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:#71717a; }
+
+  .hero-glow {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 500px;
+    background: radial-gradient(ellipse 55% 45% at 50% 0%, rgba(255, 90, 54,.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Section blocks */
+  .content-block {
+    border-left: 2px solid rgba(255, 255, 255, 0.06);
+    padding-left: 24px;
+  }
+  .content-block h4 {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #FF5A36;
+    margin-bottom: 16px;
+  }
+
+  /* Form styles */
+  .form-step { display: none; }
+  .form-step.active { display: block; }
+
+  .form-label {
+    display: block;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #a1a1aa;
+    margin-bottom: 10px;
+  }
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: #e2e2e2;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .form-input:focus {
+    border-color: rgba(255, 90, 54, 0.5);
+    background: rgba(255,255,255,0.06);
+  }
+  .form-input::placeholder { color: #52525b; }
+  .form-textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+  .form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath stroke='%2352525b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 44px;
+  }
+  .form-select option { background: #151517; color: #e2e2e2; }
+
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .radio-option:hover { border-color: rgba(255, 90, 54,0.3); background: rgba(255, 90, 54,0.04); }
+  .radio-option input[type="radio"] { accent-color: #FF5A36; width: 16px; height: 16px; }
+  .radio-option.selected {
+    border-color: rgba(255, 90, 54,0.5);
+    background: rgba(255, 90, 54,0.08);
+  }
+  .radio-option span {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #d4d4d8;
+  }
+
+  /* Step progress */
+  .step-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .step-dot.done { background: rgba(255, 90, 54,0.5); }
+  .step-dot.active { background: #FF5A36; transform: scale(1.4); }
+
+  /* Error state */
+  .form-input.error { border-color: rgba(239,68,68,0.6); }
+  .field-error {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #f87171;
+    margin-top: 6px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.5s ease both; }
+  .fade-up-1 { animation-delay: 0.05s; }
+  .fade-up-2 { animation-delay: 0.12s; }
+  .fade-up-3 { animation-delay: 0.20s; }
+
+  @keyframes stepIn {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .step-animate { animation: stepIn 0.3s ease both; }
+
+  /* Success screen */
+  #success-screen { display: none; }
+  #success-screen.show { display: flex; }
+
+  @keyframes checkDraw {
+    from { stroke-dashoffset: 100; }
+    to   { stroke-dashoffset: 0; }
+  }
+  .check-path { stroke-dasharray: 100; animation: checkDraw 0.6s ease 0.2s both; }
+
+  /* Sticky apply bar (mobile) */
+  .apply-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+    background: rgba(9,9,11,0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 16px 24px;
+  }
+
+  /* Requirement block */
+  .req-block {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  .req-block h5 {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #FF5A36;
+    margin-bottom: 8px;
+  }
+  .req-block p {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #71717a;
+  }
+
+  /* Not-for block */
+  .not-for-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .not-for-item:last-child { border-bottom: none; }
+</style>
+</head>
+
+<body class="bg-black text-on-surface font-body-md overflow-x-hidden pb-24 md:pb-0">
+
+<!-- ─── NAV ─── -->
+<nav class="fixed top-0 w-full z-50 bg-zinc-950/40 backdrop-blur-xl border-b border-white/10">
+  <div class="flex justify-between items-center max-w-[1440px] mx-auto px-6 md:px-12 py-5">
+    <a href="../../index.html" class="text-2xl font-black text-white tracking-tighter font-headline-lg uppercase hover:text-primary-container transition-colors duration-200">TRADER U</a>
+    <a href="../index.html" class="hidden md:flex items-center gap-2 text-zinc-500 hover:text-white font-['Inter_Tight'] uppercase tracking-widest text-xs font-bold transition-colors duration-200">
+      <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+      All Positions
+    </a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="relative pt-36 pb-14 overflow-hidden">
+  <div class="hero-glow"></div>
+  <div class="max-w-[1440px] mx-auto px-6 md:px-12 relative z-10">
+
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 mb-8 fade-up">
+      <a href="../index.html" class="text-zinc-600 hover:text-zinc-400 font-['Inter_Tight'] text-xs uppercase tracking-widest transition-colors">Careers</a>
+      <span class="text-zinc-800 text-xs">/</span>
+      <span class="text-primary-container font-['Inter_Tight'] text-xs uppercase tracking-widest">Video Editor</span>
+    </div>
+
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+      <div class="fade-up fade-up-1">
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="tag tag--dept">Content</span>
+          <span class="tag tag--type">Full-Time</span>
+          <span class="tag tag--location">In-Person</span>
+        </div>
+        <h1 class="font-['Inter_Tight'] text-white font-black uppercase leading-tight mb-5" style="font-size: clamp(36px, 6vw, 60px); letter-spacing: -0.03em;">Video Editor</h1>
+        <div class="flex flex-wrap gap-6 text-sm">
+          <div class="flex items-center gap-2 text-zinc-500">
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #FF5A36;">location_on</span>
+            Greater Seattle Area, Washington
+          </div>
+          <div class="flex items-center gap-2 text-zinc-500">
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #FF5A36;">work</span>
+            Full-Time Employment
+          </div>
+          <div class="flex items-center gap-2 text-zinc-500">
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #FF5A36;">apartment</span>
+            In-Person
+          </div>
+        </div>
+      </div>
+      <!-- Desktop apply CTA -->
+      <div class="hidden md:block flex-shrink-0 fade-up fade-up-2">
+        <a href="#apply" class="btn-radius inline-flex items-center gap-3 bg-primary-container text-white px-8 py-4 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_30px_rgba(255, 90, 54,0.35)] transition-all duration-200">
+          Apply Now
+          <span class="material-symbols-outlined" style="font-size: 18px;">arrow_downward</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── CONTENT ─── -->
+<div class="max-w-[1440px] mx-auto px-6 md:px-12 pb-24">
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-16">
+
+    <!-- ── Left: Job Details ── -->
+    <div class="space-y-14 fade-up fade-up-2">
+
+      <!-- About -->
+      <div>
+        <div class="content-block">
+          <h4>About TraderUInsider</h4>
+          <div class="space-y-4 text-zinc-400" style="font-size: 16px; line-height: 1.75;">
+            <p>TraderUInsider is a trading education community focused on helping traders improve their skills, understand market narratives, and become more disciplined operators.</p>
+            <p>We produce educational content, community resources, workshops, and market breakdowns designed to help our members improve their performance.</p>
+            <p class="text-zinc-300">We're looking for someone who wants to help build a brand, not just edit videos.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Role -->
+      <div>
+        <div class="content-block">
+          <h4>The Role</h4>
+          <div class="space-y-4 text-zinc-400" style="font-size: 16px; line-height: 1.75;">
+            <p>As a Video Editor, you'll work directly with the TraderUInsider team to create high-quality content across multiple platforms.</p>
+            <p>You'll be responsible for turning raw footage into engaging content that keeps viewers watching, improves retention, and strengthens the TraderUInsider brand.</p>
+            <p>You should understand pacing, storytelling, motion graphics, social media trends, and how to make content feel engaging.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsibilities -->
+      <div>
+        <div class="content-block">
+          <h4>Responsibilities</h4>
+          <ul class="space-y-3 mt-1">
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Edit short-form content for TikTok, Instagram Reels, YouTube Shorts, and X
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Edit long-form educational content
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Create engaging cuts that improve viewer retention
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Add captions, graphics, transitions, and visual enhancements
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Organize project files and maintain efficient workflows
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Work directly with the team for revisions and content planning
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Meet deadlines consistently
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 flex-shrink-0"></span>
+              Help improve overall content quality and production value
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Ideal Candidate -->
+      <div>
+        <div class="content-block">
+          <h4>Ideal Candidate</h4>
+          <ul class="space-y-3 mt-1">
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Strong video editing skills
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Experience with Adobe Premiere Pro, DaVinci Resolve, or Final Cut Pro
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Understanding of social media content
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Strong attention to detail
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Creative problem-solving ability
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Reliable communication
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Ability to work in person
+            </li>
+            <li class="flex items-start gap-3 text-zinc-400 text-sm leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mt-2 flex-shrink-0"></span>
+              Located in or willing to relocate to the Greater Seattle Area
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Requirements -->
+      <div>
+        <div class="content-block">
+          <h4>Requirements</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="req-block">
+              <h5>Portfolio Required</h5>
+              <p>Applicants must submit examples of previous work.</p>
+            </div>
+            <div class="req-block">
+              <h5>In-Person Requirement</h5>
+              <p>This is not a remote role. Applicants must be located in the Greater Seattle Area or be willing to relocate.</p>
+            </div>
+            <div class="req-block">
+              <h5>Communication</h5>
+              <p>Strong communication and ability to receive feedback.</p>
+            </div>
+            <div class="req-block">
+              <h5>Speed &amp; Quality</h5>
+              <p>Ability to produce quality work while meeting deadlines.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Who should NOT apply -->
+      <div>
+        <div class="content-block">
+          <h4>Who Should Not Apply</h4>
+          <div class="mt-1">
+            <div class="not-for-item">
+              <div class="w-5 h-5 rounded-sm bg-primary-container/10 border border-primary-container/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-primary-container" style="font-size: 12px; font-variation-settings: 'FILL' 1;">close</span>
+              </div>
+              <span class="text-zinc-600 text-sm leading-relaxed">Looking for remote-only work</span>
+            </div>
+            <div class="not-for-item">
+              <div class="w-5 h-5 rounded-sm bg-primary-container/10 border border-primary-container/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-primary-container" style="font-size: 12px; font-variation-settings: 'FILL' 1;">close</span>
+              </div>
+              <span class="text-zinc-600 text-sm leading-relaxed">Unable to work in the Seattle area</span>
+            </div>
+            <div class="not-for-item">
+              <div class="w-5 h-5 rounded-sm bg-primary-container/10 border border-primary-container/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-primary-container" style="font-size: 12px; font-variation-settings: 'FILL' 1;">close</span>
+              </div>
+              <span class="text-zinc-600 text-sm leading-relaxed">Unable to provide a portfolio</span>
+            </div>
+            <div class="not-for-item">
+              <div class="w-5 h-5 rounded-sm bg-primary-container/10 border border-primary-container/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-primary-container" style="font-size: 12px; font-variation-settings: 'FILL' 1;">close</span>
+              </div>
+              <span class="text-zinc-600 text-sm leading-relaxed">Cannot consistently meet deadlines</span>
+            </div>
+            <div class="not-for-item">
+              <div class="w-5 h-5 rounded-sm bg-primary-container/10 border border-primary-container/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-primary-container" style="font-size: 12px; font-variation-settings: 'FILL' 1;">close</span>
+              </div>
+              <span class="text-zinc-600 text-sm leading-relaxed">Looking for freelance-only opportunities</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end left col -->
+
+    <!-- ── Right: Sticky meta + Application Form ── -->
+    <div class="lg:self-start lg:sticky lg:top-28">
+
+      <!-- Meta card -->
+      <div class="glass-panel p-6 mb-6 fade-up fade-up-3">
+        <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-5">Position Details</p>
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">work</span>
+            <div>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Employment Type</p>
+              <p class="text-zinc-300 text-sm">Full-Time</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">category</span>
+            <div>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Department</p>
+              <p class="text-zinc-300 text-sm">Content</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">location_on</span>
+            <div>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Location</p>
+              <p class="text-zinc-300 text-sm">Greater Seattle Area, WA</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-primary-container flex-shrink-0" style="font-size: 18px;">apartment</span>
+            <div>
+              <p class="text-zinc-600 text-xs uppercase tracking-wider font-['Inter_Tight'] mb-0.5">Work Environment</p>
+              <p class="text-zinc-300 text-sm">In-Person</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 pt-5 border-t border-white/8">
+          <a href="#apply" class="btn-radius bg-primary-container text-white w-full py-4 text-center font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_24px_rgba(255, 90, 54,0.35)] transition-all duration-200 block">
+            Apply for This Role
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- end grid -->
+</div>
+
+<!-- ─── APPLICATION FORM ─── -->
+<section id="apply" class="relative py-20 border-t border-white/5" style="background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 90, 54,0.07) 0%, transparent 65%);">
+  <div class="max-w-[700px] mx-auto px-6">
+
+    <!-- Form header -->
+    <div class="text-center mb-14">
+      <p class="font-['Inter_Tight'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Apply Now</p>
+      <h2 class="font-['Inter_Tight'] text-white font-black uppercase mb-4" style="font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.02em;">Video Editor Application</h2>
+      <p class="text-zinc-500 text-sm max-w-md mx-auto" style="line-height: 1.7;">Fill out the form below. Every application is reviewed carefully by our team.</p>
+    </div>
+
+    <!-- ── FORM ── -->
+    <div id="application-form-wrapper">
+
+      <!-- Step progress dots -->
+      <div class="flex items-center justify-center gap-2 mb-10" id="step-dots">
+        <div class="step-dot active" data-step="0"></div>
+        <div class="step-dot" data-step="1"></div>
+        <div class="step-dot" data-step="2"></div>
+        <div class="step-dot" data-step="3"></div>
+        <div class="step-dot" data-step="4"></div>
+        <div class="step-dot" data-step="5"></div>
+        <div class="step-dot" data-step="6"></div>
+      </div>
+
+      <form id="application-form" novalidate>
+        <!-- Honeypot anti-spam -->
+        <input type="text" name="website" id="hp-website" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" tabindex="-1" autocomplete="off"/>
+
+        <!-- ── STEP 1: Personal Info ── -->
+        <div class="form-step active" data-step="0">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 1 of 7: Personal Information</p>
+          <div class="space-y-5">
+            <div>
+              <label class="form-label" for="first_name">First Name <span class="text-primary-container">*</span></label>
+              <input class="form-input" type="text" id="first_name" name="first_name" placeholder="Your first name" autocomplete="given-name"/>
+              <p class="field-error" id="err-first_name">First name is required.</p>
+            </div>
+            <div>
+              <label class="form-label" for="last_name">Last Name <span class="text-primary-container">*</span></label>
+              <input class="form-input" type="text" id="last_name" name="last_name" placeholder="Your last name" autocomplete="family-name"/>
+              <p class="field-error" id="err-last_name">Last name is required.</p>
+            </div>
+            <div>
+              <label class="form-label" for="phone">Phone Number <span class="text-primary-container">*</span></label>
+              <input class="form-input" type="tel" id="phone" name="phone" placeholder="+1 (000) 000-0000" autocomplete="tel"/>
+              <p class="field-error" id="err-phone">A valid phone number is required.</p>
+            </div>
+            <div>
+              <label class="form-label" for="email">Email Address <span class="text-primary-container">*</span></label>
+              <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email"/>
+              <p class="field-error" id="err-email">A valid email address is required.</p>
+            </div>
+            <div>
+              <label class="form-label" for="instagram">Instagram Handle <span class="text-primary-container">*</span></label>
+              <input class="form-input" type="text" id="instagram" name="instagram" placeholder="@yourhandle"/>
+              <p class="field-error" id="err-instagram">Instagram handle is required.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STEP 2: Country ── -->
+        <div class="form-step" data-step="1">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 2 of 7: Location</p>
+          <div>
+            <label class="form-label" for="country">What country are you currently based in? <span class="text-primary-container">*</span></label>
+            <input class="form-input" type="text" id="country" name="country" placeholder="e.g. United States" autocomplete="country-name"/>
+            <p class="field-error" id="err-country">Country is required.</p>
+          </div>
+        </div>
+
+        <!-- ── STEP 3: Age ── -->
+        <div class="form-step" data-step="2">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 3 of 7: About You</p>
+          <div>
+            <label class="form-label" for="age">How old are you? <span class="text-primary-container">*</span></label>
+            <input class="form-input" type="number" id="age" name="age" placeholder="e.g. 24" min="16" max="99"/>
+            <p class="field-error" id="err-age">Please enter a valid age.</p>
+          </div>
+        </div>
+
+        <!-- ── STEP 4: Portfolio ── -->
+        <div class="form-step" data-step="3">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 4 of 7: Portfolio</p>
+          <div>
+            <label class="form-label" for="portfolio">Link to your best work or portfolio <span class="text-primary-container">*</span></label>
+            <input class="form-input" type="url" id="portfolio" name="portfolio" placeholder="https://"/>
+            <p class="field-error" id="err-portfolio">A portfolio link is required.</p>
+            <div class="mt-4 flex items-start gap-3 bg-white/3 border border-white/6 rounded-lg px-4 py-3">
+              <span class="material-symbols-outlined text-zinc-500 flex-shrink-0 mt-0.5" style="font-size: 16px;">info</span>
+              <p class="text-zinc-500 text-xs leading-relaxed">Please make sure sharing permissions are enabled. If we need to request access to view your work, your application may be automatically disqualified.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STEP 5: Why TraderUInsider ── -->
+        <div class="form-step" data-step="4">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 5 of 7: Your Motivation</p>
+          <div>
+            <label class="form-label" for="why_us">Why do you want to work with TraderUInsider? <span class="text-primary-container">*</span></label>
+            <textarea class="form-input form-textarea" id="why_us" name="why_us" placeholder="Tell us what draws you to TraderUInsider specifically..."></textarea>
+            <p class="field-error" id="err-why_us">This field is required.</p>
+          </div>
+        </div>
+
+        <!-- ── STEP 6: Why a fit ── -->
+        <div class="form-step" data-step="5">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 6 of 7: Your Fit</p>
+          <div>
+            <label class="form-label" for="why_fit">What makes you a great fit for this role? <span class="text-primary-container">*</span></label>
+            <textarea class="form-input form-textarea" id="why_fit" name="why_fit" placeholder="Describe your relevant experience, skills, and what you bring..."></textarea>
+            <p class="field-error" id="err-why_fit">This field is required.</p>
+          </div>
+        </div>
+
+        <!-- ── STEP 7: Seattle ── -->
+        <div class="form-step" data-step="6">
+          <p class="font-['Inter_Tight'] text-zinc-600 uppercase tracking-[0.2em] text-xs font-bold mb-8">Step 7 of 7: Location Confirmation</p>
+          <div>
+            <label class="form-label">Are you currently located within the Greater Seattle Area? <span class="text-primary-container">*</span></label>
+            <div class="space-y-3 mt-2" id="seattle-options">
+              <label class="radio-option" id="opt-yes">
+                <input type="radio" name="seattle" value="yes"/> <span>Yes</span>
+              </label>
+              <label class="radio-option" id="opt-relocate">
+                <input type="radio" name="seattle" value="willing_to_relocate"/> <span>No, but willing to relocate</span>
+              </label>
+              <label class="radio-option" id="opt-no">
+                <input type="radio" name="seattle" value="no"/> <span>No</span>
+              </label>
+            </div>
+            <p class="field-error" id="err-seattle">Please select an option.</p>
+          </div>
+        </div>
+
+        <!-- Nav buttons -->
+        <div class="flex items-center justify-between mt-10 pt-8 border-t border-white/8">
+          <button type="button" id="btn-prev" class="btn-radius border border-white/15 text-zinc-500 hover:text-white hover:border-white/30 px-6 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold transition-all duration-200 hidden">
+            ← Back
+          </button>
+          <div class="ml-auto flex items-center gap-4">
+            <span id="step-counter" class="text-zinc-600 text-xs font-['Inter_Tight'] uppercase tracking-wider">Step 1 / 7</span>
+            <button type="button" id="btn-next" class="btn-radius bg-primary-container text-white px-8 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_20px_rgba(255, 90, 54,0.3)] transition-all duration-200">
+              Next →
+            </button>
+            <button type="submit" id="btn-submit" class="btn-radius bg-primary-container text-white px-8 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold hover:shadow-[0_0_20px_rgba(255, 90, 54,0.3)] transition-all duration-200 hidden">
+              Submit Application
+            </button>
+          </div>
+        </div>
+
+        <!-- Global error -->
+        <div id="form-error" class="hidden mt-6 px-5 py-4 bg-red-950/50 border border-red-500/30 card-radius">
+          <p class="text-red-400 text-sm font-['Inter']" id="form-error-msg">Something went wrong. Please try again.</p>
+        </div>
+
+      </form>
+    </div><!-- end form wrapper -->
+
+    <!-- ── SUCCESS SCREEN ── -->
+    <div id="success-screen" class="flex-col items-center text-center py-6">
+      <div class="w-20 h-20 mx-auto mb-8 relative">
+        <div class="absolute inset-0 rounded-full bg-primary-container/10 border border-primary-container/30"></div>
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 80 80" fill="none">
+          <path class="check-path" d="M22 40 L34 52 L58 28" stroke="#FF5A36" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="font-['Inter_Tight'] text-primary-container uppercase tracking-[0.3em] text-xs font-bold mb-4">Received</p>
+      <h3 class="font-['Inter_Tight'] text-white font-black uppercase mb-5" style="font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.02em;">Application Submitted</h3>
+      <p class="text-zinc-500 max-w-sm mx-auto mb-10" style="font-size: 16px; line-height: 1.7;">
+        Thank you for applying to TraderUInsider. Our team reviews every application carefully. If we believe you're a fit, we'll reach out regarding next steps.
+      </p>
+      <a href="../index.html" class="btn-radius border border-white/15 text-zinc-400 hover:text-white hover:border-white/30 px-8 py-3 font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold transition-all duration-200 inline-block">
+        Back to Careers
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── MOBILE STICKY APPLY ─── -->
+<div class="apply-bar md:hidden">
+  <a href="#apply" class="btn-radius bg-primary-container text-white block w-full py-4 text-center font-['Inter_Tight'] uppercase tracking-widest text-sm font-bold">
+    Apply for This Role
+  </a>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer class="bg-zinc-950 border-t border-white/10 w-full py-12 px-6 md:px-12">
+  <div class="flex flex-col items-center text-center gap-4 max-w-[1440px] mx-auto">
+    <div class="text-xl font-black text-white tracking-tighter uppercase mb-1">TRADER U</div>
+    <p class="font-['Inter_Tight'] text-[10px] uppercase tracking-wider text-zinc-600">
+      © 2026 TraderUInsider. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<script>
+  // ── Web3Forms config ──
+  const W3F_ACCESS_KEY = 'd3a2351f-7c88-4cb3-b01e-1c74b8431f31';
+
+  // ── Multi-step form state ──
+  const TOTAL_STEPS = 7;
+  let currentStep = 0;
+
+  const steps     = document.querySelectorAll('.form-step');
+  const dots      = document.querySelectorAll('.step-dot');
+  const btnNext   = document.getElementById('btn-next');
+  const btnPrev   = document.getElementById('btn-prev');
+  const btnSubmit = document.getElementById('btn-submit');
+  const counter   = document.getElementById('step-counter');
+
+  function goToStep(n) {
+    steps[currentStep].classList.remove('active');
+    currentStep = n;
+    const step = steps[currentStep];
+    step.classList.add('active');
+    step.classList.add('step-animate');
+    setTimeout(() => step.classList.remove('step-animate'), 400);
+
+    // Dots
+    dots.forEach((d, i) => {
+      d.classList.remove('active', 'done');
+      if (i < currentStep) d.classList.add('done');
+      if (i === currentStep) d.classList.add('active');
+    });
+
+    // Buttons
+    btnPrev.classList.toggle('hidden', currentStep === 0);
+    const isLast = currentStep === TOTAL_STEPS - 1;
+    btnNext.classList.toggle('hidden', isLast);
+    btnSubmit.classList.toggle('hidden', !isLast);
+    counter.textContent = `Step ${currentStep + 1} / ${TOTAL_STEPS}`;
+  }
+
+  // ── Validation ──
+  function clearErrors(step) {
+    step.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
+    step.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+  }
+
+  function showError(fieldId, errId) {
+    const f = document.getElementById(fieldId);
+    const e = document.getElementById('err-' + errId);
+    if (f) f.classList.add('error');
+    if (e) e.classList.add('show');
+  }
+
+  function validateStep(stepIdx) {
+    const step = steps[stepIdx];
+    clearErrors(step);
+    let valid = true;
+
+    if (stepIdx === 0) {
+      const fn = document.getElementById('first_name').value.trim();
+      const ln = document.getElementById('last_name').value.trim();
+      const ph = document.getElementById('phone').value.trim();
+      const em = document.getElementById('email').value.trim();
+      const ig = document.getElementById('instagram').value.trim();
+      if (!fn) { showError('first_name', 'first_name'); valid = false; }
+      if (!ln) { showError('last_name', 'last_name'); valid = false; }
+      if (!ph || ph.length < 7) { showError('phone', 'phone'); valid = false; }
+      if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showError('email', 'email'); valid = false; }
+      if (!ig) { showError('instagram', 'instagram'); valid = false; }
+    }
+    if (stepIdx === 1) {
+      const c = document.getElementById('country').value.trim();
+      if (!c) { showError('country', 'country'); valid = false; }
+    }
+    if (stepIdx === 2) {
+      const a = parseInt(document.getElementById('age').value);
+      if (!a || a < 16 || a > 99) { showError('age', 'age'); valid = false; }
+    }
+    if (stepIdx === 3) {
+      const p = document.getElementById('portfolio').value.trim();
+      if (!p || !/^https?:\/\/.+/.test(p)) { showError('portfolio', 'portfolio'); valid = false; }
+    }
+    if (stepIdx === 4) {
+      const w = document.getElementById('why_us').value.trim();
+      if (!w || w.length < 10) { showError('why_us', 'why_us'); valid = false; }
+    }
+    if (stepIdx === 5) {
+      const f = document.getElementById('why_fit').value.trim();
+      if (!f || f.length < 10) { showError('why_fit', 'why_fit'); valid = false; }
+    }
+    if (stepIdx === 6) {
+      const sel = document.querySelector('input[name="seattle"]:checked');
+      if (!sel) {
+        document.getElementById('err-seattle').classList.add('show');
+        valid = false;
+      }
+    }
+    return valid;
+  }
+
+  btnNext.addEventListener('click', () => {
+    if (validateStep(currentStep)) goToStep(currentStep + 1);
+  });
+  btnPrev.addEventListener('click', () => {
+    if (currentStep > 0) goToStep(currentStep - 1);
+  });
+
+  // Radio option highlight
+  document.querySelectorAll('.radio-option input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+      radio.closest('.radio-option').classList.add('selected');
+    });
+  });
+
+  // ── Form submit ──
+  document.getElementById('application-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validateStep(currentStep)) return;
+
+    // Honeypot check
+    if (document.getElementById('hp-website').value) return;
+
+    const errBox = document.getElementById('form-error');
+    const errMsg = document.getElementById('form-error-msg');
+    errBox.classList.add('hidden');
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Submitting...';
+
+    const seattleVal = document.querySelector('input[name="seattle"]:checked')?.value || '';
+    const seattleLabel = { yes: 'Yes', willing_to_relocate: 'No, but willing to relocate', no: 'No' }[seattleVal] || seattleVal;
+
+    const payload = {
+      access_key: W3F_ACCESS_KEY,
+      subject:    'New Application - Video Editor | TraderUInsider',
+      from_name:  'TraderUInsider Careers',
+      'Position':          'Video Editor',
+      'First Name':        document.getElementById('first_name').value.trim(),
+      'Last Name':         document.getElementById('last_name').value.trim(),
+      'Phone':             document.getElementById('phone').value.trim(),
+      'Email':             document.getElementById('email').value.trim(),
+      'Instagram':         document.getElementById('instagram').value.trim(),
+      'Country':           document.getElementById('country').value.trim(),
+      'Age':               document.getElementById('age').value.trim(),
+      'Portfolio':         document.getElementById('portfolio').value.trim(),
+      'Why TraderUInsider': document.getElementById('why_us').value.trim(),
+      'Why a Great Fit':   document.getElementById('why_fit').value.trim(),
+      'Seattle Area':      seattleLabel,
+    };
+
+    try {
+      const res  = await fetch('https://api.web3forms.com/submit', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || 'Submission failed');
+
+      // Show success
+      document.getElementById('application-form-wrapper').style.display = 'none';
+      document.getElementById('step-dots').style.display = 'none';
+      document.getElementById('success-screen').classList.add('show');
+      window.scrollTo({ top: document.getElementById('apply').offsetTop - 80, behavior: 'smooth' });
+    } catch (err) {
+      errMsg.textContent = 'Something went wrong. Please check your connection and try again.';
+      errBox.classList.remove('hidden');
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Submit Application';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Careers | TraderUInsider</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: "#090909",
+          charcoal: "#151517",
+          carddark: "#19191C",
+          accent: "#FF5A36",
+        },
+        fontFamily: {
+          heading: ["Inter Tight", "sans-serif"],
+          body: ["Inter", "sans-serif"],
+        },
+      }
+    }
+  }
+</script>
+<style>
+  :root { --border-dark: rgba(255,255,255,0.14); --muted: #8f8d89; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: 'Inter', sans-serif; }
+  a:focus-visible, button:focus-visible { outline: 2px solid #FF5A36; outline-offset: 3px; }
+
+  .position-card {
+    background: #19191C;
+    border: 1px solid var(--border-dark);
+    border-radius: 14px;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .position-card:hover {
+    border-color: rgba(255, 90, 54, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tag--dept { background: rgba(255,90,54,0.12); border: 1px solid rgba(255,90,54,0.3); color: #FF5A36; }
+  .tag--type { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a7a5a1; }
+  .tag--location { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #8f8d89; }
+
+  .hero-glow {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255,90,54,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-up { animation: fadeUp 0.6s ease both; }
+  .fade-up-1 { animation-delay: 0.05s; }
+  .fade-up-2 { animation-delay: 0.15s; }
+  .fade-up-3 { animation-delay: 0.25s; }
+  @media (prefers-reduced-motion: reduce) { .fade-up { animation: none; } }
+</style>
+</head>
+
+<body style="background:#090909;color:#c9c7c3;" class="overflow-x-hidden">
+
+<!-- ─── NAV ─── -->
+<nav class="fixed top-0 w-full z-50" style="background:rgba(9,9,9,0.7);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-dark);">
+  <div class="flex justify-between items-center max-w-[1180px] mx-auto" style="padding:20px 24px;">
+    <a href="../index.html" class="font-heading font-extrabold text-white" style="font-size:18px;letter-spacing:-0.01em;">TRADER U</a>
+    <div class="hidden md:flex items-center font-body uppercase tracking-widest" style="gap:32px;font-size:12px;font-weight:700;">
+      <a style="color:#FF5A36;" href="#">Careers</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="relative overflow-hidden" style="padding:150px 24px 72px;">
+  <div class="hero-glow"></div>
+  <div class="max-w-[1180px] mx-auto relative z-10">
+
+    <div class="max-w-2xl fade-up fade-up-1">
+      <p class="font-body uppercase" style="color:#FF5A36;letter-spacing:0.14em;font-size:12px;font-weight:700;margin:0 0 18px;">TraderUInsider &middot; Careers</p>
+      <h1 class="font-heading font-extrabold text-white" style="font-size:clamp(36px,6vw,56px);line-height:1.05;letter-spacing:-0.03em;margin:0 0 20px;">
+        Join the TraderUInsider team
+      </h1>
+      <p style="color:#a7a5a1;font-size:17px;line-height:1.65;margin:0;max-width:560px;">
+        We're building one of the fastest-growing trading communities in the space. We're looking for talented people who care about quality, execution, and helping build something meaningful.
+      </p>
+    </div>
+
+    <!-- Stats row -->
+    <div class="flex flex-wrap items-center fade-up fade-up-2" style="margin-top:40px;gap:24px;">
+      <div class="flex items-center" style="gap:10px;">
+        <div style="width:6px;height:6px;border-radius:999px;background:#FF5A36;"></div>
+        <span class="font-body uppercase" style="color:#a7a5a1;font-size:13px;letter-spacing:0.04em;">Actively Hiring</span>
+      </div>
+      <div class="hidden sm:block" style="width:1px;height:16px;background:var(--border-dark);"></div>
+      <div class="font-body uppercase" style="color:#6b6966;font-size:13px;letter-spacing:0.04em;">Greater Seattle Area</div>
+      <div class="hidden sm:block" style="width:1px;height:16px;background:var(--border-dark);"></div>
+      <div class="font-body uppercase" style="color:#6b6966;font-size:13px;letter-spacing:0.04em;">In-Person Roles</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── OPEN POSITIONS ─── -->
+<section style="padding-bottom:96px;">
+  <div class="max-w-[1180px] mx-auto" style="padding:0 24px;">
+
+    <div class="flex items-center fade-up fade-up-2" style="gap:16px;margin-bottom:32px;">
+      <h2 class="font-body uppercase" style="color:#8f8d89;letter-spacing:0.14em;font-size:12px;font-weight:700;margin:0;">Open Positions</h2>
+      <div style="flex:1;height:1px;background:var(--border-dark);"></div>
+      <span class="font-body uppercase" style="color:#6b6966;font-size:12px;letter-spacing:0.04em;">1 Opening</span>
+    </div>
+
+    <!-- Position Card -->
+    <a href="video-editor/index.html" class="position-card block group fade-up fade-up-3" style="padding:32px;">
+      <div class="flex flex-col md:flex-row md:items-start md:justify-between" style="gap:24px;">
+
+        <div class="flex-1">
+          <div class="flex flex-wrap" style="gap:8px;margin-bottom:18px;">
+            <span class="tag tag--dept">Content</span>
+            <span class="tag tag--type">Full-Time</span>
+            <span class="tag tag--location">In-Person</span>
+          </div>
+
+          <h3 class="font-heading font-bold text-white group-hover:text-[#FF5A36] transition-colors duration-200" style="font-size:clamp(22px,3vw,28px);letter-spacing:-0.01em;margin:0 0 12px;">Video Editor</h3>
+
+          <div class="flex flex-wrap items-center" style="gap:8px;margin-bottom:16px;">
+            <span style="color:#6b6966;font-size:14px;">Greater Seattle Area, Washington</span>
+          </div>
+
+          <p style="color:#8f8d89;font-size:14px;line-height:1.6;margin:0;max-width:520px;">
+            We're looking for a talented video editor to help create content for TraderUInsider. You'll work directly with our team to edit short-form content, long-form content, educational videos, community content, and promotional material.
+          </p>
+        </div>
+
+        <div class="md:flex-shrink-0 md:self-center">
+          <div class="inline-flex items-center font-body uppercase tracking-widest group-hover:bg-[#FF5A36] group-hover:text-white transition-all duration-200" style="gap:10px;background:rgba(255,90,54,0.1);border:1px solid rgba(255,90,54,0.3);color:#FF5A36;padding:12px 22px;font-size:13px;font-weight:700;border-radius:999px;">
+            View Position
+            <span class="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+          </div>
+        </div>
+
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer style="background:#000;border-top:1px solid var(--border-dark);padding:48px 24px;">
+  <div class="flex flex-col items-center text-center max-w-[1180px] mx-auto" style="gap:12px;">
+    <div class="font-heading font-extrabold text-white" style="font-size:18px;letter-spacing:-0.01em;">TRADER U</div>
+    <p class="font-body uppercase" style="font-size:11px;letter-spacing:0.06em;color:#5a5854;margin:0;">
+      &copy; 2026 TraderUInsider. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
