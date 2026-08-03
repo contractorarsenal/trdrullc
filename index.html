@@ -116,10 +116,23 @@
   @media (min-width: 800px) { .tu-story-gallery { grid-template-columns: 1fr 1fr; } }
 
   .tu-trade-cols { display: grid; grid-template-columns: 1fr; gap: 24px; }
-  @media (min-width: 900px) { .tu-trade-cols { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 600px) { .tu-trade-cols { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .tu-trade-cols { grid-template-columns: repeat(4, 1fr); } }
 
-  .tu-trade-info-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
-  @media (min-width: 480px) { .tu-trade-info-grid { grid-template-columns: 1fr 1fr; gap: 20px; } }
+  /* ─── Coin return calculator ─── */
+  .tu-coin-calc { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border-dark); }
+  .tu-coin-calc-label { font-family: var(--font-body); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-dark); margin: 0 0 8px; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
+  .tu-coin-calc-eq { font-family: var(--font-heading); font-weight: 700; font-size: 17px; color: #e5e3df; margin: 0; opacity: 0; transform: translateY(8px); transition: opacity .4s ease .1s, transform .4s ease .1s; }
+  .tu-coin-calc-final { font-family: var(--font-heading); font-weight: 800; font-size: clamp(30px,3.4vw,36px); line-height: 1.2; color: var(--accent); margin: 10px 0 0; letter-spacing: -0.01em; opacity: 0; transform: scale(.85); transition: opacity .4s ease, transform .5s cubic-bezier(.34,1.56,.64,1); }
+  .tu-coin-calc.is-visible .tu-coin-calc-label,
+  .tu-coin-calc.is-visible .tu-coin-calc-eq { opacity: 1; transform: translateY(0); }
+  .tu-coin-calc-final.is-revealed { opacity: 1; transform: scale(1); }
+  .tu-coin-calc-final.tu-coin-glow { animation: tuCoinGlow 1.4s ease-out forwards; }
+  @keyframes tuCoinGlow {
+    0% { text-shadow: 0 0 0 rgba(255,90,54,0); }
+    35% { text-shadow: 0 0 22px rgba(255,90,54,.75), 0 0 44px rgba(255,90,54,.4); }
+    100% { text-shadow: 0 0 10px rgba(255,90,54,.35); }
+  }
 
   .tu-enroll-grid { grid-template-columns: 1fr; }
   @media (min-width: 900px) { .tu-enroll-grid { grid-template-columns: 1fr 1fr; align-items: center; } }
@@ -231,6 +244,8 @@
     #help-modal-panel { transition: none !important; }
     #help-modal-backdrop { transition: none !important; }
     .phase-card .plus, .faq-card .faq-plus { transition: none; }
+    .tu-coin-calc-label, .tu-coin-calc-eq, .tu-coin-calc-final { transition: none !important; }
+    .tu-coin-calc-final.tu-coin-glow { animation: none; text-shadow: 0 0 10px rgba(255,90,54,.35); }
   }
 </style>
 </head>
@@ -460,50 +475,67 @@
   </div>
 </section>
 
-<!-- ─── TRADE STUDIES ─── -->
+<!-- ─── HOW MEMECOINS ARE CREATED ─── -->
 <section class="tu-section" style="background:var(--charcoal);">
   <div class="tu-wrap">
-    <p class="tu-label" style="text-align:center;">Trade Studies</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 12px;max-width:620px;">The setup matters more than the result.</h2>
-    <p class="tu-body-sm" style="text-align:center;max-width:540px;margin:0 auto;color:var(--muted-dark);">See how the narrative, entry, confirmation, and risk were identified before the move.</p>
+    <p class="tu-label" style="text-align:center;">How Memecoins Are Created</p>
+    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 12px;max-width:620px;">Real viral moments become real memecoins.</h2>
+    <p class="tu-body-sm" style="text-align:center;max-width:540px;margin:0 auto;color:var(--muted-dark);">A viral animal, a strange headline, a moment everyone is talking about. That's the raw material a memecoin gets built from.</p>
 
     <div class="tu-trade-cols" style="margin-top:40px;">
-      <div class="tu-dcard" style="padding:20px;">
-        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;">
-          <img style="width:100%;height:auto;display:block;object-fit:contain;object-position:center;" loading="lazy" src="https://github.com/user-attachments/assets/c6e8c3de-fb49-4b40-bf35-a7b91975be1f" alt="$SCAM trade proof screenshot"/>
+      <div class="tu-dcard flex flex-col" style="padding:20px;height:100%;">
+        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/10a06463-1793-4bb6-82de-08e650cd021d" alt="CATE coin trade call graphic showing a 1609X return"/>
         </div>
-        <div class="flex items-baseline" style="gap:12px;margin-top:20px;">
-          <h3 class="font-heading font-extrabold text-white" style="font-size:26px;margin:0;">$SCAM</h3>
-          <span class="font-heading font-extrabold" style="font-size:24px;color:var(--accent);">383x</span>
+        <h3 class="font-heading font-extrabold text-white" style="font-size:22px;margin:20px 0 0;">CATE COIN</h3>
+        <p style="font-size:15px;line-height:1.6;color:var(--muted-dark);margin:10px 0 0;">The owners of Doge found and rescued a cat named Cate. That real story became the inspiration behind Cate Coin.</p>
+        <div class="tu-coin-calc" data-multiplier="1609" data-final="160900" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
         </div>
-        <div style="height:1px;background:var(--border-dark);margin:16px 0 20px;"></div>
-        <div class="tu-trade-info-grid">
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Entry</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Called near a $42,000 market cap.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Why it moved</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The ironic scam narrative started gaining attention.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">What confirmed it</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Volume increased and tracked wallets began entering.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Risk</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The position was sized for the volatility of a low-cap coin.</p></div>
-        </div>
-        <p style="font-size:13px;color:var(--muted-dark);line-height:1.5;margin-top:20px;">Past example shown for educational purposes. Not a guarantee of future results.</p>
       </div>
 
-      <div class="tu-dcard" style="padding:20px;">
-        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;">
-          <img style="width:100%;height:auto;display:block;object-fit:contain;object-position:center;" loading="lazy" src="https://github.com/user-attachments/assets/270e360f-4f38-4baa-9d5f-24f20ad9faca" alt="$BURNIE trade proof screenshot"/>
+      <div class="tu-dcard flex flex-col" style="padding:20px;height:100%;">
+        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/80c179d3-ce4f-46a6-ad42-0dd0c7cceb04" alt="JIMOTHY coin trade call graphic showing a 573X return"/>
         </div>
-        <div class="flex items-baseline" style="gap:12px;margin-top:20px;">
-          <h3 class="font-heading font-extrabold text-white" style="font-size:26px;margin:0;">$BURNIE</h3>
-          <span class="font-heading font-extrabold" style="font-size:24px;color:var(--accent);">60x</span>
+        <h3 class="font-heading font-extrabold text-white" style="font-size:22px;margin:20px 0 0;">JIMOTHY COIN</h3>
+        <p style="font-size:15px;line-height:1.6;color:var(--muted-dark);margin:10px 0 0;">Based on Jimothy, the viral raccoon sensation from the Seattle area.</p>
+        <div class="tu-coin-calc" data-multiplier="573" data-final="57300" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
         </div>
-        <div style="height:1px;background:var(--border-dark);margin:16px 0 20px;"></div>
-        <div class="tu-trade-info-grid">
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Entry</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Entered early and planned for a longer hold.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Why it moved</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The token-burn narrative started gaining attention.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">What confirmed it</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Liquidity increased without an immediate pump and dump.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Risk</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The position was sized to handle normal pullbacks.</p></div>
+      </div>
+
+      <div class="tu-dcard flex flex-col" style="padding:20px;height:100%;">
+        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/98d1956c-e63b-4cd7-a90d-effa96e6cbb1" alt="BOP coin trade call graphic showing a 116X return"/>
         </div>
-        <p style="font-size:13px;color:var(--muted-dark);line-height:1.5;margin-top:20px;">Past example shown for educational purposes. Not a guarantee of future results.</p>
+        <h3 class="font-heading font-extrabold text-white" style="font-size:22px;margin:20px 0 0;">BOP COIN <span style="color:var(--muted-dark);font-weight:600;font-size:14px;">(Bear On Pole)</span></h3>
+        <p style="font-size:15px;line-height:1.6;color:var(--muted-dark);margin:10px 0 0;">Inspired by the viral story of a bear that became stuck on a utility pole in Arizona.</p>
+        <div class="tu-coin-calc" data-multiplier="116" data-final="11600" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
+        </div>
+      </div>
+
+      <div class="tu-dcard flex flex-col" style="padding:20px;height:100%;">
+        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/26d66f75-ec67-47b4-998d-e72194af1033" alt="SHARK DOG coin trade call graphic showing a 95X return"/>
+        </div>
+        <h3 class="font-heading font-extrabold text-white" style="font-size:22px;margin:20px 0 0;">SHARK DOG COIN</h3>
+        <p style="font-size:15px;line-height:1.6;color:var(--muted-dark);margin:10px 0 0;">Inspired by the super-viral dog wearing a shark costume while peacefully chilling on the water.</p>
+        <div class="tu-coin-calc" data-multiplier="95" data-final="9500" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
+        </div>
       </div>
     </div>
+    <p style="font-size:12px;line-height:1.6;color:var(--muted-dark);max-width:640px;margin:28px auto 0;text-align:center;">Hypothetical example for illustration only. Past performance of a coin does not guarantee future results, and most memecoins lose value.</p>
   </div>
 </section>
 
@@ -1143,6 +1175,82 @@
       }
     });
   }
+</script>
+
+<script>
+  // ─── COIN RETURN CALCULATOR ANIMATION ───
+  (function () {
+    const calcs = document.querySelectorAll('.tu-coin-calc');
+    if (!calcs.length) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function formatNumber(n) {
+      return Math.round(n).toLocaleString('en-US');
+    }
+
+    function showFinal(calc) {
+      const mult = parseFloat(calc.dataset.multiplier);
+      const final = parseFloat(calc.dataset.final);
+      const finalEl = calc.querySelector('.tu-coin-calc-final');
+      calc.querySelector('.tu-coin-calc-mult').textContent = formatNumber(mult);
+      calc.querySelector('.tu-coin-calc-final-num').textContent = formatNumber(final);
+      calc.classList.add('is-visible');
+      finalEl.classList.add('is-revealed', 'tu-coin-glow');
+    }
+
+    function animateCalc(calc) {
+      const mult = parseFloat(calc.dataset.multiplier);
+      const final = parseFloat(calc.dataset.final);
+      const multEl = calc.querySelector('.tu-coin-calc-mult');
+      const finalEl = calc.querySelector('.tu-coin-calc-final');
+      const finalNumEl = calc.querySelector('.tu-coin-calc-final-num');
+      const duration = 1100;
+      let start = null;
+
+      calc.classList.add('is-visible');
+
+      function tick(now) {
+        if (start === null) start = now;
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        multEl.textContent = formatNumber(mult * eased);
+
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          multEl.textContent = formatNumber(mult);
+          finalNumEl.textContent = formatNumber(final);
+          finalEl.classList.add('is-revealed', 'tu-coin-glow');
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if (reduceMotion) {
+      calcs.forEach(showFinal);
+      return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      calcs.forEach(showFinal);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateCalc(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    calcs.forEach((calc) => observer.observe(calc));
+  })();
 </script>
 </body>
 </html>
