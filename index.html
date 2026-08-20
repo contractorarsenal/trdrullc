@@ -237,6 +237,30 @@
   @keyframes helpSpin { to { transform: rotate(360deg); } }
   .help-spinner { animation: helpSpin .7s linear infinite; }
 
+  /* ─── Promo video popup ─── */
+  #promo-popup-backdrop {
+    background: rgba(9,9,9,0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  #promo-popup.open #promo-popup-backdrop { opacity: 1; }
+  #promo-popup-panel {
+    opacity: 0;
+    transform: translateY(18px) scale(.96);
+    transition: opacity .3s cubic-bezier(.16,1,.3,1), transform .38s cubic-bezier(.16,1,.3,1);
+  }
+  #promo-popup.open #promo-popup-panel { opacity: 1; transform: translateY(0) scale(1); }
+  #promo-popup { visibility: hidden; }
+  #promo-popup.open { visibility: visible; }
+
+  .promo-video-frame { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-dark); }
+  .promo-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+
+  #promo-popup-close { transition: color .15s ease, background-color .15s ease; }
+  #promo-popup-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     #tu-marquee-track { animation: none; }
@@ -246,6 +270,7 @@
     .phase-card .plus, .faq-card .faq-plus { transition: none; }
     .tu-coin-calc-label, .tu-coin-calc-eq, .tu-coin-calc-final { transition: none !important; }
     .tu-coin-calc-final.tu-coin-glow { animation: none; text-shadow: 0 0 10px rgba(255,90,54,.35); }
+    #promo-popup-backdrop, #promo-popup-panel { transition: none !important; }
   }
 </style>
 </head>
@@ -857,6 +882,28 @@
   </div>
 </footer>
 
+<!-- ─── PROMO VIDEO POPUP ─── -->
+<div id="promo-popup" class="fixed inset-0 z-[80]" aria-hidden="true">
+  <div id="promo-popup-backdrop" class="absolute inset-0"></div>
+  <div class="fixed inset-0 flex items-center justify-center" style="padding:16px;">
+    <div id="promo-popup-panel" role="dialog" aria-modal="true" aria-labelledby="promo-popup-title" class="relative" style="background:var(--card-dark);border:1px solid var(--border-dark);border-radius:14px;box-shadow:0 32px 64px rgba(9,9,9,0.45);width:100%;max-width:460px;max-height:92vh;overflow-y:auto;">
+      <button id="promo-popup-close" type="button" aria-label="Close popup" class="absolute flex items-center justify-center rounded-full text-white bg-transparent border-none cursor-pointer z-10" style="top:14px;right:14px;width:32px;height:32px;font-size:16px;opacity:0.6;">&#10005;</button>
+
+      <div style="padding:clamp(22px,4vw,28px);">
+        <p class="tu-label" style="margin-bottom:8px;">Exclusive Offer</p>
+        <h2 id="promo-popup-title" class="font-heading font-extrabold text-white" style="font-size:clamp(22px,3vw,26px);line-height:1.2;margin:0 0 8px;">Want <span class="text-accent">30% Off</span> Trader U?</h2>
+        <p style="font-size:14px;line-height:1.55;color:var(--muted-dark);margin:0 0 18px;">Watch this quick video to find the <strong class="text-white">exclusive 30% OFF promo code hidden inside.</strong></p>
+
+        <div class="promo-video-frame">
+          <iframe src="https://www.youtube.com/embed/66F4Xi__O00?rel=0&amp;modestbranding=1" title="TraderU 30% off promo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <p style="font-size:13px;line-height:1.55;margin:16px 0 0;text-align:center;"><strong class="text-white">Watch closely. The promo code is revealed inside the video.</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ─── LIVE HELP MODAL ─── -->
 <div id="help-modal" class="fixed inset-0 z-[70]">
   <div id="help-modal-backdrop" class="absolute inset-0"></div>
@@ -1250,6 +1297,70 @@
     );
 
     calcs.forEach((calc) => observer.observe(calc));
+  })();
+</script>
+
+<script>
+  // ─── PROMO VIDEO POPUP ───
+  (function () {
+    const STORAGE_KEY = 'tuPromoPopupSeen';
+
+    const popup = document.getElementById('promo-popup');
+    if (!popup) return;
+
+    const popupPanel = document.getElementById('promo-popup-panel');
+    const closeBtn = document.getElementById('promo-popup-close');
+
+    let popupLastFocused = null;
+
+    function openPopup() {
+      popupLastFocused = document.activeElement;
+      popup.classList.add('open');
+      popup.setAttribute('aria-hidden', 'false');
+      popupPanel.setAttribute('tabindex', '-1');
+      document.body.style.overflow = 'hidden';
+      window.setTimeout(() => closeBtn.focus(), 10);
+      document.addEventListener('keydown', handlePopupKeydown);
+      try { window.sessionStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+    }
+
+    function closePopup() {
+      popup.classList.remove('open');
+      popup.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handlePopupKeydown);
+      if (popupLastFocused) popupLastFocused.focus();
+    }
+
+    function handlePopupKeydown(e) {
+      if (e.key === 'Escape') {
+        closePopup();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusable = popupPanel.querySelectorAll('button:not([disabled]), a[href], iframe');
+        if (!focusable.length) return;
+        const list = Array.prototype.slice.call(focusable);
+        const first = list[0];
+        const last = list[list.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    closeBtn.addEventListener('click', closePopup);
+
+    let alreadySeen = false;
+    try { alreadySeen = window.sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (e) {}
+
+    if (!alreadySeen) {
+      window.setTimeout(openPopup, 1800);
+    }
   })();
 </script>
 </body>
