@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trader U Workshop | Reserve Your Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    background: #090909;
+    color: #c9c7c3;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .ht { font-family: 'Inter Tight', sans-serif; }
+  .btn-main {
+    display: block;
+    width: 100%;
+    background: #FF5A36;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding: 18px 24px;
+    border-radius: 999px;
+    transition: background 0.2s, transform 0.1s;
+    touch-action: manipulation;
+  }
+  .btn-main:hover { background: #E8462B; }
+  .btn-main:active { transform: scale(0.98); }
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.14);
+    margin: 28px 0;
+  }
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(255,90,54,0.15);
+    border: 1px solid rgba(255,90,54,0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-icon::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #FF5A36;
+    border-radius: 50%;
+  }
+  a:focus-visible, button:focus-visible { outline: 2px solid #FF5A36; outline-offset: 3px; }
+</style>
+</head>
+
+<body>
+
+<!-- ─── NAV ─── -->
+<nav style="border-bottom: 1px solid rgba(255,255,255,0.14); padding: 18px 24px;">
+  <div style="max-width: 520px; margin: 0 auto; display: flex; justify-content: center;">
+    <a href="../" class="ht" style="font-size: 18px; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -0.01em;">TRADER U</a>
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<main style="max-width: 520px; margin: 0 auto; padding: 48px 24px 64px;">
+
+  <!-- Badge -->
+  <div style="text-align: center; margin-bottom: 24px;">
+    <span class="ht" style="display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,90,54,0.4); background: rgba(255,90,54,0.1); color: #FF5A36; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px;">
+      <span style="width: 7px; height: 7px; background: #FF5A36; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0;"></span>
+      Live Group Workshop &middot; Limited Seats
+    </span>
+  </div>
+
+  <!-- Headline -->
+  <h1 class="ht" style="text-align: center; font-size: clamp(30px, 8vw, 46px); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: #fff; margin: 0 0 16px;">
+    Live Memecoin Trading<br/><span style="color: #FF5A36;">Workshop</span>
+  </h1>
+
+  <!-- Subheadline -->
+  <p style="text-align: center; color: #8f8d89; font-size: 15px; line-height: 1.75; margin: 0 0 28px;">
+    A live group session covering the framework, questions from attendees, and real market breakdowns. All experience levels welcome.
+  </p>
+
+  <hr class="divider"/>
+
+  <!-- What's covered -->
+  <p class="ht" style="color: #6b6966; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 16px;">What's Covered</p>
+
+  <div class="check-row">
+    <div class="check-icon"></div>
+    <p style="color: #a7a5a1; font-size: 14px; line-height: 1.5; margin: 0;">How to read narratives and find coins before they move</p>
+  </div>
+  <div class="check-row">
+    <div class="check-icon"></div>
+    <p style="color: #a7a5a1; font-size: 14px; line-height: 1.5; margin: 0;">Entry, exit, and risk management framework</p>
+  </div>
+  <div class="check-row">
+    <div class="check-icon"></div>
+    <p style="color: #a7a5a1; font-size: 14px; line-height: 1.5; margin: 0;">Live Q&amp;A: attendee questions answered in real time</p>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- CTA -->
+  <a class="btn-main" href="https://whop.com/checkout/plan_ixsAyhNSR5jCU" target="_blank" rel="noopener noreferrer">
+    Reserve Your Workshop Ticket
+  </a>
+
+  <!-- Post-purchase note -->
+  <p style="text-align: center; color: #5a5854; font-size: 12px; margin: 14px 0 0; line-height: 1.7;">
+    After purchasing, you will be redirected to complete your workshop information form.<br/>
+    <span class="ht" style="font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;">One ticket = one workshop meeting.</span>
+  </p>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer style="border-top: 1px solid rgba(255,255,255,0.1); padding: 28px 24px; text-align: center;">
+  <p class="ht" style="color: #4a4844; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.8; max-width: 420px; margin: 0 auto;">
+    © 2026 Trader U. Memecoin trading involves significant risk. Past performance is not indicative of future results. All content is for educational purposes only. Never trade more than you can afford to lose.
+  </p>
+</footer>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+</style>
+
+</body>
+</html>
