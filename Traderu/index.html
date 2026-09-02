@@ -3,29 +3,31 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>TraderU: 18 Modules, 51 Lessons. A Real Memecoin Trading Curriculum.</title>
-<meta name="description" content="TraderU is a structured memecoin trading education platform: 18 modules, 51 lessons, a 14-step beginner roadmap, live market sessions, and a repeatable process to research, plan, execute, and review every trade."/>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Trader U | Memecoin Trading Community &amp; Education</title>
+<meta name="description" content="Trader U is a memecoin trading community and education platform. Learn how experienced traders find narratives, evaluate opportunities, and manage risk, alongside an active community of traders."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
   tailwind.config = {
     theme: {
       extend: {
         colors: {
-          paper: "#F5F3ED",
-          ink: "#090909",
-          ink2: "#77736D",
+          void: "#0A0A0B",
+          surface: "#141416",
+          surface2: "#1C1C1F",
+          surface3: "#26262A",
+          ink: "#F6F5F2",
+          ink2: "#9C988F",
+          ink3: "#6B675F",
           accent: "#FF5A36",
           accenthover: "#E8462B",
-          accentlight: "#FFE2D8",
-          green: "#16A34A",
-          charcoal: "#151517",
-          card: "#FFFFFF",
-          carddark: "#19191C",
+          signal: "#34D399",
+          white: "#FDFCFA",
         },
         fontFamily: {
           heading: ["Inter Tight", "sans-serif"],
           body: ["Inter", "sans-serif"],
+          mono: ["JetBrains Mono", "ui-monospace", "monospace"],
         },
       }
     }
@@ -33,137 +35,155 @@
 </script>
 <style>
   :root {
-    --ink: #090909;
-    --ink2: #77736D;
+    --void: #0A0A0B;
+    --surface: #141416;
+    --surface-2: #1C1C1F;
+    --surface-3: #26262A;
+    --ink: #F6F5F2;
+    --ink2: #9C988F;
+    --ink3: #6B675F;
     --accent: #FF5A36;
     --accent-hover: #E8462B;
-    --accent-light: #FFE2D8;
-    --green: #16A34A;
-    --paper: #F5F3ED;
-    --charcoal: #151517;
-    --card-dark: #19191C;
-    --muted-dark: #A7A5A1;
-    --border: rgba(9,9,9,0.14);
-    --border-dark: rgba(255,255,255,0.14);
+    --accent-soft: rgba(255,90,54,0.14);
+    --accent-glow: rgba(255,90,54,0.4);
+    --signal: #34D399;
+    --signal-soft: rgba(52,211,153,0.14);
+    --white: #FDFCFA;
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.16);
     --font-heading: 'Inter Tight', sans-serif;
     --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   }
 
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--paper); font-family: var(--font-body); }
+  body { margin: 0; background: var(--void); font-family: var(--font-body); color: var(--ink); position: relative; }
   img, video { max-width: 100%; }
 
-  ::selection { background: var(--accent-light); color: var(--ink); }
+  ::selection { background: var(--accent); color: #fff; }
 
   a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
 
+  /* ─── Grain overlay ─── */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
   /* ─── Global container system ─── */
-  .tu-wrap, .tu-wrap-1200 { margin-inline: auto; padding-inline: 20px; }
+  .tu-wrap, .tu-wrap-1200 { margin-inline: auto; padding-inline: 20px; position: relative; }
   .tu-wrap { max-width: 1180px; }
   .tu-wrap-1200 { max-width: 1180px; }
   @media (min-width: 768px) { .tu-wrap, .tu-wrap-1200 { padding-inline: 32px; } }
   @media (min-width: 1024px) { .tu-wrap, .tu-wrap-1200 { padding-inline: 48px; } }
 
-  /* ─── Section rhythm ─── */
-  .tu-section { padding-block: 56px; }
-  @media (min-width: 768px) { .tu-section { padding-block: 72px; } }
-  @media (min-width: 1024px) { .tu-section { padding-block: 96px; } }
-
-  /* ─── Typography scale ─── */
-  .tu-label { font-family: var(--font-body); text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--accent); margin: 0 0 12px; }
-  .tu-label-muted { color: var(--ink2); }
-  .tu-label-center { text-align: center; }
-
-  .tu-h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(52px,7vw,96px); line-height: 0.98; letter-spacing: -0.03em; margin: 0; }
-  .tu-h2 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(34px,4vw,52px); line-height: 1.1; letter-spacing: -0.02em; margin: 0; }
-  .tu-h3 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(24px,3vw,32px); line-height: 1.18; letter-spacing: -0.01em; margin: 0; }
-  .tu-h4 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(20px,2.2vw,24px); line-height: 1.25; margin: 0; }
-
-  .tu-body { font-size: 16px; line-height: 1.65; color: #3a3936; font-family: var(--font-body); }
-  @media (min-width: 640px) { .tu-body { font-size: 17px; } }
-  .tu-body-sm { font-size: 15px; line-height: 1.6; color: var(--ink2); font-family: var(--font-body); }
-  @media (min-width: 640px) { .tu-body-sm { font-size: 16px; } }
-
-  /* ─── Buttons ─── */
-  .tu-btn { display: inline-flex; align-items: center; justify-content: center; height: 54px; padding-inline: 30px; border-radius: 999px; font-family: var(--font-body); font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; text-decoration: none; border: none; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease; }
-  .tu-btn-primary { background: var(--accent); color: #fff; }
-  .tu-btn-primary:hover { background: var(--accent-hover); }
-  .tu-btn-dark { background: var(--ink); color: #fff; }
-  .tu-btn-dark:hover { background: var(--accent); }
-  .tu-btn-outline-light { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); height: 48px; padding-inline: 26px; }
-  .tu-btn-outline-light:hover { border-color: #fff; }
-  .tu-btn-invert:hover { background: #fff; color: var(--ink); }
-
-  /* ─── Dark card ─── */
-  .tu-dcard { background: var(--card-dark); border: 1px solid var(--border-dark); border-radius: 14px; }
-
-  /* ─── Grids ─── */
-  .tu-2col { display: grid; gap: 32px; }
-  @media (min-width: 768px) { .tu-2col { gap: 40px; } }
-  @media (min-width: 1024px) { .tu-2col { gap: 56px; } }
-
-  .tu-founder-grid { grid-template-columns: 1fr; align-items: center; }
-  @media (min-width: 1024px) { .tu-founder-grid { grid-template-columns: minmax(0,44%) minmax(0,56%); } }
-
-  .tu-process-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-  @media (min-width: 640px) { .tu-process-grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1100px) { .tu-process-grid { grid-template-columns: repeat(5,1fr); } }
-
-  .tu-story-gallery { display: grid; grid-template-columns: 1fr; gap: 24px; }
-  @media (min-width: 800px) { .tu-story-gallery { grid-template-columns: 1fr 1fr; } }
-
-  .tu-trade-cols { display: grid; grid-template-columns: 1fr; gap: 24px; }
-  @media (min-width: 900px) { .tu-trade-cols { grid-template-columns: 1fr 1fr; } }
-
-  .tu-trade-info-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
-  @media (min-width: 480px) { .tu-trade-info-grid { grid-template-columns: 1fr 1fr; gap: 20px; } }
-
-  .tu-enroll-grid { grid-template-columns: 1fr; }
-  @media (min-width: 900px) { .tu-enroll-grid { grid-template-columns: 1fr 1fr; align-items: center; } }
-
-  /* ─── Centered narrow containers ─── */
   .tu-wrap-820, .tu-wrap-760 { margin-inline: auto; padding-inline: 20px; }
   .tu-wrap-820 { max-width: 820px; }
   .tu-wrap-760 { max-width: 760px; }
   @media (min-width: 768px) { .tu-wrap-820, .tu-wrap-760 { padding-inline: 32px; } }
   @media (min-width: 1024px) { .tu-wrap-820, .tu-wrap-760 { padding-inline: 48px; } }
 
-  .tu-pricing-card { padding: 24px; }
-  @media (min-width: 480px) { .tu-pricing-card { padding: 32px; } }
-  @media (min-width: 640px) { .tu-pricing-card { padding: 44px; } }
+  /* ─── Section rhythm ─── */
+  .tu-section { padding-block: 64px; position: relative; }
+  @media (min-width: 768px) { .tu-section { padding-block: 88px; } }
+  @media (min-width: 1024px) { .tu-section { padding-block: 112px; } }
 
-  .tu-who-grid { grid-template-columns: 1fr; }
-  @media (min-width: 768px) { .tu-who-grid { grid-template-columns: 1fr 1fr; } }
+  .bg-void { background: var(--void); }
+  .bg-surface { background: var(--surface); }
+  .bg-surface2 { background: var(--surface-2); }
 
-  .tu-who-panel-grid { display: grid; grid-template-columns: 1fr; }
-  @media (min-width: 768px) { .tu-who-panel-grid { grid-template-columns: 1fr 1fr; } }
-  .tu-who-panel-grid > div:first-child { border-bottom: 1px solid var(--border); }
-  @media (min-width: 768px) { .tu-who-panel-grid > div:first-child { border-bottom: none; border-right: 1px solid var(--border); } }
+  .tu-divider-top { border-top: 1px solid var(--line); }
 
-  .tu-member-grid { grid-template-columns: 1fr; }
-  @media (min-width: 720px) { .tu-member-grid { grid-template-columns: 1.05fr 0.95fr; } }
+  /* ─── Typography scale ─── */
+  .tu-label { font-family: var(--font-mono); text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; color: var(--accent); margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+  .tu-label-center { justify-content: center; }
+  .tu-label::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
 
-  /* ─── Thin editorial image border ─── */
-  .tu-thin-frame { border: 1px solid var(--border-dark); border-radius: 8px; padding: 0; overflow: hidden; }
-  .tu-thin-frame-light { border: 1px solid rgba(9,9,9,0.20); border-radius: 8px; padding: 0; overflow: hidden; box-shadow: 0 10px 30px rgba(9,9,9,0.08); }
+  .tu-h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(40px,8vw,88px); line-height: 0.98; letter-spacing: -0.03em; margin: 0; }
+  .tu-h2 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(30px,4vw,48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0; color: var(--ink); }
+  .tu-h3 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(22px,3vw,28px); line-height: 1.18; letter-spacing: -0.01em; margin: 0; color: var(--ink); }
+  .tu-h4 { font-family: var(--font-heading); font-weight: 700; font-size: clamp(19px,2.2vw,22px); line-height: 1.25; margin: 0; color: var(--ink); }
 
-  /* Marquee */
+  .tu-body { font-size: 16px; line-height: 1.65; color: var(--ink2); font-family: var(--font-body); }
+  @media (min-width: 640px) { .tu-body { font-size: 17px; } }
+  .tu-body-sm { font-size: 15px; line-height: 1.6; color: var(--ink2); font-family: var(--font-body); }
+  @media (min-width: 640px) { .tu-body-sm { font-size: 16px; } }
+  .tu-fine { font-size: 12px; line-height: 1.6; color: var(--ink3); font-family: var(--font-body); }
+
+  /* ─── Buttons ─── */
+  .tu-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 56px; padding-inline: 32px; border-radius: 999px; font-family: var(--font-body); font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; text-decoration: none; border: none; cursor: pointer; transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease; position: relative; }
+  .tu-btn-primary { background: var(--accent); color: #fff; box-shadow: 0 0 0 0 rgba(255,90,54,0.5); }
+  .tu-btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(255,90,54,0.55); }
+  .tu-btn-primary:active { transform: translateY(0); }
+  .tu-btn-light { background: var(--ink); color: var(--void); }
+  .tu-btn-light:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
+  .tu-btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line-strong); height: 50px; padding-inline: 28px; }
+  .tu-btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .tu-btn-sm { height: 46px; padding-inline: 22px; font-size: 13px; }
+
+  /* ─── Cards ─── */
+  .tu-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px; transition: border-color .25s ease, transform .25s ease, background-color .25s ease; }
+  .tu-card:hover { border-color: var(--line-strong); }
+
+  /* ─── Scroll reveal ─── */
+  [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); transition-delay: calc(var(--i,0) * 90ms); will-change: opacity, transform; }
+  [data-reveal="fade"] { transform: none; }
+  [data-reveal].is-in { opacity: 1; transform: none; }
+
+  /* ─── Hero staggered entrance ─── */
+  .hero-line { display: block; overflow: hidden; }
+  .hero-line span { display: inline-block; transform: translateY(110%); animation: heroLineIn 0.9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d, 0s); }
+  @keyframes heroLineIn { to { transform: translateY(0); } }
+  .hero-fade { opacity: 0; animation: heroFadeIn .8s ease forwards; animation-delay: var(--d, 0s); }
+  @keyframes heroFadeIn { to { opacity: 1; } }
+
+  /* ─── Hero ambient background ─── */
+  .hero-glow { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+  .hero-glow::before, .hero-glow::after { content: ""; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35; }
+  .hero-glow::before { width: 560px; height: 560px; background: var(--accent); top: -220px; left: 50%; transform: translateX(-70%); animation: driftA 18s ease-in-out infinite alternate; }
+  .hero-glow::after { width: 420px; height: 420px; background: var(--signal); top: 40px; left: 60%; opacity: 0.14; animation: driftB 22s ease-in-out infinite alternate; }
+  @keyframes driftA { from { transform: translateX(-70%) translateY(0); } to { transform: translateX(-45%) translateY(40px); } }
+  @keyframes driftB { from { transform: translateX(-30%) translateY(0); } to { transform: translateX(-10%) translateY(-30px); } }
+  .hero-grid { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5;
+    background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 40%, transparent 90%);
+  }
+
+  /* ─── Terminal card (hero visual) ─── */
+  .term-card { background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 16px; box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6); }
+  .term-dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+  .live-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--signal); display: inline-block; position: relative; }
+  .live-dot::after { content: ""; position: absolute; inset: -4px; border-radius: 999px; border: 1px solid var(--signal); animation: pulseRing 1.8s ease-out infinite; }
+  @keyframes pulseRing { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.1); opacity: 0; } }
+
+  .tilt { transform-style: preserve-3d; transition: transform .25s ease; }
+
+  /* ─── Marquee ─── */
   @keyframes tuMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  #tu-marquee-track { animation: tuMarquee 24s linear infinite; }
+  #tu-marquee-track { animation: tuMarquee 26s linear infinite; }
 
-  /* Nav */
+  /* ─── Nav ─── */
   #site-nav {
-    background: transparent;
+    background: rgba(10,10,11,0);
     border-bottom: 1px solid transparent;
-    transition: background-color .3s ease, border-color .3s ease, box-shadow .3s ease;
+    backdrop-filter: blur(0px);
+    transition: background-color .3s ease, border-color .3s ease, backdrop-filter .3s ease;
   }
   #site-nav.nav-solid {
-    background: var(--paper);
-    border-bottom-color: var(--border);
-    box-shadow: 0 4px 24px rgba(9,9,9,0.06);
+    background: rgba(10,10,11,0.82);
+    border-bottom-color: var(--line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
 
   /* Mobile menu */
@@ -179,34 +199,38 @@
   }
   #mobile-menu.open { opacity: 1; visibility: visible; transition-delay: 0s; }
 
-  /* FAQ + Curriculum accordions */
-  details.faq-item summary, details.phase-item summary { list-style: none; cursor: pointer; }
-  details.faq-item summary::-webkit-details-marker, details.phase-item summary::-webkit-details-marker { display: none; }
+  /* FAQ accordion */
+  details.faq-item summary { list-style: none; cursor: pointer; }
+  details.faq-item summary::-webkit-details-marker { display: none; }
 
-  /* ─── FAQ dark accordion cards ─── */
-  .faq-card { background: var(--card-dark); border: 1px solid var(--border-dark); border-radius: 12px; margin-bottom: 12px; }
+  .faq-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px; }
   .faq-card summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 22px; }
-  .faq-card .faq-q { font-family: var(--font-heading); font-weight: 700; font-size: 16px; color: #fff; }
+  .faq-card .faq-q { font-family: var(--font-heading); font-weight: 700; font-size: 16px; color: var(--ink); }
   .faq-card .faq-plus { flex-shrink: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 20px; font-weight: 600; transition: transform .2s ease; }
   .faq-card[open] .faq-plus { transform: rotate(45deg); }
   .faq-answer-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
   .faq-card[open] .faq-answer-wrap { grid-template-rows: 1fr; }
   .faq-answer-inner { overflow: hidden; }
-  .faq-answer-inner p { padding: 0 22px 20px; margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted-dark); }
+  .faq-answer-inner p { padding: 0 22px 20px; margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink2); }
   @media (prefers-reduced-motion: reduce) { .faq-answer-wrap { transition: none; } }
 
-  /* ─── Curriculum dark accordion cards ─── */
-  .phase-card { background: var(--card-dark); border: 1px solid var(--border-dark); border-radius: 14px; margin-bottom: 14px; overflow: hidden; }
-  .phase-card summary { padding: 22px 24px; gap: 20px; }
-  .phase-card .phase-num { font-family: var(--font-heading); font-weight: 800; font-size: clamp(22px,2.4vw,30px); color: var(--accent); width: 46px; flex-shrink: 0; }
-  .phase-card .phase-title { font-family: var(--font-heading); font-weight: 700; font-size: clamp(18px,2vw,22px); color: #fff; flex: 1; }
-  .phase-card .plus { transition: transform .2s ease, border-color .2s ease, color .2s ease; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid var(--border-dark); border-radius: 999px; font-family: var(--font-heading); font-weight: 600; font-size: 19px; color: #fff; flex-shrink: 0; }
-  .phase-card[open] .plus { transform: rotate(45deg); color: var(--accent); border-color: var(--accent); }
-  .phase-card .phase-body { background: rgba(255,255,255,0.03); border-top: 1px solid var(--border-dark); padding: 24px 24px 28px 24px; }
-  @media (min-width: 640px) { .phase-card .phase-body { padding-left: 66px; padding-right: 28px; } }
+  /* ─── Coin return calculator ─── */
+  .tu-coin-calc { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .tu-coin-calc-label { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin: 0 0 8px; opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
+  .tu-coin-calc-eq { font-family: var(--font-mono); font-weight: 500; font-size: 16px; color: var(--ink2); margin: 0; opacity: 0; transform: translateY(8px); transition: opacity .4s ease .1s, transform .4s ease .1s; }
+  .tu-coin-calc-final { font-family: var(--font-heading); font-weight: 800; font-size: clamp(28px,3.4vw,34px); line-height: 1.2; color: var(--accent); margin: 10px 0 0; letter-spacing: -0.01em; opacity: 0; transform: scale(.85); transition: opacity .4s ease, transform .5s cubic-bezier(.34,1.56,.64,1); }
+  .tu-coin-calc.is-visible .tu-coin-calc-label,
+  .tu-coin-calc.is-visible .tu-coin-calc-eq { opacity: 1; transform: translateY(0); }
+  .tu-coin-calc-final.is-revealed { opacity: 1; transform: scale(1); }
+  .tu-coin-calc-final.tu-coin-glow { animation: tuCoinGlow 1.4s ease-out forwards; }
+  @keyframes tuCoinGlow {
+    0% { text-shadow: 0 0 0 rgba(255,90,54,0); }
+    35% { text-shadow: 0 0 22px rgba(255,90,54,.75), 0 0 44px rgba(255,90,54,.4); }
+    100% { text-shadow: 0 0 10px rgba(255,90,54,.35); }
+  }
 
-  /* Live Help modal */
-  #help-modal-backdrop { background: rgba(9,9,9,0.55); opacity: 0; transition: opacity .25s ease; }
+  /* ─── Live Help modal ─── */
+  #help-modal-backdrop { background: rgba(4,4,5,0.7); opacity: 0; transition: opacity .25s ease; }
   #help-modal.open #help-modal-backdrop { opacity: 1; }
   #help-modal-panel {
     opacity: 0;
@@ -218,40 +242,85 @@
   #help-modal.open { visibility: visible; }
 
   .help-option { transition: border-color .15s ease, background-color .15s ease; }
-  .help-option:hover { border-color: rgba(255,90,54,0.4); }
-  .help-option[aria-pressed="true"] { border-color: #FF5A36; background: #FFE2D8; }
+  .help-option:hover { border-color: rgba(255,90,54,0.5); }
+  .help-option[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 
   @keyframes helpSpin { to { transform: rotate(360deg); } }
   .help-spinner { animation: helpSpin .7s linear infinite; }
+
+  /* ─── Offer popup ─── */
+  #promo-popup-backdrop {
+    background: rgba(4,4,5,0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  #promo-popup.open #promo-popup-backdrop { opacity: 1; }
+  #promo-popup-panel {
+    opacity: 0;
+    transform: translateY(24px) scale(.94);
+    transition: opacity .4s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  #promo-popup.open #promo-popup-panel { opacity: 1; transform: translateY(0) scale(1); }
+  #promo-popup { visibility: hidden; }
+  #promo-popup.open { visibility: visible; }
+
+  .promo-glow { position: absolute; inset: 0; overflow: hidden; border-radius: 20px; pointer-events: none; }
+  .promo-glow::before { content: ""; position: absolute; width: 320px; height: 320px; background: var(--accent); opacity: 0.28; filter: blur(70px); border-radius: 50%; top: -120px; left: 50%; transform: translateX(-50%); animation: promoDrift 8s ease-in-out infinite alternate; }
+  @keyframes promoDrift { from { transform: translateX(-60%) scale(1); } to { transform: translateX(-40%) scale(1.15); } }
+
+  .promo-mark { font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.03em; }
+  .promo-price-ring { border: 1px solid var(--line-strong); border-radius: 16px; background: linear-gradient(180deg, rgba(255,90,54,0.08), rgba(255,90,54,0)); }
+
+  /* ─── Pricing glow ─── */
+  .pricing-glow { position: absolute; inset: -40px; z-index: 0; pointer-events: none; overflow: visible; }
+  .pricing-glow::before { content: ""; position: absolute; width: 70%; height: 60%; left: 15%; top: -10%; background: var(--accent); opacity: 0.22; filter: blur(80px); border-radius: 50%; }
+
+  #promo-popup-close { transition: color .15s ease, background-color .15s ease; }
+  #promo-popup-close:hover { color: #fff; background: rgba(255,255,255,0.1); }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     #tu-marquee-track { animation: none; }
     #mobile-menu-panel { transition: none !important; }
-    #help-modal-panel { transition: none !important; }
-    #help-modal-backdrop { transition: none !important; }
-    .phase-card .plus, .faq-card .faq-plus { transition: none; }
+    #help-modal-panel, #help-modal-backdrop { transition: none !important; }
+    .faq-card .faq-plus { transition: none; }
+    .tu-coin-calc-label, .tu-coin-calc-eq, .tu-coin-calc-final { transition: none !important; }
+    .tu-coin-calc-final.tu-coin-glow { animation: none; text-shadow: 0 0 10px rgba(255,90,54,.35); }
+    #promo-popup-backdrop, #promo-popup-panel { transition: none !important; }
+    .hero-line span, .hero-fade { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .hero-glow::before, .hero-glow::after, .promo-glow::before, .live-dot::after { animation: none !important; }
+    [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .tilt { transition: none !important; }
+  }
+
+  .hero-step-cell { padding: 12px 8px; }
+  @media (min-width: 480px) { .hero-step-cell { padding: 18px 16px; } }
+
+  @media (max-width: 767px) {
+    .hero-glow::before, .hero-glow::after { display: none; }
   }
 </style>
 </head>
 
-<body class="bg-paper text-ink font-body antialiased overflow-x-hidden relative" style="padding-bottom:0;">
+<body class="font-body antialiased overflow-x-hidden relative" style="padding-bottom:0;">
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-accent focus:text-white focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold">Skip to main content</a>
 
 <!-- ─── NAV ─── -->
 <nav id="site-nav" class="fixed top-0 left-0 right-0 z-50">
   <div class="tu-wrap flex justify-between items-center" style="gap:16px;padding-block:18px;">
     <a href="#hero" class="font-heading font-extrabold text-lg text-ink" style="letter-spacing:0.02em;">TRADER U</a>
-    <div class="hidden lg:flex items-center font-body text-xs uppercase tracking-[0.08em] text-ink" style="gap:40px;">
-      <a href="#process" class="hover:text-accent transition-colors">Process</a>
-      <a href="#stories" class="hover:text-accent transition-colors">Member Stories</a>
-      <a href="#curriculum" class="hover:text-accent transition-colors">Curriculum</a>
-      <a href="#enrollment" class="hover:text-accent transition-colors">Enrollment</a>
+    <div class="hidden lg:flex items-center font-body text-xs uppercase tracking-[0.1em] text-ink2" style="gap:36px;">
+      <a href="#proof" class="hover:text-ink transition-colors">Proof</a>
+      <a href="#system" class="hover:text-ink transition-colors">Curriculum</a>
+      <a href="#pricing" class="hover:text-ink transition-colors">Pricing</a>
+      <a href="#faq" class="hover:text-ink transition-colors">FAQ</a>
     </div>
     <div class="flex items-center" style="gap:12px;">
       <a href="/checkout" target="_blank" rel="noopener noreferrer"
-         class="hidden lg:inline-flex tu-btn tu-btn-primary" style="height:48px;padding-inline:26px;font-size:14px;">
-        Get Access
+         class="hidden lg:inline-flex tu-btn tu-btn-primary" style="height:48px;padding-inline:26px;font-size:13px;">
+        Join Trader U
       </a>
       <button id="hamburger-btn" class="lg:hidden flex flex-col justify-center items-center bg-transparent border-none cursor-pointer" style="width:44px;height:44px;gap:5px;" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
         <span class="block bg-ink" style="width:22px;height:2px;"></span>
@@ -264,450 +333,457 @@
 
 <!-- ─── MOBILE MENU ─── -->
 <div id="mobile-menu" aria-hidden="true" class="fixed inset-0 z-[60]">
-  <div id="mobile-menu-backdrop" class="absolute inset-0" style="background:rgba(9,9,9,0.55);"></div>
-  <div id="mobile-menu-panel" class="absolute top-0 left-0 right-0 bg-paper shadow-2xl" style="border-bottom:1px solid var(--border);">
-    <div class="flex justify-between items-center" style="padding:20px;border-bottom:1px solid var(--border);">
+  <div id="mobile-menu-backdrop" class="absolute inset-0" style="background:rgba(4,4,5,0.65);"></div>
+  <div id="mobile-menu-panel" class="absolute top-0 left-0 right-0 bg-void shadow-2xl" style="border-bottom:1px solid var(--line);">
+    <div class="flex justify-between items-center" style="padding:20px;border-bottom:1px solid var(--line);">
       <span class="font-heading font-extrabold text-lg text-ink">TRADER U</span>
       <button id="mobile-menu-close" class="flex items-center justify-center text-ink2 bg-transparent border-none cursor-pointer" style="width:40px;height:40px;font-size:18px;" aria-label="Close menu">&#10005;</button>
     </div>
-    <nav class="font-body uppercase tracking-[0.06em]" style="font-size:13px;padding:8px 20px 4px;">
-      <a href="#process" class="mobile-link block text-ink" style="padding:16px 0;border-bottom:1px solid rgba(9,9,9,0.1);">Process</a>
-      <a href="#stories" class="mobile-link block text-ink" style="padding:16px 0;border-bottom:1px solid rgba(9,9,9,0.1);">Member Stories</a>
-      <a href="#curriculum" class="mobile-link block text-ink" style="padding:16px 0;border-bottom:1px solid rgba(9,9,9,0.1);">Curriculum</a>
-      <a href="#enrollment" class="mobile-link block text-ink" style="padding:16px 0;">Enrollment</a>
+    <nav class="font-body uppercase tracking-[0.08em]" style="font-size:13px;padding:8px 20px 4px;">
+      <a href="#proof" class="mobile-link block text-ink" style="padding:16px 0;border-bottom:1px solid var(--line);">Proof</a>
+      <a href="#system" class="mobile-link block text-ink" style="padding:16px 0;border-bottom:1px solid var(--line);">Curriculum</a>
+      <a href="#pricing" class="mobile-link block text-ink" style="padding:16px 0;border-bottom:1px solid var(--line);">Pricing</a>
+      <a href="#faq" class="mobile-link block text-ink" style="padding:16px 0;">FAQ</a>
     </nav>
     <div style="padding:20px;">
       <a href="/checkout" target="_blank" rel="noopener noreferrer" class="mobile-link tu-btn tu-btn-primary w-full">
-        Get the Full System for $449.99
+        Join Trader U
       </a>
     </div>
   </div>
 </div>
 
 <!-- ─── MOBILE STICKY CHECKOUT BAR ─── -->
-<div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-paper" style="border-top:1px solid var(--border);padding:12px 16px;">
+<div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-void" style="border-top:1px solid var(--line);padding:12px 16px;">
   <a href="/checkout" target="_blank" rel="noopener noreferrer"
      class="tu-btn tu-btn-primary w-full">
-    Get the Full System
+    Join Trader U
   </a>
 </div>
 
 <!-- ─── LIVE HELP FLOATING BUTTON ─── -->
 <button id="live-help-btn" type="button" aria-haspopup="dialog" aria-controls="help-modal"
   class="fixed right-6 z-40 flex items-center gap-2 rounded-full bg-accent text-white border-none cursor-pointer bottom-[100px] lg:bottom-6"
-  style="box-shadow:0 12px 24px rgba(255,90,54,0.3);padding:14px 18px;">
+  style="box-shadow:0 12px 24px rgba(255,90,54,0.35);padding:14px 18px;">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-[18px] h-[18px] shrink-0"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
   <span class="font-bold uppercase tracking-[0.04em]" style="font-size:13px;">Live Help</span>
 </button>
 
-<main id="main" class="pb-[76px] lg:pb-0">
+<main id="main" class="pb-[84px] lg:pb-0">
 
 <!-- ─── HERO ─── -->
-<section id="hero" class="relative" style="padding-top:clamp(120px,14vw,160px);">
-  <div class="tu-wrap text-center">
-    <h1 class="tu-h1 text-ink">STOP CHASING<br/><span style="color:#16A34A;">GREEN CANDLES.</span></h1>
-    <p class="tu-body-sm mx-auto" style="max-width:520px;margin:24px auto 0;">Learn the process behind better research, entries, exits, and risk.</p>
-    <div class="flex flex-col items-center" style="gap:14px;margin-top:32px;">
-      <a href="/checkout" target="_blank" rel="noopener noreferrer"
-         class="tu-btn tu-btn-primary">
-        Get the Full System for $449.99
-      </a>
-      <a href="#curriculum" class="text-ink font-semibold underline" style="font-size:14px;text-underline-offset:4px;">See the Curriculum</a>
-    </div>
-  </div>
+<section id="hero" class="relative bg-void" style="padding-top:clamp(128px,16vw,168px);padding-bottom:56px;overflow:hidden;">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
 
-  <!-- Desktop dashboard composition -->
-  <div class="hidden lg:block tu-wrap" style="margin-top:64px;margin-bottom:80px;">
-    <div class="relative mx-auto" style="max-width:1120px;height:420px;">
-      <div class="absolute bg-card" style="left:0;top:30px;width:250px;height:350px;border:1px solid var(--border);border-radius:12px;transform:rotate(-1deg);box-shadow:0 20px 40px rgba(9,9,9,0.10);padding:20px;z-index:1;">
-        <p class="font-body uppercase text-ink2" style="font-size:10px;letter-spacing:0.08em;margin:0 0 16px;">Curriculum</p>
-        <div class="flex flex-col" style="gap:10px;">
-          <div class="font-semibold" style="background:var(--paper);padding:10px 12px;font-size:12px;border-radius:6px;">Start Here</div>
-          <div class="font-semibold" style="background:var(--paper);padding:10px 12px;font-size:12px;border-radius:6px;">Trading Basics</div>
-          <div class="font-semibold" style="background:var(--accent-light);padding:10px 12px;font-size:12px;border-radius:6px;">Entries</div>
-          <div class="font-semibold opacity-50" style="background:var(--paper);padding:10px 12px;font-size:12px;border-radius:6px;">Risk Management</div>
+  <div class="tu-wrap relative" style="z-index:1;">
+    <div class="text-center" style="max-width:900px;margin-inline:auto;">
+      <p class="tu-label tu-label-center hero-fade" style="--d:0s;justify-content:center;">Memecoin Trading Community</p>
+      <h1 class="tu-h1 text-ink">
+        <span class="hero-line"><span style="--d:.05s;">STOP TRADING</span></span>
+        <span class="hero-line"><span style="--d:.18s;color:var(--accent);">MEMES ALONE.</span></span>
+      </h1>
+      <p class="tu-body hero-fade mx-auto" style="--d:.42s;max-width:560px;margin:26px auto 0;">
+        Start understanding what you're actually trading. Learn narratives, opportunities, and risk alongside traders who are actually in the market.
+      </p>
+      <div class="flex flex-col items-center hero-fade" style="--d:.68s;gap:16px;margin-top:36px;">
+        <a href="/checkout" target="_blank" rel="noopener noreferrer" class="tu-btn tu-btn-primary">
+          Join Trader U
+        </a>
+        <div class="flex flex-wrap items-center justify-center font-mono" style="gap:10px 18px;font-size:12px;color:var(--ink3);letter-spacing:0.02em;">
+          <span>One-time payment</span>
+          <span style="opacity:.4;">/</span>
+          <span>Education + community</span>
+          <span style="opacity:.4;">/</span>
+          <span>Immediate access</span>
         </div>
       </div>
+    </div>
 
-      <div class="absolute bg-card overflow-hidden" style="left:50%;top:0;transform:translateX(-50%);width:min(760px,74%);border:1px solid var(--border);border-radius:14px;box-shadow:0 30px 60px rgba(9,9,9,0.16);z-index:2;">
-        <div class="flex items-center" style="gap:8px;padding:14px 18px;border-bottom:1px solid var(--border);">
-          <span style="width:9px;height:9px;border-radius:999px;background:rgba(9,9,9,0.15);display:inline-block;"></span>
-          <span style="width:9px;height:9px;border-radius:999px;background:rgba(9,9,9,0.15);display:inline-block;"></span>
-          <span style="width:9px;height:9px;border-radius:999px;background:rgba(9,9,9,0.15);display:inline-block;"></span>
-          <span class="font-body text-ink2" style="margin-left:12px;font-size:11px;">traderu.com/dashboard</span>
+    <!-- Terminal visual -->
+    <div class="hero-fade mt-6 md:mt-16" style="--d:.85s;">
+      <div class="term-card mx-auto tilt" id="hero-term" style="max-width:780px;overflow:hidden;">
+        <div class="flex items-center justify-between" style="padding:14px 20px;border-bottom:1px solid var(--line);">
+          <div class="flex items-center" style="gap:8px;">
+            <span class="term-dot" style="background:rgba(255,255,255,0.15);"></span>
+            <span class="term-dot" style="background:rgba(255,255,255,0.15);"></span>
+            <span class="term-dot" style="background:rgba(255,255,255,0.15);"></span>
+            <span class="font-mono" style="margin-left:10px;font-size:11px;color:var(--ink3);">traderu / process</span>
+          </div>
+          <div class="flex items-center" style="gap:6px;">
+            <span class="live-dot"></span>
+            <span class="font-mono" style="font-size:11px;color:var(--signal);">LIVE PROCESS</span>
+          </div>
         </div>
-        <div style="padding:28px;">
-          <div class="flex justify-between items-end" style="margin-bottom:22px;">
-            <div>
-              <p class="font-heading font-extrabold" style="font-size:32px;margin:0;">37%</p>
-              <p class="font-body uppercase text-ink2" style="font-size:11px;margin:2px 0 0;">Curriculum progress</p>
+        <div class="grid" style="grid-template-columns:1fr;">
+          <div class="hidden sm:grid" style="grid-template-columns:repeat(2,1fr);border-bottom:1px solid var(--line);">
+            <div style="padding:20px;border-right:1px solid var(--line);">
+              <p class="font-mono" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px;">Narrative</p>
+              <p class="font-heading font-bold text-ink" style="font-size:15px;margin:0;">Viral moment identified</p>
             </div>
-            <div class="flex text-right" style="gap:20px;">
-              <div><p class="font-heading font-extrabold" style="font-size:20px;margin:0;">18</p><p class="font-body text-ink2" style="font-size:10px;margin:2px 0 0;">MODULES</p></div>
-              <div><p class="font-heading font-extrabold" style="font-size:20px;margin:0;">51</p><p class="font-body text-ink2" style="font-size:10px;margin:2px 0 0;">LESSONS</p></div>
-              <div><p class="font-heading font-extrabold text-accent" style="font-size:20px;margin:0;">14/14</p><p class="font-body text-ink2" style="font-size:10px;margin:2px 0 0;">ROADMAP</p></div>
+            <div style="padding:20px;">
+              <p class="font-mono" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px;">Liquidity / Volume</p>
+              <p class="font-heading font-bold text-ink" style="font-size:15px;margin:0;">Checked before entry</p>
             </div>
           </div>
-          <div style="height:8px;border-radius:999px;background:var(--paper);overflow:hidden;"><div style="height:100%;width:37%;background:var(--accent);"></div></div>
+          <div class="grid" style="grid-template-columns:repeat(4,1fr);">
+            <div class="hero-step-cell" style="border-right:1px solid var(--line);text-align:center;">
+              <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 6px;">01</p>
+              <p class="font-heading font-bold text-ink" style="font-size:13px;margin:0;">Research</p>
+            </div>
+            <div class="hero-step-cell" style="border-right:1px solid var(--line);text-align:center;">
+              <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 6px;">02</p>
+              <p class="font-heading font-bold text-ink" style="font-size:13px;margin:0;">Plan</p>
+            </div>
+            <div class="hero-step-cell" style="border-right:1px solid var(--line);text-align:center;">
+              <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 6px;">03</p>
+              <p class="font-heading font-bold text-ink" style="font-size:13px;margin:0;">Execute</p>
+            </div>
+            <div class="hero-step-cell" style="text-align:center;background:var(--accent-soft);">
+              <p class="font-mono" style="font-size:10px;color:var(--accent);margin:0 0 6px;">04</p>
+              <p class="font-heading font-bold" style="font-size:13px;margin:0;color:var(--accent);">Review</p>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="absolute text-white" style="right:0;top:150px;width:280px;background:var(--ink);border-radius:12px;padding:22px;z-index:3;box-shadow:0 24px 44px rgba(9,9,9,0.18);">
-        <p class="font-body uppercase text-accent" style="font-size:10px;letter-spacing:0.08em;margin:0 0 10px;">Next Lesson</p>
-        <p class="font-heading font-bold" style="font-size:19px;margin:0 0 10px;">Break the Revenge Cycle</p>
-        <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;margin:0;">Stop emotional re-entry after a loss and protect the rest of your session.</p>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Mobile dashboard composition -->
-  <div class="lg:hidden tu-wrap" style="margin-top:40px;margin-bottom:16px;">
-    <div style="background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 16px 32px rgba(9,9,9,0.10);overflow:hidden;margin-bottom:16px;">
-      <div class="flex items-center" style="gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);">
-        <span style="width:8px;height:8px;border-radius:999px;background:rgba(9,9,9,0.15);display:inline-block;"></span>
-        <span style="width:8px;height:8px;border-radius:999px;background:rgba(9,9,9,0.15);display:inline-block;"></span>
-        <span class="font-body text-ink2" style="margin-left:8px;font-size:10px;">traderu.com/dashboard</span>
-      </div>
-      <div style="padding:20px;">
-        <p class="font-heading font-extrabold" style="font-size:26px;margin:0 0 4px;">37%</p>
-        <p class="font-body uppercase text-ink2" style="font-size:10px;margin:0 0 14px;">Curriculum progress</p>
-        <div style="height:7px;border-radius:999px;background:var(--paper);overflow:hidden;margin-bottom:16px;"><div style="height:100%;width:37%;background:var(--accent);"></div></div>
-        <div class="flex" style="gap:20px;">
-          <div><p class="font-heading font-extrabold" style="font-size:18px;margin:0;">18</p><p class="font-body text-ink2" style="font-size:9px;margin:2px 0 0;">MODULES</p></div>
-          <div><p class="font-heading font-extrabold" style="font-size:18px;margin:0;">51</p><p class="font-body text-ink2" style="font-size:9px;margin:2px 0 0;">LESSONS</p></div>
-          <div><p class="font-heading font-extrabold text-accent" style="font-size:18px;margin:0;">14/14</p><p class="font-body text-ink2" style="font-size:9px;margin:2px 0 0;">ROADMAP</p></div>
+<!-- ─── SOCIAL PROOF I ─── -->
+<section id="proof" class="tu-section bg-surface tu-divider-top">
+  <div class="tu-wrap">
+    <p class="tu-label tu-label-center" data-reveal>Real Traders. Real Results.</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 44px;max-width:640px;--i:1;">Documented, not staged.</h2>
+
+    <div class="grid" style="grid-template-columns:1fr;gap:24px;max-width:980px;margin-inline:auto;" >
+      <div class="md-grid-2" style="display:grid;grid-template-columns:1fr;gap:24px;">
+        <div class="tu-card" data-reveal style="padding:22px;--i:2;">
+          <div style="width:100%;max-width:280px;aspect-ratio:9/16;overflow:hidden;border-radius:12px;background:#000;margin:0 auto 22px;">
+            <video style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" src="https://pub-239ebd90813e4abea8164fd831744d05.r2.dev/IMG_1494.MOV" controls playsinline preload="metadata" aria-label="Community member testimonial video"></video>
+          </div>
+          <p class="tu-label" style="margin-bottom:10px;">Community Member · Started From Zero</p>
+          <h3 class="tu-h4" style="margin:0 0 10px;">Learned the foundations with no prior memecoin experience.</h3>
+          <p class="tu-body-sm" style="margin:0;">She joined without understanding wallets, narratives, entries, or risk management. Trader U gave her a place to learn the basics and build her own process.</p>
+        </div>
+
+        <div class="tu-card" data-reveal style="padding:22px;--i:3;">
+          <div style="width:100%;max-width:280px;aspect-ratio:9/16;overflow:hidden;border-radius:12px;background:#000;margin:0 auto 22px;">
+            <video style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" src="https://pub-239ebd90813e4abea8164fd831744d05.r2.dev/1110458d98a24ca1920661b9ecd6ed0e.mov" controls playsinline preload="metadata" aria-label="Community member testimonial video"></video>
+          </div>
+          <p class="tu-label" style="margin-bottom:10px;">Community Member · Full-Time Trader</p>
+          <h3 class="tu-h4" style="margin:0 0 10px;">Made trading his full-time focus with the community behind him.</h3>
+          <p class="tu-body-sm" style="margin:0;">He now trades full time and continues to use the community for market discussion, trade feedback, and support from other traders.</p>
         </div>
       </div>
     </div>
-    <div style="background:var(--ink);color:#fff;border-radius:12px;padding:20px;">
-      <p class="font-body uppercase text-accent" style="font-size:9px;letter-spacing:0.08em;margin:0 0 8px;">Next Lesson</p>
-      <p class="font-heading font-bold" style="font-size:16px;margin:0;">Break the Revenge Cycle</p>
-    </div>
+
+    <p class="tu-fine" style="max-width:560px;margin:36px auto 0;text-align:center;">Individual member experience. Results vary and are not guaranteed. Trading involves risk of loss.</p>
   </div>
 </section>
 
 <!-- ─── MOVING BELIEF STRIP ─── -->
-<section class="bg-accent overflow-hidden" style="padding:20px 0;">
+<section class="bg-accent overflow-hidden" style="padding:22px 0;">
   <div id="tu-marquee-track" class="flex whitespace-nowrap" style="width:max-content;">
-    <span class="font-heading font-extrabold text-ink" style="font-size:clamp(18px,2.6vw,32px);padding-right:40px;">RESEARCH IT. PLAN IT. EXECUTE IT. REVIEW IT. &nbsp; RESEARCH IT. PLAN IT. EXECUTE IT. REVIEW IT.</span>
-    <span class="font-heading font-extrabold text-ink" style="font-size:clamp(18px,2.6vw,32px);padding-right:40px;">RESEARCH IT. PLAN IT. EXECUTE IT. REVIEW IT. &nbsp; RESEARCH IT. PLAN IT. EXECUTE IT. REVIEW IT.</span>
+    <span class="font-heading font-extrabold text-void" style="font-size:clamp(18px,2.6vw,32px);padding-right:40px;">LEARN IT. EXECUTE IT. REVIEW IT. REPEAT. &nbsp; LEARN IT. EXECUTE IT. REVIEW IT. REPEAT.</span>
+    <span class="font-heading font-extrabold text-void" style="font-size:clamp(18px,2.6vw,32px);padding-right:40px;">LEARN IT. EXECUTE IT. REVIEW IT. REPEAT. &nbsp; LEARN IT. EXECUTE IT. REVIEW IT. REPEAT.</span>
   </div>
 </section>
 
-<!-- ─── PROCESS ─── -->
-<section id="process" class="tu-section" style="background:var(--charcoal);">
+<!-- ─── WHAT TRADER U TEACHES ─── -->
+<section id="system" class="tu-section bg-void">
   <div class="tu-wrap">
-    <p class="tu-label" style="text-align:center;">Process</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 40px;max-width:640px;">One repeatable process for every trade.</h2>
+    <p class="tu-label tu-label-center" data-reveal>Curriculum</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 16px;max-width:760px;--i:1;">What Trader U actually teaches.</h2>
+    <p class="tu-body" data-reveal style="text-align:center;max-width:600px;margin:0 auto 48px;--i:2;">Not a pile of lessons. A small set of skills, taught in order, that combine into one process.</p>
 
-    <div class="tu-process-grid">
-      <div class="tu-dcard" style="padding:24px;">
-        <p class="font-heading font-extrabold text-accent" style="font-size:32px;margin:0 0 14px;">01</p>
-        <h3 class="font-heading font-bold text-white" style="font-size:19px;margin:0 0 8px;">Research</h3>
-        <p style="font-size:15px;line-height:1.55;color:var(--muted-dark);margin:0;">Find the narrative and understand why people care.</p>
-      </div>
-      <div class="tu-dcard" style="padding:24px;">
-        <p class="font-heading font-extrabold text-accent" style="font-size:32px;margin:0 0 14px;">02</p>
-        <h3 class="font-heading font-bold text-white" style="font-size:19px;margin:0 0 8px;">Validate</h3>
-        <p style="font-size:15px;line-height:1.55;color:var(--muted-dark);margin:0;">Check liquidity, volume, wallets, and risk.</p>
-      </div>
-      <div class="tu-dcard" style="padding:24px;border-color:var(--accent);">
-        <p class="font-heading font-extrabold text-accent" style="font-size:32px;margin:0 0 14px;">03</p>
-        <h3 class="font-heading font-bold text-white" style="font-size:19px;margin:0 0 8px;">Plan</h3>
-        <p style="font-size:15px;line-height:1.55;color:var(--muted-dark);margin:0;">Choose your entry, exit, and amount to risk.</p>
-      </div>
-      <div class="tu-dcard" style="padding:24px;">
-        <p class="font-heading font-extrabold text-accent" style="font-size:32px;margin:0 0 14px;">04</p>
-        <h3 class="font-heading font-bold text-white" style="font-size:19px;margin:0 0 8px;">Execute</h3>
-        <p style="font-size:15px;line-height:1.55;color:var(--muted-dark);margin:0;">Follow the plan instead of your emotions.</p>
-      </div>
-      <div class="tu-dcard" style="padding:24px;">
-        <p class="font-heading font-extrabold text-accent" style="font-size:32px;margin:0 0 14px;">05</p>
-        <h3 class="font-heading font-bold text-white" style="font-size:19px;margin:0 0 8px;">Review</h3>
-        <p style="font-size:15px;line-height:1.55;color:var(--muted-dark);margin:0;">Learn what worked and what needs to change.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── MEMBER STORIES ─── -->
-<section id="stories" class="tu-section" style="background:var(--ink);">
-  <div class="tu-wrap">
-    <p class="tu-label" style="text-align:center;">Member Stories</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 40px;max-width:640px;">Documented, not staged.</h2>
-
-    <div class="tu-2col tu-member-grid" style="max-width:980px;margin-inline:auto;">
-      <div class="tu-dcard" style="padding:20px;">
-        <div style="width:100%;max-width:280px;aspect-ratio:9/16;overflow:hidden;border-radius:10px;background:#000;margin:0 auto 20px;">
-          <video style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" src="https://pub-239ebd90813e4abea8164fd831744d05.r2.dev/IMG_1494.MOV" controls playsinline preload="metadata" aria-label="Community member testimonial video"></video>
+    <div class="grid" style="grid-template-columns:1fr;gap:20px;">
+      <div class="sys-grid" style="display:grid;grid-template-columns:1fr;gap:20px;">
+        <div class="tu-card" data-reveal style="padding:28px;--i:1;">
+          <p class="font-mono" style="font-size:12px;color:var(--accent);margin:0 0 14px;">01</p>
+          <h3 class="tu-h4" style="margin:0 0 8px;">Find Opportunities</h3>
+          <p class="tu-body-sm" style="margin:0;">Narratives, market context, wallet tracking.</p>
         </div>
-        <p class="tu-label" style="margin-bottom:10px;">Community Member | Started From Zero</p>
-        <p class="font-heading font-bold text-white" style="font-size:20px;line-height:1.3;margin:0 0 10px;">"Started with no crypto experience. Learned the foundations inside TraderU and now makes money from her trading."</p>
-        <p style="font-size:15px;line-height:1.6;color:var(--muted-dark);margin:0;">She joined without understanding wallets, narratives, entries, or risk management. TraderU gave her a place to learn the basics and build her own process.</p>
-      </div>
-
-      <div class="tu-dcard" style="padding:20px;">
-        <div style="width:100%;max-width:280px;aspect-ratio:9/16;overflow:hidden;border-radius:10px;background:#000;margin:0 auto 20px;">
-          <video style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" src="https://pub-239ebd90813e4abea8164fd831744d05.r2.dev/1110458d98a24ca1920661b9ecd6ed0e.mov" controls playsinline preload="metadata" aria-label="Community member testimonial video"></video>
+        <div class="tu-card" data-reveal style="padding:28px;--i:2;">
+          <p class="font-mono" style="font-size:12px;color:var(--accent);margin:0 0 14px;">02</p>
+          <h3 class="tu-h4" style="margin:0 0 8px;">Read The Market</h3>
+          <p class="tu-body-sm" style="margin:0;">Market cap, liquidity, volume, price action.</p>
         </div>
-        <p class="tu-label" style="margin-bottom:10px;">Community Member | Full-Time Trader</p>
-        <p class="font-heading font-bold text-white" style="font-size:20px;line-height:1.3;margin:0 0 10px;">"Turned trading into his full-time focus with support from the TraderU community."</p>
-        <p style="font-size:15px;line-height:1.6;color:var(--muted-dark);margin:0;">He now trades full time and continues to use the community for market discussion, trade feedback, live help, and support from other traders.</p>
-      </div>
-    </div>
-
-    <p style="color:var(--muted-dark);font-size:12px;line-height:1.6;max-width:560px;margin:32px auto 0;text-align:center;">Individual member experience. Results vary and are not guaranteed.</p>
-  </div>
-</section>
-
-<!-- ─── TRADE STUDIES ─── -->
-<section class="tu-section" style="background:var(--charcoal);">
-  <div class="tu-wrap">
-    <p class="tu-label" style="text-align:center;">Trade Studies</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 12px;max-width:620px;">The setup matters more than the result.</h2>
-    <p class="tu-body-sm" style="text-align:center;max-width:540px;margin:0 auto;color:var(--muted-dark);">See how the narrative, entry, confirmation, and risk were identified before the move.</p>
-
-    <div class="tu-trade-cols" style="margin-top:40px;">
-      <div class="tu-dcard" style="padding:20px;">
-        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;">
-          <img style="width:100%;height:auto;display:block;object-fit:contain;object-position:center;" loading="lazy" src="https://github.com/user-attachments/assets/c6e8c3de-fb49-4b40-bf35-a7b91975be1f" alt="$SCAM trade proof screenshot"/>
+        <div class="tu-card" data-reveal style="padding:28px;--i:3;">
+          <p class="font-mono" style="font-size:12px;color:var(--accent);margin:0 0 14px;">03</p>
+          <h3 class="tu-h4" style="margin:0 0 8px;">Enter With A Plan</h3>
+          <p class="tu-body-sm" style="margin:0;">Entries, timing, confirmation, avoiding FOMO.</p>
         </div>
-        <div class="flex items-baseline" style="gap:12px;margin-top:20px;">
-          <h3 class="font-heading font-extrabold text-white" style="font-size:26px;margin:0;">$SCAM</h3>
-          <span class="font-heading font-extrabold" style="font-size:24px;color:var(--accent);">383x</span>
+        <div class="tu-card" data-reveal style="padding:28px;--i:4;">
+          <p class="font-mono" style="font-size:12px;color:var(--accent);margin:0 0 14px;">04</p>
+          <h3 class="tu-h4" style="margin:0 0 8px;">Manage Risk</h3>
+          <p class="tu-body-sm" style="margin:0;">Position sizing, exits, protecting capital.</p>
         </div>
-        <div style="height:1px;background:var(--border-dark);margin:16px 0 20px;"></div>
-        <div class="tu-trade-info-grid">
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Entry</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Called near a $42,000 market cap.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Why it moved</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The ironic scam narrative started gaining attention.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">What confirmed it</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Volume increased and tracked wallets began entering.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Risk</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The position was sized for the volatility of a low-cap coin.</p></div>
+        <div class="tu-card" data-reveal style="padding:28px;--i:5;">
+          <p class="font-mono" style="font-size:12px;color:var(--accent);margin:0 0 14px;">05</p>
+          <h3 class="tu-h4" style="margin:0 0 8px;">Use The Right Tools</h3>
+          <p class="tu-body-sm" style="margin:0;">Wallets, terminals, Dexscreener, tracking.</p>
         </div>
-        <p style="font-size:13px;color:var(--muted-dark);line-height:1.5;margin-top:20px;">Past example shown for educational purposes. Not a guarantee of future results.</p>
-      </div>
-
-      <div class="tu-dcard" style="padding:20px;">
-        <div style="border:1px solid var(--border-dark);border-radius:10px;overflow:hidden;background:#090909;">
-          <img style="width:100%;height:auto;display:block;object-fit:contain;object-position:center;" loading="lazy" src="https://github.com/user-attachments/assets/270e360f-4f38-4baa-9d5f-24f20ad9faca" alt="$BURNIE trade proof screenshot"/>
-        </div>
-        <div class="flex items-baseline" style="gap:12px;margin-top:20px;">
-          <h3 class="font-heading font-extrabold text-white" style="font-size:26px;margin:0;">$BURNIE</h3>
-          <span class="font-heading font-extrabold" style="font-size:24px;color:var(--accent);">60x</span>
-        </div>
-        <div style="height:1px;background:var(--border-dark);margin:16px 0 20px;"></div>
-        <div class="tu-trade-info-grid">
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Entry</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Entered early and planned for a longer hold.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Why it moved</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The token-burn narrative started gaining attention.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">What confirmed it</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">Liquidity increased without an immediate pump and dump.</p></div>
-          <div><p class="tu-label" style="margin:0 0 4px;font-size:11px;color:var(--muted-dark);">Risk</p><p style="margin:0;font-size:15px;line-height:1.5;color:#e5e3df;">The position was sized to handle normal pullbacks.</p></div>
-        </div>
-        <p style="font-size:13px;color:var(--muted-dark);line-height:1.5;margin-top:20px;">Past example shown for educational purposes. Not a guarantee of future results.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── ONE MEMBERSHIP ─── -->
-<section class="bg-accent tu-section">
-  <div class="tu-wrap">
-    <h2 class="font-heading font-extrabold text-white" style="font-size:clamp(30px,4vw,44px);line-height:1.1;letter-spacing:-0.02em;margin:0 auto 40px;text-align:center;max-width:640px;">One membership. A complete learning system.</h2>
-
-    <div style="background:var(--ink);border-radius:18px;padding:32px;max-width:1000px;margin-inline:auto;">
-      <div class="tu-2col tu-who-grid">
-        <div>
-          <div class="grid" style="grid-template-columns:1fr 1fr;gap:24px 28px;">
-            <div><p class="font-heading font-extrabold text-white" style="font-size:38px;margin:0;">18</p><p class="text-white" style="font-size:14px;opacity:.7;margin:4px 0 0;">Modules</p></div>
-            <div><p class="font-heading font-extrabold text-white" style="font-size:38px;margin:0;">51</p><p class="text-white" style="font-size:14px;opacity:.7;margin:4px 0 0;">Lessons</p></div>
-            <div><p class="font-heading font-extrabold text-white" style="font-size:38px;margin:0;">14</p><p class="text-white" style="font-size:14px;opacity:.7;margin:4px 0 0;">Beginner Steps</p></div>
-            <div><p class="font-heading font-extrabold text-white" style="font-size:38px;margin:0;">6</p><p class="text-white" style="font-size:14px;opacity:.7;margin:4px 0 0;">Months Live Access</p></div>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center" style="gap:12px;">
-          <div class="flex items-center text-white" style="gap:12px;font-size:16px;"><span style="flex-shrink:0;width:20px;height:20px;border-radius:999px;background:rgba(255,90,54,0.2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">&#10003;</span>Full Curriculum</div>
-          <div class="flex items-center text-white" style="gap:12px;font-size:16px;"><span style="flex-shrink:0;width:20px;height:20px;border-radius:999px;background:rgba(255,90,54,0.2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">&#10003;</span>Live Strategy Sessions</div>
-          <div class="flex items-center text-white" style="gap:12px;font-size:16px;"><span style="flex-shrink:0;width:20px;height:20px;border-radius:999px;background:rgba(255,90,54,0.2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">&#10003;</span>Narrative and Watchlist Tracking</div>
-          <div class="flex items-center text-white" style="gap:12px;font-size:16px;"><span style="flex-shrink:0;width:20px;height:20px;border-radius:999px;background:rgba(255,90,54,0.2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">&#10003;</span>Trade Breakdown Library</div>
-          <div class="flex items-center text-white" style="gap:12px;font-size:16px;"><span style="flex-shrink:0;width:20px;height:20px;border-radius:999px;background:rgba(255,90,54,0.2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">&#10003;</span>TraderU Tools</div>
-          <div class="flex items-center text-white" style="gap:12px;font-size:16px;"><span style="flex-shrink:0;width:20px;height:20px;border-radius:999px;background:rgba(255,90,54,0.2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">&#10003;</span>Daily Community and Voice Chat</div>
+        <div class="tu-card" data-reveal style="padding:28px;--i:6;">
+          <p class="font-mono" style="font-size:12px;color:var(--accent);margin:0 0 14px;">06</p>
+          <h3 class="tu-h4" style="margin:0 0 8px;">Build Your Process</h3>
+          <p class="tu-body-sm" style="margin:0;">Journaling, reviewing trades, and building better habits.</p>
         </div>
       </div>
     </div>
 
-    <div style="margin-top:32px;text-align:center;">
-      <a href="/checkout" target="_blank" rel="noopener noreferrer" class="tu-btn tu-btn-dark">
-        Get the Full System for $449.99
+    <div class="text-center" style="margin-top:48px;" data-reveal="fade">
+      <a href="/checkout" target="_blank" rel="noopener noreferrer" class="tu-btn tu-btn-primary">
+        Join Trader U
       </a>
     </div>
   </div>
 </section>
 
-<!-- ─── CURRICULUM CATALOG ─── -->
-<section id="curriculum" class="tu-section" style="background:var(--ink);">
+<!-- ─── HOW MEMECOINS ARE CREATED ─── -->
+<section class="tu-section bg-surface tu-divider-top">
   <div class="tu-wrap">
-    <p class="tu-label" style="text-align:center;">Curriculum</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 40px;max-width:800px;">FROM YOUR FIRST WALLET<br/>TO YOUR OWN PROCESS.</h2>
+    <p class="tu-label tu-label-center" data-reveal>Narratives In The Wild</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 12px;max-width:640px;--i:1;">Real viral moments become real memecoins.</h2>
+    <p class="tu-body-sm" data-reveal style="text-align:center;max-width:540px;margin:0 auto;--i:2;">A viral animal, a strange headline, a moment everyone is talking about. That's the raw material a memecoin gets built from. Spotting it early is part of learning to find real opportunities.</p>
 
-    <div style="max-width:880px;margin-inline:auto;">
-
-      <details class="phase-item phase-card" open>
-        <summary class="flex items-center">
-          <span class="phase-num">01</span>
-          <span class="phase-title">Build the Foundation</span>
-          <span class="plus">+</span>
-        </summary>
-        <div class="phase-body">
-          <p style="font-size:15px;line-height:1.7;margin:0 0 20px;max-width:640px;color:var(--muted-dark);">Set up your tools and learn how the market actually works before risking capital.</p>
-          <div class="flex flex-col" style="margin-bottom:20px;border-top:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);">
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">1. Start Here</span><span style="font-size:12px;color:var(--muted-dark);">4 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">2. Tools Setup</span><span style="font-size:12px;color:var(--muted-dark);">3 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">3. Trading Basics</span><span style="font-size:12px;color:var(--muted-dark);">5 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">4. Market Cap</span><span style="font-size:12px;color:var(--muted-dark);">1 lesson</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">5. Liquidity</span><span style="font-size:12px;color:var(--muted-dark);">1 lesson</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">6. Volume</span><span style="font-size:12px;color:var(--muted-dark);">1 lesson</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">7. Slippage and Fees</span><span style="font-size:12px;color:var(--muted-dark);">1 lesson</span></div>
-          </div>
-          <p class="font-body uppercase" style="font-size:11px;color:var(--muted-dark);margin:0 0 6px;">Outcome</p>
-          <p class="font-semibold text-white" style="margin:0;">Understand the tools and numbers behind every trade.</p>
+    <div class="coin-grid" style="display:grid;grid-template-columns:1fr;gap:24px;margin-top:44px;">
+      <div class="tu-card flex flex-col" data-reveal style="padding:20px;height:100%;--i:1;">
+        <div style="border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/10a06463-1793-4bb6-82de-08e650cd021d" alt="CATE coin graphic showing a 1609X move"/>
         </div>
-      </details>
-
-      <details class="phase-item phase-card">
-        <summary class="flex items-center">
-          <span class="phase-num">02</span>
-          <span class="phase-title">Entries, Exits, and Risk</span>
-          <span class="plus">+</span>
-        </summary>
-        <div class="phase-body">
-          <p style="font-size:15px;line-height:1.7;margin:0 0 20px;max-width:640px;color:var(--muted-dark);">Build a process for entering, exiting, and sizing positions with intention.</p>
-          <div class="flex flex-col" style="margin-bottom:20px;border-top:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);">
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">8. Entries</span><span style="font-size:12px;color:var(--muted-dark);">5 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">9. Exits</span><span style="font-size:12px;color:var(--muted-dark);">4 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">10. Risk Management</span><span style="font-size:12px;color:var(--muted-dark);">4 lessons</span></div>
-          </div>
-          <p class="font-body uppercase" style="font-size:11px;color:var(--muted-dark);margin:0 0 6px;">Outcome</p>
-          <p class="font-semibold text-white" style="margin:0;">Define the trade before entering instead of making decisions after money is already at risk.</p>
+        <h3 class="font-heading font-extrabold text-ink" style="font-size:20px;margin:20px 0 0;">CATE COIN</h3>
+        <p class="tu-body-sm" style="margin:10px 0 0;">The owners of Doge found and rescued a cat named Cate. That real story became the inspiration behind Cate Coin.</p>
+        <div class="tu-coin-calc" data-multiplier="1609" data-final="160900" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
         </div>
-      </details>
+      </div>
 
-      <details class="phase-item phase-card">
-        <summary class="flex items-center">
-          <span class="phase-num">03</span>
-          <span class="phase-title">Narratives and Wallet Tracking</span>
-          <span class="plus">+</span>
-        </summary>
-        <div class="phase-body">
-          <p style="font-size:15px;line-height:1.7;margin:0 0 20px;max-width:640px;color:var(--muted-dark);">Learn why attention moves, how wallets behave, and how stronger setups develop.</p>
-          <div class="flex flex-col" style="margin-bottom:20px;border-top:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);">
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">11. Narratives</span><span style="font-size:12px;color:var(--muted-dark);">2 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">12. Wallet Tracking</span><span style="font-size:12px;color:var(--muted-dark);">2 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">13. Migration</span><span style="font-size:12px;color:var(--muted-dark);">2 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">14. Strategies</span><span style="font-size:12px;color:var(--muted-dark);">3 lessons</span></div>
-          </div>
-          <p class="font-body uppercase" style="font-size:11px;color:var(--muted-dark);margin:0 0 6px;">Outcome</p>
-          <p class="font-semibold text-white" style="margin:0;">Research opportunities using narratives, wallet behavior, liquidity, and timing.</p>
+      <div class="tu-card flex flex-col" data-reveal style="padding:20px;height:100%;--i:2;">
+        <div style="border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/80c179d3-ce4f-46a6-ad42-0dd0c7cceb04" alt="JIMOTHY coin graphic showing a 573X move"/>
         </div>
-      </details>
-
-      <details class="phase-item phase-card">
-        <summary class="flex items-center">
-          <span class="phase-num">04</span>
-          <span class="phase-title">Discipline and Advanced Skills</span>
-          <span class="plus">+</span>
-        </summary>
-        <div class="phase-body">
-          <p style="font-size:15px;line-height:1.7;margin:0 0 20px;max-width:640px;color:var(--muted-dark);">Review your decisions, correct repeated mistakes, and develop a sustainable routine.</p>
-          <div class="flex flex-col" style="margin-bottom:20px;border-top:1px solid var(--border-dark);border-bottom:1px solid var(--border-dark);">
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">15. Beginner Mistakes</span><span style="font-size:12px;color:var(--muted-dark);">4 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">16. Daily Routine</span><span style="font-size:12px;color:var(--muted-dark);">3 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">17. Trade Journal</span><span style="font-size:12px;color:var(--muted-dark);">2 lessons</span></div>
-            <div class="flex justify-between items-center text-white" style="font-size:15px;padding:12px 0;"><span class="font-semibold">18. Advanced Concepts</span><span style="font-size:12px;color:var(--muted-dark);">4 lessons</span></div>
-          </div>
-          <p class="font-body uppercase" style="font-size:11px;color:var(--muted-dark);margin:0 0 6px;">Outcome</p>
-          <p class="font-semibold text-white" style="margin:0;">Turn individual trades into information that improves the next decision.</p>
+        <h3 class="font-heading font-extrabold text-ink" style="font-size:20px;margin:20px 0 0;">JIMOTHY COIN</h3>
+        <p class="tu-body-sm" style="margin:10px 0 0;">Based on Jimothy, the viral raccoon sensation from the Seattle area.</p>
+        <div class="tu-coin-calc" data-multiplier="573" data-final="57300" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
         </div>
-      </details>
+      </div>
 
+      <div class="tu-card flex flex-col" data-reveal style="padding:20px;height:100%;--i:3;">
+        <div style="border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/98d1956c-e63b-4cd7-a90d-effa96e6cbb1" alt="BOP coin graphic showing a 116X move"/>
+        </div>
+        <h3 class="font-heading font-extrabold text-ink" style="font-size:20px;margin:20px 0 0;">BOP COIN <span style="color:var(--ink3);font-weight:600;font-size:13px;">(Bear On Pole)</span></h3>
+        <p class="tu-body-sm" style="margin:10px 0 0;">Inspired by the viral story of a bear that became stuck on a utility pole in Arizona.</p>
+        <div class="tu-coin-calc" data-multiplier="116" data-final="11600" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
+        </div>
+      </div>
+
+      <div class="tu-card flex flex-col" data-reveal style="padding:20px;height:100%;--i:4;">
+        <div style="border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#090909;aspect-ratio:1/1;">
+          <img style="width:100%;height:100%;display:block;object-fit:contain;object-position:center;" loading="lazy" decoding="async" width="600" height="600" src="https://github.com/user-attachments/assets/26d66f75-ec67-47b4-998d-e72194af1033" alt="SHARK DOG coin graphic showing a 95X move"/>
+        </div>
+        <h3 class="font-heading font-extrabold text-ink" style="font-size:20px;margin:20px 0 0;">SHARK DOG COIN</h3>
+        <p class="tu-body-sm" style="margin:10px 0 0;">Inspired by the super-viral dog wearing a shark costume while peacefully chilling on the water.</p>
+        <div class="tu-coin-calc" data-multiplier="95" data-final="9500" style="margin-top:auto;">
+          <p class="tu-coin-calc-label">If you put in $100</p>
+          <p class="tu-coin-calc-eq">$100 &times; <span class="tu-coin-calc-mult">0</span>x</p>
+          <p class="tu-coin-calc-final">$<span class="tu-coin-calc-final-num">0</span></p>
+        </div>
+      </div>
     </div>
+    <p class="tu-fine" style="max-width:640px;margin:32px auto 0;text-align:center;">Hypothetical example for illustration only. Past performance of a coin does not guarantee future results, and most memecoins lose value.</p>
+  </div>
+</section>
 
-    <div class="text-center" style="margin-top:40px;">
-      <a href="/checkout" target="_blank" rel="noopener noreferrer"
-         class="tu-btn tu-btn-primary">
-        See the Full Curriculum
-      </a>
+<!-- ─── HOW IT WORKS ─── -->
+<section id="how" class="tu-section bg-void">
+  <div class="tu-wrap">
+    <p class="tu-label tu-label-center" data-reveal>How It Works</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 48px;max-width:600px;--i:1;">How you actually improve.</h2>
+
+    <div class="how-grid" style="display:grid;grid-template-columns:1fr;gap:16px;">
+      <div class="tu-card" data-reveal style="padding:26px;position:relative;--i:1;">
+        <p class="font-heading font-extrabold" style="font-size:34px;margin:0 0 12px;color:var(--accent);">01</p>
+        <h3 class="tu-h4" style="margin:0 0 8px;">Learn</h3>
+        <p class="tu-body-sm" style="margin:0;">Understand the fundamentals behind memes, narratives, liquidity, volume, wallets, and risk.</p>
+      </div>
+      <div class="tu-card" data-reveal style="padding:26px;--i:2;">
+        <p class="font-heading font-extrabold" style="font-size:34px;margin:0 0 12px;color:var(--accent);">02</p>
+        <h3 class="tu-h4" style="margin:0 0 8px;">Watch</h3>
+        <p class="tu-body-sm" style="margin:0;">See how other traders think about opportunities and what they notice.</p>
+      </div>
+      <div class="tu-card" data-reveal style="padding:26px;--i:3;">
+        <p class="font-heading font-extrabold" style="font-size:34px;margin:0 0 12px;color:var(--accent);">03</p>
+        <h3 class="tu-h4" style="margin:0 0 8px;">Execute</h3>
+        <p class="tu-body-sm" style="margin:0;">Make your own decisions and put what you're learning into practice.</p>
+      </div>
+      <div class="tu-card" data-reveal style="padding:26px;--i:4;">
+        <p class="font-heading font-extrabold" style="font-size:34px;margin:0 0 12px;color:var(--accent);">04</p>
+        <h3 class="tu-h4" style="margin:0 0 8px;">Review</h3>
+        <p class="tu-body-sm" style="margin:0;">Look back at what worked, what didn't, and what you missed.</p>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ─── COMMUNITY ─── -->
+<section id="community" class="tu-section bg-surface tu-divider-top">
+  <div class="tu-wrap">
+    <div class="community-grid" style="display:grid;grid-template-columns:1fr;gap:48px;align-items:center;">
+      <div data-reveal>
+        <p class="tu-label">The Community</p>
+        <h2 class="tu-h2" style="margin:0 0 18px;">You're not doing this alone.</h2>
+        <p class="tu-body" style="margin:0 0 20px;">Access includes the Trader U community: other traders working through the same markets, in the same channels, every day.</p>
+        <p class="tu-body" style="margin:0;">It's a place for discussion, market observations, education, and accountability. Not a signals feed. Not a place to outsource your decisions. A place to sharpen them.</p>
+      </div>
+      <div data-reveal style="--i:2;">
+        <div class="tu-card tilt" style="padding:8px;">
+          <div style="background:var(--void);border-radius:10px;overflow:hidden;border:1px solid var(--line);">
+            <div class="flex items-center justify-between" style="padding:14px 18px;border-bottom:1px solid var(--line);">
+              <span class="font-mono" style="font-size:11px;color:var(--ink3);">#market-discussion</span>
+              <span class="flex items-center" style="gap:6px;"><span class="live-dot"></span><span class="font-mono" style="font-size:10px;color:var(--signal);">ACTIVE</span></span>
+            </div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 4px;">Member</p>
+                <p class="tu-body-sm" style="margin:0;">Anyone else watching $BOB?</p>
+              </div>
+              <div>
+                <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 4px;">Student</p>
+                <p class="tu-body-sm" style="margin:0;">Yeah, saw it. Narrative's picking up but volume still looks light.</p>
+              </div>
+              <div>
+                <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 4px;">Member</p>
+                <p class="tu-body-sm" style="margin:0;">Same thing I noticed. Waiting to see if buyers actually step in before touching it.</p>
+              </div>
+              <div>
+                <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 4px;">Student</p>
+                <p class="tu-body-sm" style="margin:0;">Check the wallet activity too. A couple wallets started adding before the move.</p>
+              </div>
+              <div>
+                <p class="font-mono" style="font-size:10px;color:var(--ink3);margin:0 0 4px;">Member</p>
+                <p class="tu-body-sm" style="margin:0;">Good catch.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="tu-fine" style="margin:12px 4px 0;">Illustrative example. $BOB is fictional and this is not a real Trader U call.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOCIAL PROOF II ─── -->
+<section class="tu-section bg-void">
+  <div class="tu-wrap">
+    <p class="tu-label tu-label-center" data-reveal>From The Community</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 44px;max-width:620px;--i:1;">What members say.</h2>
+
+    <div class="quote-grid" style="display:grid;grid-template-columns:1fr;gap:20px;max-width:1040px;margin-inline:auto;">
+      <blockquote class="tu-card" data-reveal style="padding:26px;margin:0;--i:1;">
+        <p class="tu-h4" style="font-weight:600;margin:0 0 16px;line-height:1.5;">"I joined knowing nothing about memecoins. Now I actually understand wallets, narratives, and risk before I touch a trade."</p>
+        <cite style="font-style:normal;" class="tu-fine">Community Member, started from zero</cite>
+      </blockquote>
+      <blockquote class="tu-card" data-reveal style="padding:26px;margin:0;--i:2;">
+        <p class="tu-h4" style="font-weight:600;margin:0 0 16px;line-height:1.5;">"The community keeps me accountable. Other traders reviewing the same setups makes it a lot harder to skip your own process."</p>
+        <cite style="font-style:normal;" class="tu-fine">Community Member, full-time trader</cite>
+      </blockquote>
+      <blockquote class="tu-card" data-reveal style="padding:26px;margin:0;--i:3;">
+        <p class="tu-h4" style="font-weight:600;margin:0 0 16px;line-height:1.5;">"The market doesn't care how smart you are. It rewards the people who have a process."</p>
+        <cite style="font-style:normal;" class="tu-fine">Chepeex, Founder of Trader U</cite>
+      </blockquote>
+    </div>
+    <p class="tu-fine" style="max-width:560px;margin:32px auto 0;text-align:center;">Individual member experience. Results vary and are not guaranteed.</p>
   </div>
 </section>
 
 <!-- ─── FOUNDER ─── -->
-<section class="tu-section" style="background:var(--charcoal);">
+<section class="tu-section bg-surface tu-divider-top">
   <div class="tu-wrap">
-    <div class="tu-2col tu-founder-grid">
-      <div>
-        <p class="tu-label" style="font-size:11px;margin:0 0 10px;max-width:460px;margin-inline:auto;text-align:center;color:var(--muted-dark);">Founder, TraderU</p>
-        <div class="tu-thin-frame" style="max-width:460px;margin:0 auto;aspect-ratio:4/5;">
-          <img style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;" loading="lazy" src="https://github.com/user-attachments/assets/fb935206-fd64-4089-9add-2adbd1d7a0f1" alt="Chepeex, founder of TraderU"/>
+    <div class="founder-grid" style="display:grid;grid-template-columns:1fr;gap:40px;align-items:center;">
+      <div data-reveal>
+        <p class="tu-label" style="justify-content:center;">Founder, Trader U</p>
+        <div style="border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;max-width:440px;margin:0 auto;aspect-ratio:4/5;">
+          <img style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;" loading="lazy" src="https://github.com/user-attachments/assets/fb935206-fd64-4089-9add-2adbd1d7a0f1" alt="Chepeex, founder of Trader U"/>
         </div>
       </div>
-      <div>
-        <h2 class="font-heading font-extrabold text-white" style="font-size:clamp(26px,3.4vw,44px);line-height:1.2;max-width:560px;margin:0 0 24px;">Built for traders who are tired of making the same mistakes.</h2>
-        <div class="flex flex-col" style="font-family:var(--font-body);font-size:17px;line-height:1.7;color:var(--muted-dark);gap:18px;max-width:620px;">
-          <p style="margin:0;">I kept watching traders repeat the same cycle: chase a move, enter without a plan, hold too long, lose conviction, and try to win everything back on the next trade.</p>
-          <p style="margin:0;">TraderU was built to replace that cycle with structure.</p>
-          <p style="margin:0;">The goal is not to make you dependent on another caller. It is to help you understand narratives, research opportunities, define your risk, execute a plan, and review your own decisions.</p>
+      <div data-reveal style="--i:1;">
+        <h2 class="tu-h2" style="margin:0 0 22px;max-width:560px;">Built for traders tired of making the same mistakes.</h2>
+        <div class="flex flex-col tu-body" style="gap:16px;max-width:600px;">
+          <p style="margin:0;">I kept watching the same thing happen. Traders buying into memes without understanding what they were actually buying, chasing calls, FOMOing into narratives late, with no idea what liquidity meant or which wallets to watch.</p>
+          <p style="margin:0;">They didn't have anywhere to ask questions or watch how experienced traders actually think. Trader U exists to be that place.</p>
+          <p style="margin:0;">The goal isn't to make you dependent on another caller. It's to help you understand the market well enough to make your own calls.</p>
         </div>
-        <blockquote style="border-left:3px solid var(--accent);background:var(--card-dark);border:1px solid var(--border-dark);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:22px 24px;margin:28px 0 0;max-width:620px;">
-          <p style="font-family:var(--font-heading);font-weight:700;font-size:21px;line-height:1.5;margin:0 0 12px;color:#fff;">"The market doesn't care how smart you are. It rewards the people who have a system."</p>
-          <cite style="font-style:normal;font-family:var(--font-body);text-transform:uppercase;font-size:11px;letter-spacing:0.08em;color:var(--muted-dark);">Chepeex, Founder of TraderU</cite>
-        </blockquote>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ─── WHO IT IS FOR ─── -->
-<section class="bg-paper" style="padding-block:56px;">
+<section class="tu-section bg-void" style="padding-block:64px;">
   <div class="tu-wrap">
-    <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;">
-      <div class="tu-who-panel-grid">
-        <div style="background:#fff;padding:32px 28px;">
-          <h3 class="font-heading font-extrabold" style="font-size:23px;margin:0 0 22px;">This is for you if</h3>
+    <div style="border:1px solid var(--line);border-radius:18px;overflow:hidden;" data-reveal>
+      <div class="who-grid" style="display:grid;grid-template-columns:1fr;">
+        <div style="background:var(--surface-2);padding:32px 28px;">
+          <h3 class="tu-h4" style="font-size:21px;margin:0 0 22px;">This is for you</h3>
           <div class="flex flex-col" style="gap:16px;">
-            <div class="flex items-start" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
-              You're tired of guessing and want a repeatable process
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;color:var(--ink);">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
+              You want to actually understand memecoins
             </div>
-            <div class="flex items-start" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
-              You're willing to study and review your own trades
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;color:var(--ink);">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
+              You want to learn how traders find narratives
             </div>
-            <div class="flex items-start" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
-              You want to understand why a setup exists, not just the ticker
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;color:var(--ink);">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
+              You want people around you who are actively watching the market
             </div>
-            <div class="flex items-start" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
-              You take risk management seriously
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;color:var(--ink);">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
+              You want somewhere to ask questions
+            </div>
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;color:var(--ink);">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
+              You want to improve your entries, exits, risk, and decision making
+            </div>
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;color:var(--ink);">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;margin-top:1px;">&#10003;</span>
+              You're willing to learn instead of blindly copying calls
             </div>
           </div>
         </div>
-        <div style="background:var(--paper);padding:32px 28px;">
-          <h3 class="font-heading font-extrabold text-ink2" style="font-size:23px;margin:0 0 22px;">This is not for you if</h3>
+        <div style="background:var(--surface);padding:32px 28px;border-top:1px solid var(--line);">
+          <h3 class="tu-h4" style="font-size:21px;margin:0 0 22px;color:var(--ink2);">This is not for you</h3>
           <div class="flex flex-col" style="gap:16px;">
-            <div class="flex items-start text-ink2" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(9,9,9,0.08);color:var(--ink2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
-              You expect guaranteed profits
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,0.06);color:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
+              You want guaranteed profits
             </div>
-            <div class="flex items-start text-ink2" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(9,9,9,0.08);color:var(--ink2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
-              You want blind calls with no reasoning behind them
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,0.06);color:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
+              You expect every call to run
             </div>
-            <div class="flex items-start text-ink2" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(9,9,9,0.08);color:var(--ink2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
-              You refuse to manage risk
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,0.06);color:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
+              You want someone else to make every decision for you
             </div>
-            <div class="flex items-start text-ink2" style="gap:12px;font-size:17px;line-height:1.5;">
-              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(9,9,9,0.08);color:var(--ink2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
-              You treat memecoins like guaranteed income
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,0.06);color:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
+              You're looking for a get-rich-quick scheme
+            </div>
+            <div class="flex items-start tu-body-sm" style="gap:12px;font-size:16px;">
+              <span style="flex-shrink:0;width:22px;height:22px;border-radius:999px;background:rgba(255,255,255,0.06);color:var(--ink3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;">&#10005;</span>
+              You're unwilling to study or learn
             </div>
           </div>
         </div>
@@ -717,69 +793,96 @@
 </section>
 
 <!-- ─── PRICING ─── -->
-<section id="enrollment" class="text-white tu-section" style="background:var(--ink);">
+<section id="pricing" class="tu-section bg-surface tu-divider-top overflow-hidden">
   <div class="tu-wrap-820">
-    <p class="tu-label" style="text-align:center;">Pricing</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 40px;">Choose how you want in.</h2>
+    <p class="tu-label tu-label-center" data-reveal>Pricing</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 44px;--i:1;">One offer. Everything you need.</h2>
 
-    <div class="tu-pricing-card" style="background:#fff;color:var(--ink);border-radius:18px;max-width:760px;width:100%;margin-inline:auto;border:1px solid rgba(9,9,9,0.08);box-shadow:0 20px 48px rgba(0,0,0,0.28);">
-      <p class="font-body" style="font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:var(--accent);font-weight:700;margin:0 0 10px;">Full System</p>
-      <p class="font-heading font-extrabold" style="font-size:clamp(48px,6vw,72px);line-height:1;color:var(--ink);margin:0 0 10px;">$449.99</p>
-      <p style="font-size:15px;color:var(--ink2);margin:0 0 28px;">One-time payment. Six months of Live Access.</p>
-      <a href="/checkout" target="_blank" rel="noopener noreferrer"
-         class="tu-btn tu-btn-primary" style="width:100%;margin-bottom:28px;">
-        Get the Full System for $449.99
-      </a>
-      <div class="flex flex-col" style="border-top:1px solid var(--border);">
-        <div style="border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;">18-module, 51-lesson curriculum</div>
-        <div style="border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;">14-step beginner roadmap</div>
-        <div style="border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;">Six months of Live Access included</div>
-        <div style="border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;">Bi-weekly live strategy sessions</div>
-        <div style="border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;">Proprietary tool access</div>
-        <div style="border-bottom:1px solid var(--border);padding:14px 0;font-size:15px;">Trade breakdown library</div>
-        <div style="padding:14px 0;font-size:15px;">Community and group Q&amp;A</div>
+    <div class="pricing-glow-wrap" data-reveal style="--i:2;position:relative;max-width:640px;width:100%;margin-inline:auto;">
+      <div class="pricing-glow"></div>
+      <div style="position:relative;z-index:1;background:var(--white);color:#0A0A0B;border-radius:20px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 30px 70px -20px rgba(0,0,0,0.5);padding:clamp(28px,4vw,44px);">
+        <p class="font-mono" style="font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);font-weight:700;margin:0 0 14px;">Trader U</p>
+        <div class="flex items-end" style="gap:10px;margin-bottom:6px;">
+          <p class="font-heading font-extrabold" style="font-size:clamp(52px,7vw,76px);line-height:1;color:#0A0A0B;margin:0;">$497</p>
+          <span class="font-mono" style="font-size:13px;color:#6b6862;margin-bottom:10px;">one-time</span>
+        </div>
+        <p style="font-size:14px;color:#6b6862;margin:0 0 28px;">$497.99 + applicable taxes at checkout. Current offer, available for a limited time.</p>
+
+        <a href="/checkout" target="_blank" rel="noopener noreferrer"
+           class="tu-btn tu-btn-primary" style="width:100%;margin-bottom:28px;">
+          Join Trader U
+        </a>
+
+        <div class="flex flex-col" style="border-top:1px solid rgba(0,0,0,0.1);">
+          <div style="border-bottom:1px solid rgba(0,0,0,0.1);padding:14px 0;font-size:15px;">Complete memecoin trading education</div>
+          <div style="border-bottom:1px solid rgba(0,0,0,0.1);padding:14px 0;font-size:15px;">Trader U community access</div>
+          <div style="border-bottom:1px solid rgba(0,0,0,0.1);padding:14px 0;font-size:15px;">Community calls and market discussion</div>
+          <div style="border-bottom:1px solid rgba(0,0,0,0.1);padding:14px 0;font-size:15px;">Trade breakdowns and tool setup</div>
+          <div style="padding:14px 0;font-size:15px;">Lifetime access to Core education</div>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,0,0,0.1);">
+          <p style="font-size:13px;color:#6b6862;margin:0 0 4px;"><strong style="color:#0A0A0B;">Not included:</strong> workshops and private coaching.</p>
+          <p style="font-size:13px;color:#6b6862;margin:0;">Those are separate products.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ─── FAQ ─── -->
-<section id="faq" class="text-white tu-section" style="background:var(--charcoal);">
+<section id="faq" class="tu-section bg-void">
   <div class="tu-wrap-760">
-    <p class="tu-label" style="text-align:center;">FAQ</p>
-    <h2 class="tu-h2 text-white" style="text-align:center;margin:0 auto 40px;">Questions, answered clearly.</h2>
+    <p class="tu-label tu-label-center" data-reveal>FAQ</p>
+    <h2 class="tu-h2" data-reveal style="text-align:center;margin:0 auto 44px;--i:1;">Questions, answered clearly.</h2>
 
-    <div>
+    <div data-reveal style="--i:2;">
       <details class="faq-item faq-card">
         <summary>
-          <span class="faq-q">What exactly is included in the Full System?</span>
+          <span class="faq-q">What is Trader U?</span>
           <span class="faq-plus">+</span>
         </summary>
-        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>The Full System includes the complete 18-module, 51-lesson curriculum, the 14-step beginner roadmap, six months of Live Access, bi-weekly live strategy sessions, TraderU tools, trade breakdowns, watchlist tracking, and community access.</p></div></div>
+        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>Trader U is a memecoin trading community and education platform. You'll learn how to find opportunities, read the market, plan entries and exits, manage risk, and build your own process, alongside a community of active traders.</p></div></div>
       </details>
 
       <details class="faq-item faq-card">
         <summary>
-          <span class="faq-q">Is TraderU suitable for complete beginners?</span>
+          <span class="faq-q">Is this beginner friendly?</span>
           <span class="faq-plus">+</span>
         </summary>
-        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>Yes. TraderU starts with wallet setup, basic trading concepts, entries, exits, and risk management before moving into narratives, wallet tracking, and advanced strategies.</p></div></div>
+        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>Yes. Trader U starts with wallet setup and market basics before moving into narratives, entries, exits, and risk management.</p></div></div>
       </details>
 
       <details class="faq-item faq-card">
         <summary>
-          <span class="faq-q">Is TraderU a signals group?</span>
+          <span class="faq-q">Is this a signals group?</span>
           <span class="faq-plus">+</span>
         </summary>
-        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>No. TraderU is not a blind signals or copy-trading group. Members learn how to research opportunities, understand setups, manage risk, and make their own trading decisions.</p></div></div>
+        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>No. Trader U is not a blind signals or copy-trading group. You'll learn how to research opportunities, understand setups, manage risk, and make your own trading decisions.</p></div></div>
       </details>
 
       <details class="faq-item faq-card">
         <summary>
-          <span class="faq-q">Is the $449.99 payment recurring?</span>
+          <span class="faq-q">Are workshops included?</span>
           <span class="faq-plus">+</span>
         </summary>
-        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>No. The Full System is a one-time payment of $449.99 and includes six months of Live Access.</p></div></div>
+        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>No. Workshops are a separate, upgraded product and are not included in the $497 Trader U offer. The Trader U purchase includes the core education and community access.</p></div></div>
+      </details>
+
+      <details class="faq-item faq-card">
+        <summary>
+          <span class="faq-q">Is this a monthly subscription?</span>
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>No. Trader U is a one-time payment of $497.99 plus applicable taxes, with lifetime access to the Core education.</p></div></div>
+      </details>
+
+      <details class="faq-item faq-card">
+        <summary>
+          <span class="faq-q">What happens after I purchase?</span>
+          <span class="faq-plus">+</span>
+        </summary>
+        <div class="faq-answer-wrap"><div class="faq-answer-inner"><p>You get immediate access to the Trader U curriculum and community right after checkout.</p></div></div>
       </details>
 
       <details class="faq-item faq-card">
@@ -794,16 +897,16 @@
 </section>
 
 <!-- ─── FINAL CTA ─── -->
-<section class="bg-accent" style="padding-block:56px;">
-  <div class="tu-wrap">
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between text-center lg:text-left" style="gap:28px;">
+<section class="bg-accent" style="padding-block:64px;position:relative;overflow:hidden;">
+  <div class="tu-wrap relative" style="z-index:1;">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between text-center lg:text-left" style="gap:28px;" data-reveal>
       <div style="max-width:600px;">
-        <h2 class="font-heading font-extrabold text-white" style="font-size:clamp(26px,3.6vw,42px);line-height:1.15;letter-spacing:-0.01em;margin:0 0 10px;">The next trade will come. Have a plan for it.</h2>
-        <p style="color:rgba(255,255,255,0.85);font-size:16px;margin:0;">One-time payment. Six months of Live Access included.</p>
+        <h2 class="font-heading font-extrabold text-void" style="font-size:clamp(26px,3.8vw,44px);line-height:1.1;letter-spacing:-0.02em;margin:0 0 10px;">You can keep guessing. Or start understanding what you're looking at.</h2>
+        <p style="color:rgba(10,10,11,0.75);font-size:16px;margin:0;">Trader U gives you the education, tools, and community to actually understand what you're trading.</p>
       </div>
       <a href="/checkout" target="_blank" rel="noopener noreferrer"
-         class="tu-btn tu-btn-dark tu-btn-invert" style="flex-shrink:0;">
-        Get the Full System for $449.99
+         class="tu-btn tu-btn-light" style="flex-shrink:0;">
+        Join Trader U
       </a>
     </div>
   </div>
@@ -812,66 +915,94 @@
 </main>
 
 <!-- ─── FOOTER ─── -->
-<footer class="w-full" style="background:#090909;padding-block:56px;">
+<footer class="w-full bg-void" style="padding-block:56px;border-top:1px solid var(--line);">
   <div class="tu-wrap flex flex-col items-center text-center" style="gap:24px;">
-    <span class="font-heading font-extrabold text-lg text-white">TRADER U</span>
+    <span class="font-heading font-extrabold text-lg text-ink">TRADER U</span>
     <div class="flex flex-wrap justify-center font-body uppercase tracking-[0.08em] text-xs" style="gap:32px;">
-      <a href="terms.html" style="color:rgba(255,255,255,0.5);">Terms of Service</a>
-      <a href="privacy.html" style="color:rgba(255,255,255,0.5);">Privacy Policy</a>
-      <a href="refund.html" style="color:rgba(255,255,255,0.5);">Refund Policy</a>
-      <a href="eula.html" style="color:rgba(255,255,255,0.5);">EULA</a>
+      <a href="terms.html" style="color:var(--ink3);">Terms of Service</a>
+      <a href="privacy.html" style="color:var(--ink3);">Privacy Policy</a>
+      <a href="refund.html" style="color:var(--ink3);">Refund Policy</a>
+      <a href="eula.html" style="color:var(--ink3);">EULA</a>
     </div>
-    <p style="font-size:11px;letter-spacing:0.03em;line-height:1.7;color:rgba(255,255,255,0.3);max-width:720px;margin:8px 0 0;">© 2026 Trader U. Memecoin trading involves significant risk. Most memecoins lose value, and you may lose all capital used in a trade. Past performance is not indicative of future results. TraderU provides educational content and does not provide financial, investment, legal, or tax advice. Never trade more than you can afford to lose.</p>
+    <p style="font-size:11px;letter-spacing:0.03em;line-height:1.7;color:var(--ink3);max-width:720px;margin:8px 0 0;">© 2026 Trader U. Memecoin trading involves significant risk. Most memecoins lose value, and you may lose all capital used in a trade. Past performance is not indicative of future results. Trader U provides educational content and does not provide financial, investment, legal, or tax advice. Never trade more than you can afford to lose.</p>
   </div>
 </footer>
+
+<!-- ─── OFFER POPUP ─── -->
+<div id="promo-popup" class="fixed inset-0 z-[80]" aria-hidden="true">
+  <div id="promo-popup-backdrop" class="absolute inset-0"></div>
+  <div class="fixed inset-0 flex items-center justify-center" style="padding:16px;">
+    <div id="promo-popup-panel" role="dialog" aria-modal="true" aria-labelledby="promo-popup-title" class="relative" style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:20px;box-shadow:0 40px 90px rgba(0,0,0,0.55);width:100%;max-width:440px;max-height:92vh;overflow-y:auto;">
+      <div class="promo-glow"></div>
+      <button id="promo-popup-close" type="button" aria-label="Close popup" class="absolute flex items-center justify-center rounded-full text-white bg-transparent border-none cursor-pointer z-10" style="top:16px;right:16px;width:34px;height:34px;font-size:16px;opacity:0.7;">&#10005;</button>
+
+      <div class="relative" style="padding:clamp(30px,5vw,40px);z-index:1;text-align:center;">
+        <p class="font-mono" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);margin:0 0 18px;">Trader U</p>
+
+        <p class="promo-mark" style="font-size:15px;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin:0 0 8px;">Join For</p>
+        <p class="promo-mark text-ink" style="font-size:clamp(48px,10vw,64px);line-height:1;margin:0 0 22px;">$497</p>
+
+        <div class="promo-price-ring" style="padding:18px 20px;margin-bottom:22px;">
+          <p class="tu-body-sm" style="margin:0;color:var(--ink);">Current Trader U access is available for <strong>$497.99 + applicable taxes</strong>.</p>
+          <p class="tu-body-sm" style="margin:10px 0 0;">Offer currently available for a limited time. Discount automatically reflected at checkout.</p>
+        </div>
+
+        <a href="/checkout" target="_blank" rel="noopener noreferrer" class="tu-btn tu-btn-primary" style="width:100%;">
+          Join Trader U
+        </a>
+        <p class="tu-fine" style="margin:14px 0 0;">No code needed.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ─── LIVE HELP MODAL ─── -->
 <div id="help-modal" class="fixed inset-0 z-[70]">
   <div id="help-modal-backdrop" class="absolute inset-0"></div>
   <div class="fixed inset-0 flex items-center justify-center" style="padding:16px;">
-    <div id="help-modal-panel" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" class="bg-card relative" style="border-radius:10px;box-shadow:0 32px 64px rgba(9,9,9,0.35);width:100%;max-width:440px;max-height:90vh;overflow-y:auto;">
+    <div id="help-modal-panel" role="dialog" aria-modal="true" aria-labelledby="help-modal-title" class="relative" style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:14px;box-shadow:0 32px 64px rgba(0,0,0,0.5);width:100%;max-width:440px;max-height:90vh;overflow-y:auto;">
       <button id="help-modal-close" type="button" aria-label="Close Live Help" class="absolute flex items-center justify-center rounded-full text-ink2 bg-transparent border-none cursor-pointer z-10" style="top:16px;right:16px;width:36px;height:36px;font-size:18px;">&#10005;</button>
 
       <div style="padding:clamp(24px,4vw,32px);">
-        <h2 id="help-modal-title" class="font-heading font-extrabold" style="font-size:20px;margin:0 0 4px;">Live Help</h2>
-        <p class="text-ink2" style="font-size:14px;margin:0 0 16px;">Tell us what you need help with and our team will reply by email.</p>
-        <div class="bg-paper" style="border-radius:8px;border:1px solid var(--border);padding:12px;margin-bottom:24px;">
-          <p class="text-ink2" style="font-size:12px;line-height:1.5;margin:0;">TraderU support will never ask for your seed phrase, private key, or wallet recovery information.</p>
+        <h2 id="help-modal-title" class="tu-h4" style="font-size:20px;margin:0 0 4px;">Live Help</h2>
+        <p class="tu-body-sm" style="margin:0 0 16px;">Tell us what you need help with and our team will reply by email.</p>
+        <div style="background:var(--surface);border-radius:8px;border:1px solid var(--line);padding:12px;margin-bottom:24px;">
+          <p class="tu-fine" style="line-height:1.5;margin:0;">Trader U support will never ask for your seed phrase, private key, or wallet recovery information.</p>
         </div>
 
         <!-- STEP 1 -->
         <div id="help-step-1">
-          <p class="font-body uppercase text-ink2" style="letter-spacing:0.1em;font-size:11px;margin:0 0 4px;">Step 1 of 2</p>
-          <h3 class="font-heading font-extrabold" style="font-size:18px;margin:0 0 16px;">What can we help you with?</h3>
+          <p class="font-mono uppercase" style="letter-spacing:0.1em;font-size:11px;margin:0 0 4px;color:var(--ink3);">Step 1 of 2</p>
+          <h3 class="tu-h4" style="font-size:18px;margin:0 0 16px;">What can we help you with?</h3>
           <div class="flex flex-col" style="gap:10px;">
-            <button type="button" class="help-option" data-topic="Trouble accessing TraderU" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--border);background:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+            <button type="button" class="help-option" data-topic="Trouble accessing Trader U" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--line);background:var(--void);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:var(--ink);">
               <span>
-                <span class="block font-bold" style="font-size:14px;">Trouble accessing TraderU</span>
-                <span class="block text-ink2" style="font-size:12px;margin-top:2px;">Login, Whop access, or missing content</span>
+                <span class="block font-bold" style="font-size:14px;">Trouble accessing Trader U</span>
+                <span class="block tu-fine" style="margin-top:2px;">Login, Whop access, or missing content</span>
               </span>
             </button>
-            <button type="button" class="help-option" data-topic="Billing or checkout" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--border);background:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+            <button type="button" class="help-option" data-topic="Billing or checkout" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--line);background:var(--void);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:var(--ink);">
               <span>
                 <span class="block font-bold" style="font-size:14px;">Billing or checkout</span>
-                <span class="block text-ink2" style="font-size:12px;margin-top:2px;">Payment issues, checkout errors, or charges</span>
+                <span class="block tu-fine" style="margin-top:2px;">Payment issues, checkout errors, or charges</span>
               </span>
             </button>
-            <button type="button" class="help-option" data-topic="Membership and plans" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--border);background:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+            <button type="button" class="help-option" data-topic="Membership and access" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--line);background:var(--void);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:var(--ink);">
               <span>
-                <span class="block font-bold" style="font-size:14px;">Membership and plans</span>
-                <span class="block text-ink2" style="font-size:12px;margin-top:2px;">Full System, Live Access, or upgrading</span>
+                <span class="block font-bold" style="font-size:14px;">Membership and access</span>
+                <span class="block tu-fine" style="margin-top:2px;">Trader U access or upgrading</span>
               </span>
             </button>
-            <button type="button" class="help-option" data-topic="Curriculum or community" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--border);background:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+            <button type="button" class="help-option" data-topic="Curriculum or community" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--line);background:var(--void);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:var(--ink);">
               <span>
                 <span class="block font-bold" style="font-size:14px;">Curriculum or community</span>
-                <span class="block text-ink2" style="font-size:12px;margin-top:2px;">Lessons, modules, or the TraderU community</span>
+                <span class="block tu-fine" style="margin-top:2px;">Lessons or the Trader U community</span>
               </span>
             </button>
-            <button type="button" class="help-option" data-topic="Something else" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--border);background:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;">
+            <button type="button" class="help-option" data-topic="Something else" aria-pressed="false" style="width:100%;text-align:left;border-radius:8px;border:1px solid var(--line);background:var(--void);padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:var(--ink);">
               <span>
                 <span class="block font-bold" style="font-size:14px;">Something else</span>
-                <span class="block text-ink2" style="font-size:12px;margin-top:2px;">Anything not covered above</span>
+                <span class="block tu-fine" style="margin-top:2px;">Anything not covered above</span>
               </span>
             </button>
           </div>
@@ -879,63 +1010,82 @@
 
         <!-- STEP 2 -->
         <div id="help-step-2" class="hidden">
-          <button type="button" id="help-back-btn" class="inline-flex items-center font-bold text-ink2 bg-transparent border-none cursor-pointer" style="gap:6px;font-size:12px;margin-bottom:16px;padding:0;">&#8592; Back</button>
-          <p class="font-body uppercase text-ink2" style="letter-spacing:0.1em;font-size:11px;margin:0 0 4px;">Step 2 of 2</p>
-          <h3 class="font-heading font-extrabold" style="font-size:18px;margin:0 0 4px;">Tell us a little more.</h3>
-          <p class="text-ink2" style="font-size:12px;margin:0 0 20px;">Topic: <span id="help-selected-topic-label" class="font-bold text-ink"></span></p>
+          <button type="button" id="help-back-btn" class="inline-flex items-center font-bold bg-transparent border-none cursor-pointer" style="gap:6px;font-size:12px;margin-bottom:16px;padding:0;color:var(--ink2);">&#8592; Back</button>
+          <p class="font-mono uppercase" style="letter-spacing:0.1em;font-size:11px;margin:0 0 4px;color:var(--ink3);">Step 2 of 2</p>
+          <h3 class="tu-h4" style="font-size:18px;margin:0 0 4px;">Tell us a little more.</h3>
+          <p class="tu-fine" style="margin:0 0 20px;">Topic: <span id="help-selected-topic-label" class="font-bold" style="color:var(--ink);"></span></p>
 
           <form id="help-form" action="https://api.web3forms.com/submit" method="POST" class="flex flex-col" style="gap:16px;" novalidate>
             <input type="hidden" name="access_key" value="756759c3-41b4-49a9-9c78-8c23ce4c2e9f">
-            <input type="hidden" name="subject" value="New TraderU Live Help Request">
-            <input type="hidden" name="from_name" value="TraderU Website">
+            <input type="hidden" name="subject" value="New Trader U Live Help Request">
+            <input type="hidden" name="from_name" value="Trader U Website">
             <input type="hidden" name="help_topic" id="help-topic">
             <input type="hidden" name="page_url" id="help-page-url">
             <input type="checkbox" name="botcheck" style="display:none">
 
             <div>
-              <label for="help-name" class="block font-bold" style="font-size:12px;margin-bottom:6px;">Full name</label>
-              <input required type="text" id="help-name" name="name" class="w-full box-border" style="border-radius:6px;border:1px solid rgba(9,9,9,0.15);padding:10px 14px;font-size:14px;background:var(--paper);"/>
+              <label for="help-name" class="block font-bold" style="font-size:12px;margin-bottom:6px;color:var(--ink);">Full name</label>
+              <input required type="text" id="help-name" name="name" class="w-full box-border" style="border-radius:6px;border:1px solid var(--line-strong);padding:10px 14px;font-size:14px;background:var(--void);color:var(--ink);"/>
             </div>
             <div>
-              <label for="help-email" class="block font-bold" style="font-size:12px;margin-bottom:6px;">Email used for TraderU or checkout</label>
-              <input required type="email" id="help-email" name="email" class="w-full box-border" style="border-radius:6px;border:1px solid rgba(9,9,9,0.15);padding:10px 14px;font-size:14px;background:var(--paper);"/>
+              <label for="help-email" class="block font-bold" style="font-size:12px;margin-bottom:6px;color:var(--ink);">Email used for Trader U or checkout</label>
+              <input required type="email" id="help-email" name="email" class="w-full box-border" style="border-radius:6px;border:1px solid var(--line-strong);padding:10px 14px;font-size:14px;background:var(--void);color:var(--ink);"/>
             </div>
             <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <label for="help-whop" class="block font-bold" style="font-size:12px;margin-bottom:6px;">Whop username <span class="text-ink2 font-normal">(optional)</span></label>
-                <input type="text" id="help-whop" name="whop_username" class="w-full box-border" style="border-radius:6px;border:1px solid rgba(9,9,9,0.15);padding:10px 14px;font-size:14px;background:var(--paper);"/>
+                <label for="help-whop" class="block font-bold" style="font-size:12px;margin-bottom:6px;color:var(--ink);">Whop username <span class="font-normal" style="color:var(--ink3);">(optional)</span></label>
+                <input type="text" id="help-whop" name="whop_username" class="w-full box-border" style="border-radius:6px;border:1px solid var(--line-strong);padding:10px 14px;font-size:14px;background:var(--void);color:var(--ink);"/>
               </div>
               <div>
-                <label for="help-order" class="block font-bold" style="font-size:12px;margin-bottom:6px;">Order ID <span class="text-ink2 font-normal">(optional)</span></label>
-                <input type="text" id="help-order" name="order_id" class="w-full box-border" style="border-radius:6px;border:1px solid rgba(9,9,9,0.15);padding:10px 14px;font-size:14px;background:var(--paper);"/>
+                <label for="help-order" class="block font-bold" style="font-size:12px;margin-bottom:6px;color:var(--ink);">Order ID <span class="font-normal" style="color:var(--ink3);">(optional)</span></label>
+                <input type="text" id="help-order" name="order_id" class="w-full box-border" style="border-radius:6px;border:1px solid var(--line-strong);padding:10px 14px;font-size:14px;background:var(--void);color:var(--ink);"/>
               </div>
             </div>
             <div>
-              <label for="help-message" class="block font-bold" style="font-size:12px;margin-bottom:6px;">Message</label>
-              <textarea required id="help-message" name="message" rows="4" class="w-full box-border" style="border-radius:6px;border:1px solid rgba(9,9,9,0.15);padding:10px 14px;font-size:14px;background:var(--paper);font-family:inherit;"></textarea>
+              <label for="help-message" class="block font-bold" style="font-size:12px;margin-bottom:6px;color:var(--ink);">Message</label>
+              <textarea required id="help-message" name="message" rows="4" class="w-full box-border" style="border-radius:6px;border:1px solid var(--line-strong);padding:10px 14px;font-size:14px;background:var(--void);color:var(--ink);font-family:inherit;"></textarea>
             </div>
 
             <button type="submit" id="help-submit-btn" class="tu-btn tu-btn-primary w-full disabled:opacity-60" style="gap:8px;">
               <span id="help-spinner" class="help-spinner hidden inline-block" style="width:15px;height:15px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:999px;"></span>
               <span id="help-submit-label">Send help request</span>
             </button>
-            <p class="text-ink2 text-center" style="font-size:12px;margin:0;">We'll respond to the email provided.</p>
-            <p id="help-error" class="hidden font-semibold text-center" style="color:#c0392b;font-size:14px;margin:0;">We couldn't send your request. Please check your information and try again.</p>
+            <p class="tu-fine text-center" style="margin:0;">We'll respond to the email provided.</p>
+            <p id="help-error" class="hidden font-semibold text-center" style="color:#ff6b6b;font-size:14px;margin:0;">We couldn't send your request. Please check your information and try again.</p>
           </form>
         </div>
 
         <!-- SUCCESS -->
         <div id="help-success" class="hidden text-center" style="padding:24px 0;">
-          <div class="flex items-center justify-center mx-auto" style="width:56px;height:56px;border-radius:999px;background:#FFE2D8;color:#FF5A36;margin:0 auto 20px;font-size:24px;">&#10003;</div>
-          <h3 class="font-heading font-extrabold" style="font-size:20px;margin:0 0 8px;">Request received.</h3>
-          <p class="text-ink2" style="font-size:14px;margin:0 0 24px;">We've received your message and will reply to the email you provided.</p>
-          <button type="button" id="help-done-btn" class="tu-btn tu-btn-dark" style="padding-inline:32px;">Done</button>
+          <div class="flex items-center justify-center mx-auto" style="width:56px;height:56px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin:0 auto 20px;font-size:24px;">&#10003;</div>
+          <h3 class="tu-h4" style="font-size:20px;margin:0 0 8px;">Request received.</h3>
+          <p class="tu-body-sm" style="margin:0 0 24px;">We've received your message and will reply to the email you provided.</p>
+          <button type="button" id="help-done-btn" class="tu-btn tu-btn-light" style="padding-inline:32px;">Done</button>
         </div>
 
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  @media (min-width: 768px) {
+    .md-grid-2 { grid-template-columns: 1fr 1fr !important; }
+    .sys-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .coin-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .how-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .community-grid { grid-template-columns: 1fr 1fr !important; }
+    .founder-grid { grid-template-columns: minmax(0,42%) minmax(0,58%) !important; }
+    .who-grid { grid-template-columns: 1fr 1fr !important; }
+    .quote-grid { grid-template-columns: repeat(2,1fr) !important; }
+  }
+  @media (min-width: 1024px) {
+    .sys-grid { grid-template-columns: repeat(3,1fr) !important; }
+    .coin-grid { grid-template-columns: repeat(4,1fr) !important; }
+    .how-grid { grid-template-columns: repeat(4,1fr) !important; }
+    .quote-grid { grid-template-columns: repeat(3,1fr) !important; }
+  }
+</style>
 
 <script>
   // Nav solid-on-scroll
@@ -978,17 +1128,6 @@
     item.addEventListener('toggle', () => {
       if (item.open) {
         document.querySelectorAll('details.faq-item').forEach(other => {
-          if (other !== item) other.open = false;
-        });
-      }
-    });
-  });
-
-  // Curriculum catalog: keep only one phase open at a time
-  document.querySelectorAll('details.phase-item').forEach(item => {
-    item.addEventListener('toggle', () => {
-      if (item.open) {
-        document.querySelectorAll('details.phase-item').forEach(other => {
           if (other !== item) other.open = false;
         });
       }
@@ -1143,6 +1282,185 @@
       }
     });
   }
+</script>
+
+<script>
+  // ─── COIN RETURN CALCULATOR ANIMATION ───
+  (function () {
+    const calcs = document.querySelectorAll('.tu-coin-calc');
+    if (!calcs.length) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function formatNumber(n) {
+      return Math.round(n).toLocaleString('en-US');
+    }
+
+    function showFinal(calc) {
+      const mult = parseFloat(calc.dataset.multiplier);
+      const final = parseFloat(calc.dataset.final);
+      const finalEl = calc.querySelector('.tu-coin-calc-final');
+      calc.querySelector('.tu-coin-calc-mult').textContent = formatNumber(mult);
+      calc.querySelector('.tu-coin-calc-final-num').textContent = formatNumber(final);
+      calc.classList.add('is-visible');
+      finalEl.classList.add('is-revealed', 'tu-coin-glow');
+    }
+
+    function animateCalc(calc) {
+      const mult = parseFloat(calc.dataset.multiplier);
+      const final = parseFloat(calc.dataset.final);
+      const multEl = calc.querySelector('.tu-coin-calc-mult');
+      const finalEl = calc.querySelector('.tu-coin-calc-final');
+      const finalNumEl = calc.querySelector('.tu-coin-calc-final-num');
+      const duration = 1100;
+      let start = null;
+
+      calc.classList.add('is-visible');
+
+      function tick(now) {
+        if (start === null) start = now;
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        multEl.textContent = formatNumber(mult * eased);
+
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          multEl.textContent = formatNumber(mult);
+          finalNumEl.textContent = formatNumber(final);
+          finalEl.classList.add('is-revealed', 'tu-coin-glow');
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      calcs.forEach(showFinal);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateCalc(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    calcs.forEach((calc) => observer.observe(calc));
+  })();
+</script>
+
+<script>
+  // ─── SCROLL REVEAL ───
+  (function () {
+    const els = document.querySelectorAll('[data-reveal]');
+    if (!els.length) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      els.forEach(el => el.classList.add('is-in'));
+      return;
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+    els.forEach(el => io.observe(el));
+  })();
+
+  // ─── CURSOR TILT (desktop only) ───
+  (function () {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = window.matchMedia('(pointer: fine)').matches;
+    if (reduceMotion || !fine) return;
+
+    document.querySelectorAll('.tilt').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(900px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg) translateZ(0)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
+      });
+    });
+  })();
+</script>
+
+<script>
+  // ─── OFFER POPUP ───
+  (function () {
+    const STORAGE_KEY = 'tuOfferPopupSeen';
+
+    const popup = document.getElementById('promo-popup');
+    if (!popup) return;
+
+    const popupPanel = document.getElementById('promo-popup-panel');
+    const closeBtn = document.getElementById('promo-popup-close');
+
+    let popupLastFocused = null;
+
+    function openPopup() {
+      popupLastFocused = document.activeElement;
+      popup.classList.add('open');
+      popup.setAttribute('aria-hidden', 'false');
+      popupPanel.setAttribute('tabindex', '-1');
+      document.body.style.overflow = 'hidden';
+      window.setTimeout(() => closeBtn.focus(), 10);
+      document.addEventListener('keydown', handlePopupKeydown);
+      try { window.sessionStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+    }
+
+    function closePopup() {
+      popup.classList.remove('open');
+      popup.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handlePopupKeydown);
+      if (popupLastFocused) popupLastFocused.focus();
+    }
+
+    function handlePopupKeydown(e) {
+      if (e.key === 'Escape') {
+        closePopup();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusable = popupPanel.querySelectorAll('button:not([disabled]), a[href]');
+        if (!focusable.length) return;
+        const list = Array.prototype.slice.call(focusable);
+        const first = list[0];
+        const last = list[list.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    closeBtn.addEventListener('click', closePopup);
+
+    let alreadySeen = false;
+    try { alreadySeen = window.sessionStorage.getItem(STORAGE_KEY) === '1'; } catch (e) {}
+
+    if (!alreadySeen) {
+      window.setTimeout(openPopup, 1800);
+    }
+  })();
 </script>
 </body>
 </html>
