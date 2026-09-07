@@ -1,340 +1,457 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Workshop Information Form | Trader U</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "primary-container": "#FF5A36",
-          "on-primary-container": "#5c0000",
-          "on-surface": "#e2e2e2",
-        }
-      }
-    }
-  }
-</script>
+<title>Set Up Your Workshop Profile | Trader U</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  :root {
+    --void: #0A0A0B;
+    --surface: #141416;
+    --surface-2: #1C1C1F;
+    --ink: #F6F5F2;
+    --ink2: #9C988F;
+    --ink3: #6B675F;
+    --accent: #FF5A36;
+    --accent-hover: #E8462B;
+    --accent-soft: rgba(255,90,54,0.14);
+    --signal: #34D399;
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.16);
+    --font-heading: 'Inter Tight', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   }
-  .card-radius { border-radius: 14px; }
-  .btn-radius  { border-radius: 14px !important; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--void); color: var(--ink); font-family: var(--font-body); overflow-x: hidden; min-height: 100vh; }
+  ::selection { background: var(--accent); color: #fff; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-  .glass-panel {
-    background-color: rgba(21, 21, 23, 0.5);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    border-radius: 14px;
-  }
+  .wrap { max-width: 640px; margin-inline: auto; padding-inline: 20px; }
+  @media (min-width: 640px) { .wrap { padding-inline: 24px; } }
 
-  /* 16px minimum prevents iOS Safari auto-zoom on focus */
+  .label { font-family: var(--font-mono); text-transform: uppercase; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; color: var(--accent); margin: 0 0 10px; }
+  .h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(28px,6vw,42px); line-height: 1.1; letter-spacing: -0.02em; margin: 0; }
+  .body-sm { font-size: 15px; line-height: 1.6; color: var(--ink2); }
+  .fine { font-size: 12px; line-height: 1.6; color: var(--ink3); }
+
+  nav { position: sticky; top: 0; z-index: 20; background: rgba(10,10,11,0.85); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 640px; margin-inline: auto; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: var(--font-heading); font-weight: 800; font-size: 16px; color: var(--ink); text-decoration: none; letter-spacing: 0.02em; }
+  .back-link { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .back-link:hover { color: var(--ink); }
+
+  /* Progress */
+  .progress-track { height: 3px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin: 22px 0 8px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; width: 25%; transition: width .4s cubic-bezier(.16,1,.3,1); }
+  .step-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); }
+
+  .card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px; padding: 28px 22px; }
+  @media (min-width: 640px) { .card { padding: 36px; } }
+
+  .field { margin-bottom: 20px; }
+  .field-label { display: block; font-family: var(--font-heading); font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .field-required { color: var(--accent); margin-left: 2px; }
+  .field-hint { font-size: 12px; color: var(--ink3); margin-top: 6px; }
   .field-input {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #e4e4e7;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    padding: 14px 16px;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s, background-color 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
-    box-sizing: border-box;
+    width: 100%; background: var(--void); border: 1px solid var(--line-strong); color: var(--ink);
+    font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: 8px; outline: none;
+    font-family: var(--font-body); transition: border-color .2s ease, background-color .2s ease;
   }
-  .field-input::placeholder {
-    color: #52525b;
-  }
-  .field-input:focus {
-    border-color: rgba(255, 90, 54, 0.5);
-    background-color: rgba(255, 90, 54, 0.04);
-  }
+  .field-input::placeholder { color: var(--ink3); }
+  .field-input:focus { border-color: var(--accent); background: rgba(255,90,54,0.04); }
+  .field-input.field-error { border-color: #ff6b6b; }
+  textarea.field-input { resize: vertical; min-height: 90px; font-family: var(--font-body); }
+  .field-error-msg { font-size: 12px; color: #ff6b6b; margin-top: 6px; display: none; }
+  .field-error-msg.show { display: block; }
 
-  select.field-input {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 44px;
-    cursor: pointer;
+  /* Chips */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--ink2);
+    background: var(--void); border: 1px solid var(--line-strong); border-radius: 999px;
+    padding: 11px 18px; cursor: pointer; transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+    min-height: 44px; display: inline-flex; align-items: center;
   }
-  select.field-input option {
-    background-color: #151517;
-    color: #e4e4e7;
-  }
+  .chip:hover { border-color: rgba(255,90,54,0.5); }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  textarea.field-input {
-    resize: vertical;
-    min-height: 110px;
-  }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 54px; padding-inline: 30px; border-radius: 999px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; border: none; cursor: pointer; transition: background-color .2s ease, transform .2s ease, opacity .2s ease; width: 100%; font-family: var(--font-body); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--ink2); height: 44px; text-transform: none; font-weight: 600; letter-spacing: 0; width: auto; padding-inline: 8px; }
+  .btn-ghost:hover { color: var(--ink); }
 
-  .field-label {
-    display: block;
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #a1a1aa;
-    margin-bottom: 8px;
-  }
-  .field-required { color: #FF5A36; margin-left: 2px; }
-  .field-hint {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: #52525b;
-    margin-top: 6px;
-  }
-  .field-error { border-color: rgba(255, 90, 54, 0.6) !important; }
+  .step-panel { display: none; }
+  .step-panel.active { display: block; animation: stepIn .4s cubic-bezier(.16,1,.3,1); }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  #submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+  .step-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 28px; }
+  .step-nav .btn-primary { width: auto; padding-inline: 34px; }
 
-  #success-card { display: none; }
-  #success-card.visible { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 999px; animation: spin .7s linear infinite; }
+
+  #success-view { display: none; text-align: center; }
+  #success-view.visible { display: block; animation: stepIn .5s cubic-bezier(.16,1,.3,1); }
+  .success-icon { width: 60px; height: 60px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 20px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step-panel.active, #success-view.visible { animation: none !important; }
+    .progress-fill { transition: none !important; }
+  }
 </style>
 </head>
 
-<body class="bg-black text-on-surface overflow-x-hidden min-h-screen" style="font-family: 'Inter', sans-serif;">
+<body>
 
-<!-- ─── NAV ─── -->
-<nav class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl border-b border-white/10">
-  <div class="flex justify-between items-center max-w-3xl mx-auto px-5 py-4">
-    <a href="../../" class="text-xl font-black text-white tracking-tighter uppercase" style="font-family: 'Inter Tight', sans-serif;">TRADER U</a>
-    <a href="../../workshops/" class="text-zinc-500 hover:text-white transition-colors text-xs uppercase tracking-widest font-bold flex items-center gap-1.5" style="font-family: 'Inter Tight', sans-serif;">
-      <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span>
-      Workshop
-    </a>
+<nav>
+  <div class="nav-inner">
+    <a href="../../" class="wordmark">TRADER U</a>
+    <a href="../" class="back-link">&#8592; Workshops</a>
   </div>
 </nav>
 
-<!-- ─── PAGE HEADER ─── -->
-<section class="pt-28 pb-8 px-5 relative overflow-hidden">
-  <div class="absolute inset-0 z-0" style="background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 90, 54,0.07) 0%, transparent 70%);"></div>
-  <div class="max-w-3xl mx-auto relative z-10">
-    <div class="mb-5">
-      <span class="bg-primary-container/20 border border-primary-container text-primary-container px-3 py-1 text-xs font-bold uppercase tracking-[0.15em] inline-block" style="font-family: 'Inter Tight', sans-serif; border-radius: 14px;">Post-Purchase</span>
-    </div>
-    <h1 class="text-white font-black uppercase mb-3 leading-tight" style="font-family: 'Inter Tight', sans-serif; font-size: clamp(28px, 6vw, 46px); letter-spacing: -0.03em;">Workshop Information Form</h1>
-    <p class="text-zinc-400 mb-1" style="font-size: 17px; line-height: 1.6;">Thanks for reserving your Trader U Workshop session.</p>
-    <p class="text-zinc-500" style="font-size: 15px; line-height: 1.7;">Complete the information below so we can prepare your session and send updates.</p>
+<main class="wrap" style="padding-top:40px;padding-bottom:80px;">
+
+  <p class="label">Welcome To Trader U Workshops</p>
+  <h1 class="h1" style="margin-bottom:10px;">Set up your Workshop profile.</h1>
+  <p class="body-sm" style="margin:0 0 8px;">This takes about a minute. It helps us shape future sessions around what members actually need.</p>
+
+  <div id="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <p class="step-label" id="step-label">Step 1 of 4</p>
   </div>
-</section>
 
-<!-- ─── FORM SECTION ─── -->
-<section class="pb-20 px-5">
-  <div class="max-w-3xl mx-auto">
+  <form id="workshop-form" action="https://api.web3forms.com/submit" method="POST" novalidate style="margin-top:24px;">
 
-    <!-- Success card -->
-    <div id="success-card" class="glass-panel p-6 mb-6">
-      <div class="flex items-start gap-4">
-        <div class="w-10 h-10 bg-green-500/10 border border-green-500/30 flex items-center justify-center shrink-0 card-radius">
-          <span class="material-symbols-outlined text-green-400" style="font-size: 20px; font-variation-settings: 'FILL' 1;">check_circle</span>
+    <input type="hidden" name="access_key" value="cee11b39-c02c-4177-b529-4090c22e2171"/>
+    <input type="hidden" name="subject" value="New Workshop Profile Submission - Trader U"/>
+    <input type="hidden" name="from_name" value="Trader U Workshop Form"/>
+    <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off"/>
+    <input type="hidden" name="experience_level" id="hidden-experience-level"/>
+    <input type="hidden" name="trading_duration" id="hidden-trading-duration"/>
+    <input type="hidden" name="struggles" id="hidden-struggles"/>
+
+    <div class="card">
+
+      <!-- STEP 1 -->
+      <div class="step-panel active" data-step="1">
+        <h2 class="field-label" style="font-size:16px;margin-bottom:18px;">Who are you?</h2>
+
+        <div class="field">
+          <label for="full_name" class="field-label">Full name<span class="field-required">*</span></label>
+          <input type="text" id="full_name" name="full_name" class="field-input" placeholder="Your full name" required autocomplete="name"/>
+          <p class="field-error-msg">Enter your full name.</p>
         </div>
-        <div>
-          <h3 class="text-white font-bold text-sm uppercase tracking-wide mb-1" style="font-family: 'Inter Tight', sans-serif;">Workshop info received successfully.</h3>
-          <p class="text-zinc-400 text-sm leading-relaxed">Our team will review your submission and provide session updates if needed.</p>
+
+        <div class="field">
+          <label for="email" class="field-label">Email<span class="field-required">*</span></label>
+          <input type="email" id="email" name="email" class="field-input" placeholder="your@email.com" required autocomplete="email"/>
+          <p class="field-error-msg">Enter a valid email address.</p>
+        </div>
+
+        <div class="field">
+          <label for="discord_username" class="field-label">Discord username<span class="field-required">*</span></label>
+          <input type="text" id="discord_username" name="discord_username" class="field-input" placeholder="username" required autocomplete="off"/>
+          <p class="field-error-msg">Enter your Discord username.</p>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label for="whop_email" class="field-label">Whop / order email<span class="field-required">*</span></label>
+          <input type="email" id="whop_email" name="whop_email" class="field-input" placeholder="Email used at Whop checkout" required autocomplete="off"/>
+          <p class="field-hint">The email address associated with your Workshop purchase.</p>
+          <p class="field-error-msg">Enter the email used at checkout.</p>
         </div>
       </div>
-    </div>
 
-    <!-- Form -->
-    <form id="workshop-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+      <!-- STEP 2 -->
+      <div class="step-panel" data-step="2">
+        <h2 class="field-label" style="font-size:16px;margin-bottom:18px;">Where are you at?</h2>
 
-      <input type="hidden" name="access_key" value="cee11b39-c02c-4177-b529-4090c22e2171"/>
-      <input type="hidden" name="subject" value="New Workshop Info Submission - Trader U"/>
-      <input type="hidden" name="from_name" value="Trader U Workshop Form"/>
-      <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off"/>
-
-      <div class="glass-panel p-5 md:p-8">
-
-        <div class="mb-7 pb-5 border-b border-white/10">
-          <h2 class="text-white font-bold uppercase text-sm tracking-widest mb-1" style="font-family: 'Inter Tight', sans-serif;">Session Information</h2>
-          <p class="text-zinc-600 text-xs uppercase tracking-wider" style="font-family: 'Inter Tight', sans-serif;">Fields marked <span class="text-primary-container">*</span> are required</p>
+        <div class="field">
+          <label class="field-label">Experience level<span class="field-required">*</span></label>
+          <div class="chip-group" data-chip-group="experience" data-mode="single">
+            <button type="button" class="chip" data-value="Brand new">Brand new</button>
+            <button type="button" class="chip" data-value="Beginner">Beginner</button>
+            <button type="button" class="chip" data-value="Intermediate">Intermediate</button>
+            <button type="button" class="chip" data-value="Advanced">Advanced</button>
+          </div>
+          <p class="field-error-msg" data-error-for="experience">Select your experience level.</p>
         </div>
 
-        <div class="space-y-6">
-
-          <!-- Full Name -->
-          <div>
-            <label for="full_name" class="field-label">Full Name<span class="field-required">*</span></label>
-            <input type="text" id="full_name" name="full_name" class="field-input" placeholder="Your full name" required autocomplete="name"/>
+        <div class="field">
+          <label class="field-label">How long have you been trading memecoins?<span class="field-required">*</span></label>
+          <div class="chip-group" data-chip-group="duration" data-mode="single">
+            <button type="button" class="chip" data-value="Not yet">Not yet</button>
+            <button type="button" class="chip" data-value="Less than 1 month">Less than 1 month</button>
+            <button type="button" class="chip" data-value="1 to 6 months">1 to 6 months</button>
+            <button type="button" class="chip" data-value="6 to 12 months">6 to 12 months</button>
+            <button type="button" class="chip" data-value="1+ years">1+ years</button>
           </div>
-
-          <!-- Email -->
-          <div>
-            <label for="email" class="field-label">Email Address<span class="field-required">*</span></label>
-            <input type="email" id="email" name="email" class="field-input" placeholder="your@email.com" required autocomplete="email"/>
-          </div>
-
-          <!-- Discord -->
-          <div>
-            <label for="discord_username" class="field-label">Discord Username<span class="field-required">*</span></label>
-            <input type="text" id="discord_username" name="discord_username" class="field-input" placeholder="username or username#0000" required autocomplete="off"/>
-            <p class="field-hint">The username you use on Discord.</p>
-          </div>
-
-          <!-- Whop Email -->
-          <div>
-            <label for="whop_email" class="field-label">Whop / Order Email<span class="field-required">*</span></label>
-            <input type="email" id="whop_email" name="whop_email" class="field-input" placeholder="Email used at Whop checkout" required autocomplete="off"/>
-            <p class="field-hint">The email address associated with your Whop purchase.</p>
-          </div>
-
-          <!-- 3 Questions -->
-          <div>
-            <label for="workshop_questions" class="field-label">What are 3 questions you want answered during the workshop?<span class="field-required">*</span></label>
-            <textarea id="workshop_questions" name="workshop_questions" class="field-input" rows="5" placeholder="1. &#10;2. &#10;3. " required></textarea>
-            <p class="field-hint">Be specific. The more detail you give, the more value you get out of the session.</p>
-          </div>
-
-          <!-- Experience Level -->
-          <div>
-            <label for="experience_level" class="field-label">Experience Level<span class="field-required">*</span></label>
-            <select id="experience_level" name="experience_level" class="field-input" required>
-              <option value="" disabled selected>Select your level</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
-
-          <!-- Specific Help -->
-          <div>
-            <label for="specific_help" class="field-label">Anything specific you want help with?</label>
-            <textarea id="specific_help" name="specific_help" class="field-input" rows="3" placeholder="Any particular area, chart pattern, tool, or situation..."></textarea>
-          </div>
-
-          <!-- Optional divider -->
-          <div class="pt-1 pb-1 border-t border-white/5">
-            <p class="text-zinc-700 text-xs uppercase tracking-widest font-bold" style="font-family: 'Inter Tight', sans-serif;">Optional</p>
-          </div>
-
-          <!-- Trading Style -->
-          <div>
-            <label for="trading_style" class="field-label">Current Trading Style</label>
-            <input type="text" id="trading_style" name="trading_style" class="field-input" placeholder="e.g. scalping, swing, narrative-based, no system yet..." autocomplete="off"/>
-          </div>
-
-          <!-- Biggest Struggle -->
-          <div>
-            <label for="biggest_struggle" class="field-label">Biggest Struggle With Trading</label>
-            <textarea id="biggest_struggle" name="biggest_struggle" class="field-input" rows="3" placeholder="What keeps tripping you up? Exits, emotions, finding entries..."></textarea>
-          </div>
-
+          <p class="field-error-msg" data-error-for="duration">Select an option.</p>
         </div>
 
-        <!-- Submit -->
-        <div class="mt-8 pt-7 border-t border-white/10">
-          <button
-            id="submit-btn"
-            type="submit"
-            class="btn-radius bg-primary-container text-white w-full py-5 font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all duration-200 active:scale-95 transform flex items-center justify-center gap-2"
-            style="font-family: 'Inter Tight', sans-serif; touch-action: manipulation;"
-          >
-            <span id="submit-text">Submit Workshop Info</span>
-            <span id="submit-spinner" class="hidden">
-              <span class="material-symbols-outlined" style="font-size: 17px; animation: spin 1s linear infinite;">progress_activity</span>
-            </span>
-          </button>
-          <p class="text-zinc-700 text-xs uppercase tracking-wider text-center mt-4" style="font-family: 'Inter Tight', sans-serif;">Your information is only used to prepare your session.</p>
+        <div class="field" style="margin-bottom:0;">
+          <label class="field-label">Which areas do you currently struggle with?<span class="field-required">*</span></label>
+          <div class="chip-group" data-chip-group="struggles" data-mode="multi">
+            <button type="button" class="chip" data-value="Finding coins">Finding coins</button>
+            <button type="button" class="chip" data-value="Entries">Entries</button>
+            <button type="button" class="chip" data-value="Taking profit">Taking profit</button>
+            <button type="button" class="chip" data-value="Risk management">Risk management</button>
+            <button type="button" class="chip" data-value="FOMO">FOMO</button>
+            <button type="button" class="chip" data-value="Wallet tracking">Wallet tracking</button>
+            <button type="button" class="chip" data-value="Charts">Charts</button>
+            <button type="button" class="chip" data-value="Tools">Tools</button>
+            <button type="button" class="chip" data-value="Knowing when not to trade">Knowing when not to trade</button>
+          </div>
+          <p class="field-hint">Select as many as apply.</p>
+          <p class="field-error-msg" data-error-for="struggles">Select at least one.</p>
         </div>
-
       </div>
 
-    </form>
+      <!-- STEP 3 -->
+      <div class="step-panel" data-step="3">
+        <h2 class="field-label" style="font-size:16px;margin-bottom:18px;">What do you need help with?</h2>
 
-  </div>
-</section>
+        <div class="field">
+          <label for="question_1" class="field-label">Your biggest question right now<span class="field-required">*</span></label>
+          <input type="text" id="question_1" name="question_1" class="field-input" placeholder="Question 1" required/>
+          <p class="field-error-msg">Enter at least one question.</p>
+        </div>
 
-<!-- ─── FOOTER ─── -->
-<footer class="bg-zinc-950 border-t border-white/10 w-full py-14 px-5">
-  <div class="flex flex-col items-center text-center gap-5 max-w-3xl mx-auto">
-    <a href="../../" class="text-2xl font-black text-white tracking-tighter uppercase" style="font-family: 'Inter Tight', sans-serif;">TRADER U</a>
-    <div class="flex flex-wrap justify-center gap-5 text-[10px] uppercase tracking-wider text-zinc-600" style="font-family: 'Inter Tight', sans-serif;">
-      <a class="hover:text-primary-container transition-colors" href="../../terms.html">Terms of Service</a>
-      <a class="hover:text-primary-container transition-colors" href="../../privacy.html">Privacy Policy</a>
-      <a class="hover:text-primary-container transition-colors" href="../../refund.html">Refund Policy</a>
-      <a class="hover:text-primary-container transition-colors" href="../../eula.html">EULA</a>
+        <div class="field">
+          <label for="question_2" class="field-label">Another question <span style="color:var(--ink3);font-weight:400;">(optional)</span></label>
+          <input type="text" id="question_2" name="question_2" class="field-input" placeholder="Question 2"/>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label for="question_3" class="field-label">One more <span style="color:var(--ink3);font-weight:400;">(optional)</span></label>
+          <input type="text" id="question_3" name="question_3" class="field-input" placeholder="Question 3"/>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-panel" data-step="4">
+        <h2 class="field-label" style="font-size:16px;margin-bottom:18px;">Your Workshop goal</h2>
+
+        <div class="field">
+          <label for="biggest_blocker" class="field-label">What's the biggest thing holding you back right now? <span style="color:var(--ink3);font-weight:400;">(optional)</span></label>
+          <textarea id="biggest_blocker" name="biggest_blocker" class="field-input" rows="3" placeholder="Be specific if you can."></textarea>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label for="thirty_day_goal" class="field-label">If these workshops could fix ONE thing in your trading over the next 30 days, what would it be? <span style="color:var(--ink3);font-weight:400;">(optional)</span></label>
+          <textarea id="thirty_day_goal" name="thirty_day_goal" class="field-input" rows="3" placeholder="One specific thing."></textarea>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button type="button" id="back-btn" class="btn-ghost" style="visibility:hidden;">&#8592; Back</button>
+        <button type="button" id="next-btn" class="btn btn-primary">Continue</button>
+        <button type="submit" id="submit-btn" class="btn btn-primary" style="display:none;">
+          <span id="submit-text">Complete My Workshop Profile</span>
+          <span id="submit-spinner" class="spinner" style="display:none;"></span>
+        </button>
+      </div>
+
     </div>
-    <p class="text-[10px] uppercase tracking-wider leading-relaxed text-zinc-600 max-w-xl" style="font-family: 'Inter Tight', sans-serif;">
-      © 2026 TRADER U. MEMECOIN TRADING INVOLVES SIGNIFICANT RISK. PAST PERFORMANCE IS NOT INDICATIVE OF FUTURE RESULTS. ALL CONTENT IS FOR EDUCATIONAL PURPOSES ONLY. NEVER TRADE MORE THAN YOU CAN AFFORD TO LOSE.
-    </p>
-  </div>
-</footer>
+  </form>
 
-<style>
-  @keyframes spin { to { transform: rotate(360deg); } }
-</style>
+  <!-- SUCCESS -->
+  <div id="success-view">
+    <div class="success-icon">&#10003;</div>
+    <h2 class="h1" style="font-size:clamp(26px,5vw,34px);">You're in.</h2>
+    <p class="body-sm" style="max-width:440px;margin:14px auto 0;">Workshop profile complete. We'll use your answers to shape future sessions and understand where members need the most help.</p>
+    <a href="../" class="btn btn-primary" style="width:auto;padding-inline:32px;margin-top:28px;display:inline-flex;">Back To Workshops</a>
+  </div>
+
+  <p class="fine" style="text-align:center;margin-top:32px;">Your information is only used to prepare and improve future Workshop sessions.</p>
+
+</main>
 
 <script>
-  const form = document.getElementById('workshop-form');
-  const submitBtn = document.getElementById('submit-btn');
-  const submitText = document.getElementById('submit-text');
-  const submitSpinner = document.getElementById('submit-spinner');
-  const successCard = document.getElementById('success-card');
+  (function () {
+    var form = document.getElementById('workshop-form');
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.step-panel'));
+    var totalSteps = panels.length;
+    var currentStep = 1;
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
+    var progressFill = document.getElementById('progress-fill');
+    var stepLabel = document.getElementById('step-label');
+    var backBtn = document.getElementById('back-btn');
+    var nextBtn = document.getElementById('next-btn');
+    var submitBtn = document.getElementById('submit-btn');
+    var submitText = document.getElementById('submit-text');
+    var submitSpinner = document.getElementById('submit-spinner');
+    var successView = document.getElementById('success-view');
+    var progressWrap = document.getElementById('progress-wrap');
+    var isSubmitting = false;
 
-    const required = form.querySelectorAll('[required]');
-    let valid = true;
-    required.forEach(field => {
-      field.classList.remove('field-error');
-      if (!field.value.trim()) {
-        field.classList.add('field-error');
-        valid = false;
-      }
-    });
-    if (!valid) {
-      form.querySelector('.field-error').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
+    // ─── Chip groups ───
+    var chipGroups = document.querySelectorAll('[data-chip-group]');
+    var chipState = {};
 
-    submitBtn.disabled = true;
-    submitText.textContent = 'Submitting...';
-    submitSpinner.classList.remove('hidden');
-
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: new FormData(form)
+    chipGroups.forEach(function (group) {
+      var name = group.getAttribute('data-chip-group');
+      var mode = group.getAttribute('data-mode');
+      chipState[name] = [];
+      var chips = group.querySelectorAll('.chip');
+      chips.forEach(function (chip) {
+        chip.setAttribute('aria-pressed', 'false');
+        chip.addEventListener('click', function () {
+          var value = chip.getAttribute('data-value');
+          if (mode === 'single') {
+            chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+            chip.setAttribute('aria-pressed', 'true');
+            chipState[name] = [value];
+          } else {
+            var pressed = chip.getAttribute('aria-pressed') === 'true';
+            chip.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+            if (pressed) {
+              chipState[name] = chipState[name].filter(function (v) { return v !== value; });
+            } else {
+              chipState[name].push(value);
+            }
+          }
+          clearGroupError(name);
+          syncHiddenFields();
+        });
       });
-      const data = await res.json();
-
-      if (data.success) {
-        form.style.display = 'none';
-        successCard.classList.add('visible');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        submitText.textContent = 'Something went wrong. Try again.';
-        submitSpinner.classList.add('hidden');
-        submitBtn.disabled = false;
-      }
-    } catch {
-      submitText.textContent = 'Connection error. Try again.';
-      submitSpinner.classList.add('hidden');
-      submitBtn.disabled = false;
-    }
-  });
-
-  form.querySelectorAll('[required]').forEach(field => {
-    field.addEventListener('input', function() {
-      this.classList.remove('field-error');
     });
-  });
+
+    function syncHiddenFields() {
+      document.getElementById('hidden-experience-level').value = (chipState.experience || []).join(', ');
+      document.getElementById('hidden-trading-duration').value = (chipState.duration || []).join(', ');
+      document.getElementById('hidden-struggles').value = (chipState.struggles || []).join(', ');
+    }
+
+    function clearGroupError(name) {
+      var msg = document.querySelector('[data-error-for="' + name + '"]');
+      if (msg) msg.classList.remove('show');
+    }
+
+    // ─── Field-level error clearing ───
+    form.querySelectorAll('.field-input[required]').forEach(function (field) {
+      field.addEventListener('input', function () {
+        field.classList.remove('field-error');
+        var msg = field.parentElement.querySelector('.field-error-msg');
+        if (msg) msg.classList.remove('show');
+      });
+    });
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function validateStep(step) {
+      var panel = panels[step - 1];
+      var valid = true;
+      var firstInvalid = null;
+
+      var requiredFields = panel.querySelectorAll('.field-input[required]');
+      requiredFields.forEach(function (field) {
+        var value = field.value.trim();
+        var fieldValid = value.length > 0;
+        if (fieldValid && field.type === 'email') fieldValid = isValidEmail(value);
+        var msg = field.parentElement.querySelector('.field-error-msg');
+        if (!fieldValid) {
+          valid = false;
+          field.classList.add('field-error');
+          if (msg) msg.classList.add('show');
+          if (!firstInvalid) firstInvalid = field;
+        } else {
+          field.classList.remove('field-error');
+          if (msg) msg.classList.remove('show');
+        }
+      });
+
+      if (step === 2) {
+        if (!chipState.experience || !chipState.experience.length) {
+          valid = false;
+          document.querySelector('[data-error-for="experience"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="experience"]');
+        }
+        if (!chipState.duration || !chipState.duration.length) {
+          valid = false;
+          document.querySelector('[data-error-for="duration"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="duration"]');
+        }
+        if (!chipState.struggles || !chipState.struggles.length) {
+          valid = false;
+          document.querySelector('[data-error-for="struggles"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="struggles"]');
+        }
+      }
+
+      if (!valid && firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return valid;
+    }
+
+    function goToStep(step) {
+      panels.forEach(function (panel) {
+        panel.classList.toggle('active', Number(panel.getAttribute('data-step')) === step);
+      });
+      currentStep = step;
+      progressFill.style.width = ((step / totalSteps) * 100) + '%';
+      stepLabel.textContent = 'Step ' + step + ' of ' + totalSteps;
+      backBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+      var isLast = step === totalSteps;
+      nextBtn.style.display = isLast ? 'none' : 'inline-flex';
+      submitBtn.style.display = isLast ? 'inline-flex' : 'none';
+    }
+
+    nextBtn.addEventListener('click', function () {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < totalSteps) goToStep(currentStep + 1);
+    });
+
+    backBtn.addEventListener('click', function () {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (isSubmitting) return;
+      if (!validateStep(totalSteps)) return;
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      submitText.textContent = 'Submitting...';
+      submitSpinner.style.display = 'inline-block';
+
+      fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            form.style.display = 'none';
+            progressWrap.style.display = 'none';
+            successView.classList.add('visible');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            submitText.textContent = 'Something went wrong. Try again.';
+            submitSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+            isSubmitting = false;
+          }
+        })
+        .catch(function () {
+          submitText.textContent = 'Connection error. Try again.';
+          submitSpinner.style.display = 'none';
+          submitBtn.disabled = false;
+          isSubmitting = false;
+        });
+    });
+
+    goToStep(1);
+  })();
 </script>
+
 </body>
 </html>
