@@ -137,11 +137,69 @@
   .apply-glow-fx { position: absolute; inset: -50px; z-index: 0; pointer-events: none; overflow: visible; }
   .apply-glow-fx::before { content:""; position:absolute; width:70%; height:60%; left:15%; top:-10%; background: var(--accent); opacity: 0.2; filter: blur(90px); border-radius: 50%; }
 
+  /* ─── Application form ─── */
+  .app-card { position: relative; z-index: 1; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 18px; padding: 28px 22px; }
+  @media (min-width: 640px) { .app-card { padding: 36px; } }
+
+  .progress-track { height: 3px; background: var(--surface-3); border-radius: 999px; overflow: hidden; margin: 22px 0 8px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; width: 25%; transition: width .4s cubic-bezier(.16,1,.3,1); }
+  .step-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); }
+
+  .field { margin-bottom: 20px; }
+  .field-label { display: block; font-family: var(--font-heading); font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .field-required { color: var(--accent); margin-left: 2px; }
+  .field-hint { font-size: 12px; color: var(--ink3); margin-top: 6px; }
+  .field-input {
+    width: 100%; background: var(--void); border: 1px solid var(--line-strong); color: var(--ink);
+    font-size: 16px; line-height: 1.5; padding: 13px 15px; border-radius: 8px; outline: none;
+    font-family: var(--font-body); transition: border-color .2s ease, background-color .2s ease;
+  }
+  .field-input::placeholder { color: var(--ink3); }
+  .field-input:focus { border-color: var(--accent); background: rgba(255,90,54,0.04); }
+  .field-input.field-error { border-color: #ff6b6b; }
+  textarea.field-input { resize: vertical; min-height: 90px; font-family: var(--font-body); }
+  .field-error-msg { font-size: 12px; color: #ff6b6b; margin-top: 6px; display: none; }
+  .field-error-msg.show { display: block; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--ink2);
+    background: var(--void); border: 1px solid var(--line-strong); border-radius: 999px;
+    padding: 11px 18px; cursor: pointer; transition: border-color .2s ease, background-color .2s ease, color .2s ease;
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .chip:hover { border-color: rgba(255,90,54,0.5); }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .app-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 54px; padding-inline: 30px; border-radius: 999px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; border: none; cursor: pointer; transition: background-color .2s ease, transform .2s ease, opacity .2s ease; font-family: var(--font-body); }
+  .app-btn-primary { background: var(--accent); color: #fff; width: 100%; }
+  .app-btn-primary:hover { background: var(--accent-hover); }
+  .app-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+  .app-btn-ghost { background: transparent; color: var(--ink2); height: 44px; text-transform: none; font-weight: 600; letter-spacing: 0; padding-inline: 8px; }
+  .app-btn-ghost:hover { color: var(--ink); }
+
+  .app-step-panel { display: none; }
+  .app-step-panel.active { display: block; animation: stepIn .4s cubic-bezier(.16,1,.3,1); }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .app-step-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 28px; }
+  .app-step-nav .app-btn-primary { width: auto; padding-inline: 34px; }
+
+  .app-spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 999px; animation: appSpin .7s linear infinite; }
+  @keyframes appSpin { to { transform: rotate(360deg); } }
+
+  #application-wrap, #success-wrap { display: none; }
+  #application-wrap.open, #success-wrap.open { display: block; animation: stepIn .5s cubic-bezier(.16,1,.3,1); }
+
+  .success-icon { width: 60px; height: 60px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 20px; }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .hero-line span, .fade-in { animation: none !important; opacity: 1 !important; transform: none !important; }
     .hero-glow::before { animation: none !important; }
     [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .app-step-panel.active, #application-wrap.open, #success-wrap.open { animation: none !important; }
+    .progress-fill { transition: none !important; }
   }
 </style>
 </head>
@@ -181,7 +239,7 @@
 
       <div class="fade-in" style="--d:.6s;margin-top:34px;">
         <a href="#compare" id="qualify-scroll-btn" class="btn btn-primary">See If You Qualify</a>
-        <p class="fine" style="margin-top:16px;">Access begins with a short Strategy Call with the Trader U team.</p>
+        <p class="fine" style="margin-top:16px;">Access begins with a short application.</p>
       </div>
 
       <div class="access-badges fade-in" style="--d:.72s;margin-top:26px;">
@@ -286,12 +344,12 @@
       <div class="card" data-reveal style="padding:26px;">
         <p style="font-family:'Inter Tight',sans-serif;font-weight:800;font-size:34px;margin:0 0 12px;color:var(--accent);">01</p>
         <h3 class="h3" style="font-size:18px;">Apply</h3>
-        <p class="body-sm" style="margin:8px 0 0;">Book a Strategy Call with the Trader U team.</p>
+        <p class="body-sm" style="margin:8px 0 0;">Complete a short application about your trading and what you need help with.</p>
       </div>
       <div class="card" data-reveal style="padding:26px;">
         <p style="font-family:'Inter Tight',sans-serif;font-weight:800;font-size:34px;margin:0 0 12px;color:var(--accent);">02</p>
         <h3 class="h3" style="font-size:18px;">Get Qualified</h3>
-        <p class="body-sm" style="margin:8px 0 0;">We'll go over where you are, what you're struggling with, and what you want help improving.</p>
+        <p class="body-sm" style="margin:8px 0 0;">Once submitted, you'll book a short call with the Trader U team to go over where you're at.</p>
       </div>
       <div class="card" data-reveal style="padding:26px;">
         <p style="font-family:'Inter Tight',sans-serif;font-weight:800;font-size:34px;margin:0 0 12px;color:var(--accent);">03</p>
@@ -306,7 +364,7 @@
     </div>
 
     <div class="card" data-reveal style="max-width:640px;margin:28px auto 0;padding:20px 24px;border-color:var(--line-strong);">
-      <p class="body-sm" style="margin:0;">The Strategy Call is a qualification conversation with the Trader U team. It is not the 1-on-1 coaching session itself. The actual session happens after qualification.</p>
+      <p class="body-sm" style="margin:0;">The call is a qualification conversation with the Trader U team, booked after your application is submitted. It is not the 1-on-1 coaching session itself. The actual session happens after qualification.</p>
     </div>
   </div>
 </section>
@@ -371,17 +429,184 @@
 <section id="apply" class="section" style="background:var(--surface);border-top:1px solid var(--line);overflow:hidden;">
   <div class="wrap-narrow apply-glow-wrap">
     <div class="apply-glow-fx"></div>
-    <div class="text-center relative" style="z-index:1;" data-reveal>
+
+    <!-- Pre-form persuasion -->
+    <div id="apply-intro" class="text-center relative" style="z-index:1;" data-reveal>
       <p class="label center" style="justify-content:center;">Private 1-on-1 Access</p>
-      <h2 class="h2" style="margin:0 auto 20px;">See If You Qualify.</h2>
-      <p class="body-text" style="max-width:520px;margin:0 auto;">Start with a short Trader U Strategy Call. We'll learn where you're at, what you need help with, and determine whether personalized 1-on-1 support makes sense for you.</p>
+      <h2 class="h2" style="margin:0 auto 20px;">Ready To Work On Your Trading?</h2>
+      <p class="body-text" style="max-width:520px;margin:0 auto;">Apply below so we can understand where you're currently at and what you need help with before you book.</p>
       <p class="body-text" style="max-width:520px;margin:14px auto 0;">Not everyone will be a fit.</p>
 
       <div style="margin-top:32px;">
-        <a href="https://calendar.app.google/5AzFaThfnAvz94Mx5" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          Apply For A Strategy Call
-        </a>
-        <p class="fine" style="margin-top:16px;max-width:460px;margin-inline:auto;">This is a qualification call with the Trader U team. It is not the actual 1-on-1 coaching session.</p>
+        <button type="button" id="start-application-btn" class="btn btn-primary">Start My Application</button>
+        <p class="fine" style="margin-top:16px;max-width:460px;margin-inline:auto;">This application helps us understand your situation before you book a call. It is not the actual 1-on-1 coaching session.</p>
+      </div>
+    </div>
+
+    <!-- Application form -->
+    <div id="application-wrap" class="relative" style="z-index:1;margin-top:44px;">
+      <div class="app-card">
+        <p class="label" style="margin-bottom:0;">Trader U 1-on-1 Application</p>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <p class="step-label" id="step-label">Step 1 of 4</p>
+
+        <form id="application-form" action="https://api.web3forms.com/submit" method="POST" novalidate style="margin-top:24px;">
+
+          <input type="hidden" name="access_key" value="206a9c2c-b74f-4822-a794-5ccca5f7244d"/>
+          <input type="hidden" name="subject" value="New Trader U 1-on-1 Application"/>
+          <input type="hidden" name="from_name" value="Trader U 1-on-1 Application"/>
+          <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off"/>
+          <input type="hidden" name="trading_experience" id="hidden-experience"/>
+          <input type="hidden" name="trading_duration" id="hidden-duration"/>
+          <input type="hidden" name="help_topics" id="hidden-help-topics"/>
+          <input type="hidden" name="investment_range" id="hidden-investment"/>
+          <input type="hidden" name="start_timeline" id="hidden-timeline"/>
+
+          <!-- STEP 1: ABOUT YOU -->
+          <div class="app-step-panel active" data-app-step="1">
+            <h3 class="field-label" style="font-size:16px;margin-bottom:18px;">About you</h3>
+
+            <div class="field">
+              <label for="app-name" class="field-label">Full name<span class="field-required">*</span></label>
+              <input type="text" id="app-name" name="name" class="field-input" placeholder="Your full name" required autocomplete="name"/>
+              <p class="field-error-msg">Enter your full name.</p>
+            </div>
+
+            <div class="field">
+              <label for="app-email" class="field-label">Email<span class="field-required">*</span></label>
+              <input type="email" id="app-email" name="email" class="field-input" placeholder="your@email.com" required autocomplete="email"/>
+              <p class="field-error-msg">Enter a valid email address.</p>
+            </div>
+
+            <div class="field" style="margin-bottom:0;">
+              <label for="app-discord" class="field-label">Discord username<span class="field-required">*</span></label>
+              <input type="text" id="app-discord" name="discord_username" class="field-input" placeholder="username" required autocomplete="off"/>
+              <p class="field-error-msg">Enter your Discord username.</p>
+            </div>
+          </div>
+
+          <!-- STEP 2: WHERE ARE YOU AT -->
+          <div class="app-step-panel" data-app-step="2">
+            <h3 class="field-label" style="font-size:16px;margin-bottom:18px;">Where are you at?</h3>
+
+            <div class="field">
+              <label class="field-label">What best describes your trading experience?<span class="field-required">*</span></label>
+              <div class="chip-group" data-chip-group="experience" data-mode="single">
+                <button type="button" class="chip" data-value="Brand new">Brand new</button>
+                <button type="button" class="chip" data-value="Beginner">Beginner</button>
+                <button type="button" class="chip" data-value="Intermediate">Intermediate</button>
+                <button type="button" class="chip" data-value="Experienced">Experienced</button>
+              </div>
+              <p class="field-error-msg" data-error-for="experience">Select your experience level.</p>
+            </div>
+
+            <div class="field">
+              <label class="field-label">How long have you been trading?<span class="field-required">*</span></label>
+              <div class="chip-group" data-chip-group="duration" data-mode="single">
+                <button type="button" class="chip" data-value="Less than 1 month">Less than 1 month</button>
+                <button type="button" class="chip" data-value="1 to 3 months">1 to 3 months</button>
+                <button type="button" class="chip" data-value="3 to 6 months">3 to 6 months</button>
+                <button type="button" class="chip" data-value="6 to 12 months">6 to 12 months</button>
+                <button type="button" class="chip" data-value="1+ year">1+ year</button>
+              </div>
+              <p class="field-error-msg" data-error-for="duration">Select an option.</p>
+            </div>
+
+            <div class="field" style="margin-bottom:0;">
+              <label class="field-label">What do you want the most help with?<span class="field-required">*</span></label>
+              <div class="chip-group" data-chip-group="help_topics" data-mode="multi">
+                <button type="button" class="chip" data-value="Finding coins">Finding coins</button>
+                <button type="button" class="chip" data-value="Better entries">Better entries</button>
+                <button type="button" class="chip" data-value="Taking profit">Taking profit</button>
+                <button type="button" class="chip" data-value="Risk management">Risk management</button>
+                <button type="button" class="chip" data-value="Position sizing">Position sizing</button>
+                <button type="button" class="chip" data-value="Wallet tracking">Wallet tracking</button>
+                <button type="button" class="chip" data-value="Reading charts">Reading charts</button>
+                <button type="button" class="chip" data-value="Trading tools">Trading tools</button>
+                <button type="button" class="chip" data-value="Building a strategy">Building a strategy</button>
+                <button type="button" class="chip" data-value="Trading psychology">Trading psychology</button>
+                <button type="button" class="chip" data-value="Knowing when not to trade">Knowing when not to trade</button>
+                <button type="button" class="chip" data-value="Other">Other</button>
+              </div>
+              <p class="field-hint">Select as many as apply.</p>
+              <p class="field-error-msg" data-error-for="help_topics">Select at least one.</p>
+            </div>
+          </div>
+
+          <!-- STEP 3: WHAT'S HOLDING YOU BACK -->
+          <div class="app-step-panel" data-app-step="3">
+            <h3 class="field-label" style="font-size:16px;margin-bottom:18px;">What's holding you back?</h3>
+
+            <div class="field">
+              <label for="app-struggle" class="field-label">What's the biggest thing holding you back right now?<span class="field-required">*</span></label>
+              <textarea id="app-struggle" name="biggest_struggle" class="field-input" rows="4" placeholder="Be specific if you can." required></textarea>
+              <p class="field-error-msg">Tell us what's holding you back.</p>
+            </div>
+
+            <div class="field" style="margin-bottom:0;">
+              <label for="app-goal" class="field-label">If you could fix ONE thing about your trading over the next 30 days, what would it be?<span class="field-required">*</span></label>
+              <textarea id="app-goal" name="thirty_day_goal" class="field-input" rows="4" placeholder="One specific thing." required></textarea>
+              <p class="field-error-msg">Tell us your 30 day goal.</p>
+            </div>
+          </div>
+
+          <!-- STEP 4: HOW SERIOUS ARE YOU -->
+          <div class="app-step-panel" data-app-step="4">
+            <h3 class="field-label" style="font-size:16px;margin-bottom:18px;">How serious are you?</h3>
+
+            <div class="field">
+              <label class="field-label">If 1-on-1 coaching is the right fit, what investment range are you prepared for?<span class="field-required">*</span></label>
+              <div class="chip-group" data-chip-group="investment" data-mode="single">
+                <button type="button" class="chip" data-value="Under $1,000">Under $1,000</button>
+                <button type="button" class="chip" data-value="Around $1,500">Around $1,500</button>
+                <button type="button" class="chip" data-value="$1,500 to $2,500">$1,500&ndash;$2,500</button>
+                <button type="button" class="chip" data-value="$2,500+">$2,500+</button>
+                <button type="button" class="chip" data-value="I'd need to learn more first">I'd need to learn more first</button>
+              </div>
+              <p class="field-error-msg" data-error-for="investment">Select an option.</p>
+            </div>
+
+            <div class="field" style="margin-bottom:0;">
+              <label class="field-label">How soon are you looking to get started?<span class="field-required">*</span></label>
+              <div class="chip-group" data-chip-group="timeline" data-mode="single">
+                <button type="button" class="chip" data-value="ASAP">ASAP</button>
+                <button type="button" class="chip" data-value="This week">This week</button>
+                <button type="button" class="chip" data-value="This month">This month</button>
+                <button type="button" class="chip" data-value="Just exploring">Just exploring</button>
+              </div>
+              <p class="field-error-msg" data-error-for="timeline">Select an option.</p>
+            </div>
+          </div>
+
+          <div class="app-step-nav">
+            <button type="button" id="app-back-btn" class="app-btn app-btn-ghost" style="visibility:hidden;">&#8592; Back</button>
+            <button type="button" id="app-next-btn" class="app-btn app-btn-primary" style="width:auto;">Continue</button>
+            <button type="submit" id="app-submit-btn" class="app-btn app-btn-primary" style="width:auto;display:none;">
+              <span id="app-submit-text">Submit Application</span>
+              <span id="app-submit-spinner" class="app-spinner" style="display:none;"></span>
+            </button>
+          </div>
+
+          <p id="app-error" class="fine" style="color:#ff6b6b;margin-top:16px;text-align:center;display:none;">Something went wrong submitting your application. Please try again.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Success + calendar reveal -->
+    <div id="success-wrap" class="relative text-center" style="z-index:1;margin-top:44px;">
+      <div class="app-card">
+        <div class="success-icon">&#10003;</div>
+        <p class="label center" style="justify-content:center;">Application Complete</p>
+        <h2 class="h2" style="font-size:clamp(26px,4vw,34px);margin:0 auto 14px;">Your information has been submitted.</h2>
+        <p class="body-text" style="max-width:460px;margin:0 auto;">Now choose a time below to speak with us about your 1-on-1 session.</p>
+
+        <div style="margin-top:32px;padding-top:28px;border-top:1px solid var(--line);">
+          <p class="label center" style="justify-content:center;">Book Your Call</p>
+          <a href="https://calendar.app.google/5AzFaThfnAvz94Mx5" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            Book Your Call
+          </a>
+          <p class="fine" style="margin-top:16px;max-width:420px;margin-inline:auto;">This call is a qualification conversation with the Trader U team. It is not the actual 1-on-1 coaching session.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -442,6 +667,228 @@
       }
     });
   }
+
+  // ─── APPLICATION FUNNEL ───
+  (function () {
+    var startBtn = document.getElementById('start-application-btn');
+    var applyIntro = document.getElementById('apply-intro');
+    var applicationWrap = document.getElementById('application-wrap');
+    var successWrap = document.getElementById('success-wrap');
+    var form = document.getElementById('application-form');
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.app-step-panel'));
+    var totalSteps = panels.length;
+    var currentStep = 1;
+
+    var progressFill = document.getElementById('progress-fill');
+    var stepLabel = document.getElementById('step-label');
+    var backBtn = document.getElementById('app-back-btn');
+    var nextBtn = document.getElementById('app-next-btn');
+    var submitBtn = document.getElementById('app-submit-btn');
+    var submitText = document.getElementById('app-submit-text');
+    var submitSpinner = document.getElementById('app-submit-spinner');
+    var errorMsg = document.getElementById('app-error');
+    var isSubmitting = false;
+    var hasSubmitted = false;
+
+    if (!startBtn || !form) return;
+
+    // Application is revealed only after the visitor chooses to start it.
+    startBtn.addEventListener('click', function () {
+      applicationWrap.classList.add('open');
+      startBtn.disabled = true;
+      applicationWrap.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    });
+
+    // ─── Chip groups ───
+    var chipGroups = document.querySelectorAll('[data-chip-group]');
+    var chipState = {};
+
+    chipGroups.forEach(function (group) {
+      var name = group.getAttribute('data-chip-group');
+      var mode = group.getAttribute('data-mode');
+      chipState[name] = [];
+      var chips = group.querySelectorAll('.chip');
+      chips.forEach(function (chip) {
+        chip.setAttribute('aria-pressed', 'false');
+        chip.addEventListener('click', function () {
+          var value = chip.getAttribute('data-value');
+          if (mode === 'single') {
+            chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+            chip.setAttribute('aria-pressed', 'true');
+            chipState[name] = [value];
+          } else {
+            var pressed = chip.getAttribute('aria-pressed') === 'true';
+            chip.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+            if (pressed) {
+              chipState[name] = chipState[name].filter(function (v) { return v !== value; });
+            } else {
+              chipState[name].push(value);
+            }
+          }
+          clearGroupError(name);
+          syncHiddenFields();
+        });
+      });
+    });
+
+    function syncHiddenFields() {
+      document.getElementById('hidden-experience').value = (chipState.experience || []).join(', ');
+      document.getElementById('hidden-duration').value = (chipState.duration || []).join(', ');
+      document.getElementById('hidden-help-topics').value = (chipState.help_topics || []).join(', ');
+      document.getElementById('hidden-investment').value = (chipState.investment || []).join(', ');
+      document.getElementById('hidden-timeline').value = (chipState.timeline || []).join(', ');
+    }
+
+    function clearGroupError(name) {
+      var msg = document.querySelector('[data-error-for="' + name + '"]');
+      if (msg) msg.classList.remove('show');
+    }
+
+    // ─── Field-level error clearing ───
+    form.querySelectorAll('.field-input[required]').forEach(function (field) {
+      field.addEventListener('input', function () {
+        field.classList.remove('field-error');
+        var msg = field.parentElement.querySelector('.field-error-msg');
+        if (msg) msg.classList.remove('show');
+      });
+    });
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function validateStep(step) {
+      var panel = panels[step - 1];
+      var valid = true;
+      var firstInvalid = null;
+
+      var requiredFields = panel.querySelectorAll('.field-input[required]');
+      requiredFields.forEach(function (field) {
+        var value = field.value.trim();
+        var fieldValid = value.length > 0;
+        if (fieldValid && field.type === 'email') fieldValid = isValidEmail(value);
+        var msg = field.parentElement.querySelector('.field-error-msg');
+        if (!fieldValid) {
+          valid = false;
+          field.classList.add('field-error');
+          if (msg) msg.classList.add('show');
+          if (!firstInvalid) firstInvalid = field;
+        } else {
+          field.classList.remove('field-error');
+          if (msg) msg.classList.remove('show');
+        }
+      });
+
+      if (step === 2) {
+        if (!chipState.experience || !chipState.experience.length) {
+          valid = false;
+          document.querySelector('[data-error-for="experience"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="experience"]');
+        }
+        if (!chipState.duration || !chipState.duration.length) {
+          valid = false;
+          document.querySelector('[data-error-for="duration"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="duration"]');
+        }
+        if (!chipState.help_topics || !chipState.help_topics.length) {
+          valid = false;
+          document.querySelector('[data-error-for="help_topics"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="help_topics"]');
+        }
+      }
+
+      if (step === 4) {
+        if (!chipState.investment || !chipState.investment.length) {
+          valid = false;
+          document.querySelector('[data-error-for="investment"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="investment"]');
+        }
+        if (!chipState.timeline || !chipState.timeline.length) {
+          valid = false;
+          document.querySelector('[data-error-for="timeline"]').classList.add('show');
+          if (!firstInvalid) firstInvalid = panel.querySelector('[data-chip-group="timeline"]');
+        }
+      }
+
+      if (!valid && firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+      }
+      return valid;
+    }
+
+    function goToStep(step) {
+      panels.forEach(function (panel) {
+        panel.classList.toggle('active', Number(panel.getAttribute('data-app-step')) === step);
+      });
+      currentStep = step;
+      progressFill.style.width = ((step / totalSteps) * 100) + '%';
+      stepLabel.textContent = 'Step ' + step + ' of ' + totalSteps;
+      backBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+      var isLast = step === totalSteps;
+      nextBtn.style.display = isLast ? 'none' : 'inline-flex';
+      submitBtn.style.display = isLast ? 'inline-flex' : 'none';
+    }
+
+    nextBtn.addEventListener('click', function () {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < totalSteps) goToStep(currentStep + 1);
+    });
+
+    backBtn.addEventListener('click', function () {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    // Enter key should advance/validate the current step, never submit early.
+    form.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      if (e.target && e.target.tagName === 'TEXTAREA') return;
+      e.preventDefault();
+      if (currentStep < totalSteps) {
+        if (validateStep(currentStep)) goToStep(currentStep + 1);
+      } else {
+        form.requestSubmit ? form.requestSubmit(submitBtn) : submitBtn.click();
+      }
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (isSubmitting || hasSubmitted) return;
+      if (!validateStep(totalSteps)) return;
+
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      errorMsg.style.display = 'none';
+      submitText.textContent = 'Submitting...';
+      submitSpinner.style.display = 'inline-block';
+
+      fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            hasSubmitted = true;
+            applicationWrap.classList.remove('open');
+            successWrap.classList.add('open');
+            successWrap.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+          } else {
+            errorMsg.style.display = 'block';
+            submitText.textContent = 'Submit Application';
+            submitSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+            isSubmitting = false;
+          }
+        })
+        .catch(function () {
+          errorMsg.textContent = 'Connection error. Please try again.';
+          errorMsg.style.display = 'block';
+          submitText.textContent = 'Submit Application';
+          submitSpinner.style.display = 'none';
+          submitBtn.disabled = false;
+          isSubmitting = false;
+        });
+    });
+
+    goToStep(1);
+  })();
 </script>
 
 </body>
