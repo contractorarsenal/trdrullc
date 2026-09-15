@@ -172,6 +172,34 @@
   .event-expect-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink2); }
   .event-expect-item .mark { flex-shrink: 0; width: 18px; height: 18px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
 
+  /* ─── Priority Access ─── */
+  #priority-section { position: relative; overflow: hidden; }
+  .priority-glow { position: absolute; inset: -50px; z-index: 0; pointer-events: none; overflow: visible; }
+  .priority-glow::before { content:""; position:absolute; width:60%; height:65%; left:20%; top:-10%; background: var(--accent); opacity: 0.16; filter: blur(100px); border-radius: 50%; }
+
+  .priority-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 880px; margin-inline: auto; }
+  @media (min-width: 720px) { .priority-grid { grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; } }
+
+  .plan-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: flex; flex-direction: column; }
+  .plan-card.is-priority { background: var(--surface-2); border: 1px solid var(--accent); box-shadow: 0 0 0 1px rgba(255,90,54,0.15), 0 20px 50px -20px rgba(255,90,54,0.35); }
+  .plan-tag { position: absolute; top: -1px; right: 24px; transform: translateY(-50%); background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+  .plan-card { position: relative; }
+
+  .plan-price { font-family: var(--font-heading); font-weight: 800; font-size: clamp(38px,5vw,48px); line-height: 1; margin: 8px 0 4px; color: var(--ink); }
+  .plan-price-note { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin: 0 0 20px; }
+
+  .plan-list { display: flex; flex-direction: column; gap: 11px; margin: 0 0 24px; flex: 1; }
+  .plan-list-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--ink2); line-height: 1.5; }
+  .plan-list-item .mark { flex-shrink: 0; width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; margin-top: 1px; }
+  .plan-list-item .mark.on { background: var(--accent-soft); color: var(--accent); }
+
+  .upcoming-pill {
+    display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2);
+    background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: 999px; padding: 10px 18px;
+  }
+  .upcoming-pill b { color: var(--ink); font-weight: 600; }
+
   /* ─── Checkout section ─── */
   #checkout-section { background: var(--surface); border-top: 1px solid var(--line); overflow: hidden; position: relative; }
   .checkout-glow { position: absolute; inset: -60px; z-index: 0; pointer-events: none; overflow: visible; }
@@ -448,6 +476,49 @@
             <a href="#checkout-section" class="btn btn-primary event-cta">Get Free Access</a>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRIORITY ACCESS ─── -->
+<section id="priority-section" class="section" style="background:var(--void);border-top:1px solid var(--line);">
+  <div class="priority-glow"></div>
+  <div class="wrap relative" style="z-index:1;">
+    <p class="label center" data-reveal style="justify-content:center;">Priority // Early Access</p>
+    <h2 class="h2" data-reveal style="text-align:center;margin:0 auto 16px;max-width:600px;">Skip the line.<br/><span style="color:var(--accent);">Get access first.</span></h2>
+    <p class="body-text" data-reveal style="text-align:center;max-width:520px;margin:0 auto 20px;">Get priority access to the upcoming FREE Trader U class before the general Free Access list.</p>
+
+    <div class="text-center" data-reveal style="margin-bottom:44px;">
+      <span class="upcoming-pill"><span class="live-dot" style="margin-right:2px;"></span>Upcoming Free Class: <b>Friday, September 18</b> &middot; Time TBD</span>
+    </div>
+
+    <div class="priority-grid" data-reveal>
+      <div class="plan-card">
+        <p class="label" style="margin-bottom:0;">Regular Free Access</p>
+        <p class="plan-price">$0</p>
+        <p class="plan-price-note">One time &middot; No cost</p>
+        <div class="plan-list">
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Join the normal access list</div>
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Receive access when general access opens</div>
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Free class access</div>
+        </div>
+        <a href="#checkout-section" class="btn btn-outline" style="width:100%;">Continue Free</a>
+      </div>
+
+      <div class="plan-card is-priority">
+        <span class="plan-tag">Priority</span>
+        <p class="label" style="margin-bottom:0;">Priority Access</p>
+        <p class="plan-price">$9.99</p>
+        <p class="plan-price-note">One time</p>
+        <div class="plan-list">
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Moved ahead of the general list</div>
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Access handled first</div>
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Same free class</div>
+          <div class="plan-list-item"><span class="mark on">&#10003;</span>Priority status for this release</div>
+        </div>
+        <a href="https://whop.com/checkout/plan_vHH2NoS91hj9Z" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width:100%;">Get Priority Access</a>
+        <p class="fine" style="margin-top:14px;">The class itself is still free. Priority Access only moves you ahead of the general access list.</p>
       </div>
     </div>
   </div>
