@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Test Your Skills | Trader U</title>
+<meta name="description" content="A simulated trading exercise. 3 markets. $100. You make the decisions. No real money."/>
+<link rel="canonical" href="https://traderuinsider.com/test-your-skills/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Test Your Skills | Trader U"/>
+<meta property="og:description" content="3 markets. $100. You make the decisions. A simulated trading exercise from Trader U."/>
+<meta property="og:url" content="https://traderuinsider.com/test-your-skills/"/>
+<meta property="og:site_name" content="Trader U"/>
+<meta name="twitter:card" content="summary"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --void: #0A0A0B; --surface: #141416; --surface-2: #1C1C1F; --surface-3: #26262A;
+    --ink: #F6F5F2; --ink2: #9C988F; --ink3: #6B675F;
+    --accent: #FF5A36; --accent-hover: #E8462B; --accent-soft: rgba(255,90,54,0.14);
+    --up: #2ED3A0; --down: #EF4565; --up-soft: rgba(46,211,160,0.12); --down-soft: rgba(239,69,101,0.12);
+    --line: rgba(255,255,255,0.08); --line-strong: rgba(255,255,255,0.16);
+    --font-heading: 'Inter Tight', sans-serif; --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--void); color: var(--ink); font-family: var(--font-body); overflow-x: hidden; position: relative; -webkit-text-size-adjust: 100%; }
+  ::selection { background: var(--accent); color: #fff; }
+  button { font-family: inherit; }
+  a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--accent); color: #fff; padding: 10px 14px; font-weight: 700; font-size: 13px; text-decoration: none; }
+  .skip:focus { top: 12px; }
+
+  body::before { content: ""; position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: 0.045; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
+
+  .wrap { max-width: 1080px; margin-inline: auto; padding-inline: 20px; position: relative; }
+  .label { font-family: var(--font-mono); text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; color: var(--accent); margin: 0 0 14px; display: flex; align-items: center; gap: 8px; }
+  .label.center { justify-content: center; }
+  .label::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 0 3px var(--accent-soft); }
+  .fine { font-size: 12px; line-height: 1.6; color: var(--ink3); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 56px; padding-inline: 32px; border-radius: 999px; font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; text-decoration: none; border: none; cursor: pointer; transition: background-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(255,90,54,0.55); }
+  .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--line-strong); height: 50px; padding-inline: 26px; }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── Nav ─── */
+  .nav { position: relative; z-index: 30; border-bottom: 1px solid var(--line); background: var(--void); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding-block: 16px; }
+  .wordmark { font-family: var(--font-heading); font-weight: 800; font-size: 18px; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+  .nav-tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); }
+
+  /* ─── Presenter bar (only rendered with ?presenter=true) ─── */
+  .presenter-bar { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; padding: 8px 14px; background: #1A1A1D; border-bottom: 1px solid var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+  .presenter-bar b { color: var(--accent); font-weight: 700; margin-right: 6px; }
+  .pbtn { height: 32px; padding: 0 12px; background: transparent; color: var(--ink); border: 1px solid var(--line-strong); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+  .pbtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .pbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ─── Intro ─── */
+  .view-intro { position: relative; overflow: hidden; padding: clamp(48px, 9vw, 96px) 0 clamp(48px, 8vw, 88px); }
+  .hero-grid { position: absolute; inset: 0; pointer-events: none; opacity: 0.4; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 44px 44px; -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 20%, #000 40%, transparent 90%); mask-image: radial-gradient(ellipse 70% 55% at 50% 20%, #000 40%, transparent 90%); }
+  .hero-glow { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-glow::before { content: ""; position: absolute; width: 460px; height: 460px; background: var(--accent); opacity: 0.2; filter: blur(110px); border-radius: 50%; top: -220px; left: 50%; transform: translateX(-55%); }
+  @media (max-width: 767px) { .hero-glow::before { display: none; } }
+  .intro-inner { text-align: center; max-width: 760px; margin-inline: auto; }
+  .h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(44px, 10vw, 92px); line-height: 0.98; letter-spacing: -0.03em; margin: 0; }
+  .hero-line { display: block; overflow: hidden; }
+  .hero-line span { display: inline-block; transform: translateY(110%); animation: lineIn .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--d, 0s); }
+  @keyframes lineIn { to { transform: translateY(0); } }
+  .fade-in { opacity: 0; animation: fadeIn .8s ease forwards; animation-delay: var(--d, 0s); }
+  @keyframes fadeIn { to { opacity: 1; } }
+  .sub { font-family: var(--font-heading); font-weight: 700; font-size: clamp(18px, 3vw, 26px); letter-spacing: -0.01em; margin: 24px 0 0; color: var(--ink); }
+  .rules { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin: 18px 0 0; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+  .explain { margin: 34px auto 0; max-width: 470px; text-align: left; border-left: 2px solid var(--accent); padding-left: 16px; }
+  .explain p { margin: 0 0 6px; font-size: 16px; line-height: 1.6; color: var(--ink2); }
+  .explain p:first-child { color: var(--ink); }
+  .rounds { list-style: none; padding: 0; margin: 30px auto 0; display: grid; gap: 0; max-width: 470px; border: 1px solid var(--line); }
+  .rounds li { display: flex; gap: 14px; align-items: baseline; padding: 11px 14px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); text-align: left; }
+  .rounds li + li { border-top: 1px solid var(--line); }
+  .rounds li b { color: var(--accent); font-weight: 500; }
+  .intro-cta { margin-top: 34px; }
+
+  /* ─── Terminal ─── */
+  .term-wrap { max-width: 1280px; margin-inline: auto; padding: 14px 10px 40px; }
+  @media (min-width: 768px) { .term-wrap { padding: 24px 24px 56px; } }
+  .term { border: 1px solid var(--line-strong); background: var(--surface); }
+  .term-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "round status" "market market"; gap: 10px 14px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  @media (min-width: 900px) { .term-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; grid-template-areas: "round market status"; padding: 14px 18px; } }
+  .tt-round { grid-area: round; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; min-width: 0; }
+  .tt-badge { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #0A0A0B; background: var(--accent); padding: 4px 8px; white-space: nowrap; }
+  .tt-title { font-family: var(--font-heading); font-weight: 800; font-size: 14px; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.15; min-width: 0; }
+  .tt-market { grid-area: market; display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; min-width: 0; }
+  .tt-ticker { font-family: var(--font-mono); font-weight: 700; font-size: 14px; color: var(--ink); }
+  .tt-name { font-size: 12px; color: var(--ink3); }
+  .tt-mcap { font-family: var(--font-mono); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; line-height: 1; }
+  .tt-change { font-family: var(--font-mono); font-weight: 500; font-size: 13px; }
+  .tt-unit { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); }
+  .up { color: var(--up); } .down { color: var(--down); } .flat { color: var(--ink2); }
+  .tt-status { grid-area: status; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); }
+  .live { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--up); position: relative; flex-shrink: 0; }
+  .dot::after { content: ""; position: absolute; inset: -4px; border-radius: 999px; border: 1px solid var(--up); animation: pulse 1.8s ease-out infinite; }
+  .live.is-paused .dot { background: var(--accent); } .live.is-paused .dot::after { border-color: var(--accent); animation: none; }
+  .live.is-idle .dot { background: var(--ink3); } .live.is-idle .dot::after { display: none; }
+  @keyframes pulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.2); opacity: 0; } }
+  .term-progress { height: 2px; background: var(--surface-3); }
+  .term-progress i { display: block; height: 100%; width: 0; background: var(--accent); }
+
+  .term-body { display: flex; flex-direction: column; }
+  .term-side { display: contents; }
+  .term-chart { position: relative; order: 1; background: var(--void); --c-up: #2ED3A0; --c-down: #EF4565; --c-grid: rgba(255,255,255,0.06); --c-text: #8A867E; --c-ink: #F6F5F2; --c-accent: #FF5A36; }
+  .chart-legend { display: flex; flex-wrap: wrap; gap: 2px 14px; padding: 8px 12px; min-height: 34px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; color: var(--ink2); }
+  .chart-legend b { font-weight: 500; color: var(--ink); }
+  .chart-host { position: relative; height: 340px; }
+  @media (min-width: 900px) { .chart-host { height: 430px; } }
+  .paused-badge { position: absolute; top: 46px; right: 74px; z-index: 4; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; color: #0A0A0B; background: var(--accent); padding: 4px 9px; }
+  .overlay { position: absolute; inset: 0; z-index: 6; background: rgba(10,10,11,0.94); display: flex; align-items: center; justify-content: center; padding: 16px; overflow: auto; }
+  .overlay-card { width: 100%; max-width: 440px; margin: auto; }
+  .ov-title { font-family: var(--font-heading); font-weight: 800; font-size: clamp(26px, 5vw, 36px); letter-spacing: -0.02em; line-height: 1.05; margin: 0 0 14px; text-transform: uppercase; }
+  .ov-lines p { margin: 0 0 4px; font-size: 15px; line-height: 1.45; color: var(--ink2); }
+  .ov-lines p:first-child { color: var(--ink); }
+  .ov-setup { margin: 12px 0 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); line-height: 1.7; }
+  .ov-setup span { display: inline-block; margin-right: 12px; }
+  .ov-setup span::before { content: "\25AA"; color: var(--accent); margin-right: 6px; }
+  .ov-question { margin: 14px 0 16px; font-family: var(--font-heading); font-weight: 700; font-size: 18px; color: var(--accent); }
+  .ov-card-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .ov-card-cta .btn { height: 48px; padding-inline: 26px; font-size: 14px; }
+
+  .panel { padding: 14px; border-top: 1px solid var(--line); background: var(--surface); }
+  .panel-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin: 0 0 8px; }
+  .kv { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.07); font-size: 13px; }
+  .kv:last-child { border-bottom: 0; }
+  .kv dt, .kv .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink2); }
+  .kv dd, .kv .v { margin: 0; font-family: var(--font-mono); font-size: 13px; color: var(--ink); text-align: right; }
+  dl { margin: 0; }
+  .bsbar { display: flex; height: 4px; margin-top: 6px; background: var(--surface-3); }
+  .bsbar i { display: block; height: 100%; background: var(--up); }
+  .bsbar i + i { background: var(--down); }
+  .mom { display: inline-block; padding: 1px 7px; border: 1px solid var(--line-strong); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; }
+  .mom.hot { color: #0A0A0B; background: var(--accent); border-color: var(--accent); }
+  .mom.good { color: var(--up); border-color: var(--up); }
+  .mom.cold { color: var(--down); border-color: var(--down); }
+
+  .p-stats { order: 4; } .p-port { order: 2; } .p-act { order: 99; } .p-reflect { order: 3; }
+  .term-bottom { order: 5; display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--line); background: var(--surface); }
+  .term-bottom > section { padding: 14px; min-width: 0; }
+  .term-bottom > section + section { border-top: 1px solid var(--line); }
+  .list { list-style: none; margin: 0; padding: 0; max-height: 158px; overflow-y: auto; }
+  .list li { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 5px 0; font-size: 13px; line-height: 1.4; color: var(--ink2); border-bottom: 1px dashed rgba(255,255,255,0.06); }
+  .list li time { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); padding-top: 1px; }
+  .list li.hot { color: var(--ink); } .list li.warn { color: #F4B183; }
+  .list li .buy { color: var(--up); font-weight: 600; } .list li .sell { color: var(--down); font-weight: 600; }
+  .list .empty { display: block; color: var(--ink3); font-size: 13px; }
+
+  .act-q { font-family: var(--font-heading); font-weight: 700; font-size: 16px; margin: 0 0 10px; }
+  .act-mini { display: none; }
+  .act-grid { display: grid; gap: 8px; }
+  .act-grid[data-layout="entry"] { grid-template-columns: 1fr 1fr; }
+  .act-grid[data-layout="entry"] .tbtn:first-child { grid-column: 1 / -1; }
+  .act-grid[data-layout="manage"] { grid-template-columns: repeat(3, 1fr); }
+  .act-grid[data-layout="manage"] .tbtn:last-child { grid-column: 1 / -1; }
+  .tbtn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 6px 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; touch-action: manipulation; transition: background-color .15s ease, border-color .15s ease, opacity .15s ease; }
+  .tbtn .tb-l { font-weight: 700; font-size: 13px; }
+  .tbtn .tb-s { font-size: 11px; color: inherit; opacity: 0.75; }
+  .tbtn-buy { background: var(--up); border-color: var(--up); color: #04120D; }
+  .tbtn-buy:hover:not(:disabled) { background: #52E2B6; }
+  .tbtn-sell { background: var(--down-soft); border-color: var(--down); color: #FF9DAE; }
+  .tbtn-sell:hover:not(:disabled) { background: var(--down); color: #fff; }
+  .tbtn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .tbtn:disabled { opacity: 0.32; cursor: not-allowed; }
+  .tbtn[aria-disabled="true"] { opacity: 0.55; }
+  .act-status { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--ink2); }
+  .act-status b { color: var(--ink); font-weight: 600; }
+  .ff { margin-top: 10px; }
+  .ff .tbtn { min-height: 40px; flex-direction: row; gap: 8px; width: 100%; }
+  .ff .tbtn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+  .rf-h { font-family: var(--font-heading); font-weight: 800; font-size: 22px; letter-spacing: -0.01em; margin: 0 0 4px; text-transform: uppercase; }
+  .rf-none { margin: 4px 0 8px; font-weight: 600; color: var(--ink); font-size: 14px; }
+  .rf-q { display: block; margin: 14px 0 6px; font-weight: 600; font-size: 14px; line-height: 1.4; }
+  .rf-input { width: 100%; min-height: 76px; resize: vertical; padding: 11px 12px; background: var(--void); color: var(--ink); border: 1px solid var(--line-strong); font: inherit; font-size: 16px; line-height: 1.5; border-radius: 0; }
+  .rf-input:focus { border-color: var(--accent); outline: none; }
+  .rf-input::placeholder { color: var(--ink3); }
+  .rf-cta { margin-top: 12px; }
+  .rf-cta .btn { width: 100%; height: 50px; font-size: 14px; padding-inline: 20px; }
+
+  @media (min-width: 900px) {
+    .term-body { display: grid; grid-template-columns: minmax(0, 1fr) 344px; grid-template-rows: auto 1fr; grid-template-areas: "chart side" "bottom side"; align-items: start; }
+    .term-side { display: flex; flex-direction: column; grid-area: side; border-left: 1px solid var(--line); align-self: stretch; }
+    .term-chart { grid-area: chart; }
+    .term-bottom { grid-area: bottom; grid-template-columns: 1fr 1fr; align-self: stretch; }
+    .term-bottom > section + section { border-top: 0; border-left: 1px solid var(--line); }
+    .term-side .panel:first-child { border-top: 0; }
+    .p-stats, .p-port, .p-act, .p-reflect { order: 0; }
+    .p-act { margin-top: 0; }
+  }
+  @media (max-width: 899px) {
+    .p-act { position: sticky; bottom: 0; z-index: 20; border-top: 1px solid var(--line-strong); box-shadow: 0 -12px 24px rgba(0,0,0,0.5); padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
+    .p-act .panel-h { display: none; }
+    .act-q { font-size: 14px; margin-bottom: 6px; }
+    .act-mini { display: flex; justify-content: space-between; gap: 10px; margin: 0 0 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink2); }
+    .act-mini b { color: var(--ink); font-weight: 500; }
+    .act-grid[data-layout="entry"] { grid-template-columns: 1.5fr 1fr 1fr; }
+    .act-grid[data-layout="entry"] .tbtn:first-child { grid-column: auto; }
+    .act-grid[data-layout="manage"] { grid-template-columns: repeat(4, 1fr); }
+    .act-grid[data-layout="manage"] .tbtn:last-child { grid-column: auto; }
+    .tbtn { min-height: 50px; padding: 5px 4px; }
+    .tbtn .tb-l { font-size: 12px; }
+    .act-status { font-size: 12px; margin-top: 6px; }
+    .ff { margin-top: 6px; }
+    .p-port .kv-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .kv-grid { display: grid; grid-template-columns: 1fr; column-gap: 20px; }
+  @media (max-width: 899px), (min-width: 900px) { .p-port .kv-grid { grid-template-columns: 1fr 1fr; } }
+  .pf-total { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line-strong); }
+  .pf-total .v { font-weight: 700; font-size: 15px; }
+  .pf-detail { margin: 8px 0 0; font-family: var(--font-mono); font-size: 11px; color: var(--ink3); line-height: 1.6; }
+
+  /* ─── Results ─── */
+  .view-results { padding: clamp(36px, 7vw, 72px) 0 clamp(48px, 8vw, 88px); }
+  .res-wrap { max-width: 820px; margin-inline: auto; padding-inline: 20px; }
+  .res-h { font-family: var(--font-heading); font-weight: 800; font-size: clamp(38px, 8vw, 68px); line-height: 1; letter-spacing: -0.03em; margin: 0 0 28px; }
+  .res-round { border: 1px solid var(--line); border-left: 2px solid var(--accent); background: var(--surface); padding: 20px 20px 18px; margin-bottom: 14px; }
+  .res-round h2 { font-family: var(--font-heading); font-weight: 800; font-size: 17px; letter-spacing: 0.04em; margin: 0 0 4px; text-transform: uppercase; }
+  .res-tag { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin: 0 0 12px; }
+  .res-round p.s { margin: 0 0 6px; font-size: 15px; line-height: 1.55; color: var(--ink2); }
+  .res-round p.s:first-of-type { color: var(--ink); }
+  .res-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; margin: 14px 0 0; border: 1px solid var(--line); }
+  .res-stats div { padding: 10px 12px; border-left: 1px solid var(--line); }
+  .res-stats div:first-child { border-left: 0; }
+  .res-stats dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); }
+  .res-stats dd { margin: 4px 0 0; font-family: var(--font-mono); font-size: 17px; color: var(--ink); }
+  .res-note { margin: 14px 0 0; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
+  .res-note .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .res-note p { margin: 4px 0 0; font-size: 15px; line-height: 1.55; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .res-note p.none { color: var(--ink3); }
+  .res-close { margin: 36px 0 0; text-align: center; }
+  .res-close .big { font-family: var(--font-heading); font-weight: 800; font-size: clamp(22px, 4vw, 30px); line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 14px; }
+  .res-close p { margin: 0 auto 8px; max-width: 520px; font-size: 16px; line-height: 1.6; color: var(--ink2); }
+  .res-close p.em { color: var(--ink); }
+  .res-class { display: inline-block; margin: 22px 0 6px; padding: 12px 18px; border: 1px solid var(--accent); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .res-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 40px; }
+  .foot { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .foot-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 24px; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
+  .foot-links a { color: var(--ink3); text-decoration: none; padding: 6px 0; }
+  .disclaimer { max-width: 560px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .hero-line span, .fade-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .dot::after { animation: none !important; }
+    .btn, .tbtn { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Trader U">
+  <div class="wrap nav-inner">
+    <a href="../" class="wordmark">TRADER U</a>
+    <span class="nav-tag">Test Your Skills</span>
+  </div>
+</nav>
+
+<div id="presenter-bar" class="presenter-bar" hidden role="toolbar" aria-label="Presenter controls">
+  <b>Presenter</b>
+  <button type="button" id="btn-pause" class="pbtn">Pause</button>
+  <button type="button" id="btn-prestart" class="pbtn">Restart scenario</button>
+  <span id="presenter-state"></span>
+</div>
+
+<noscript><div class="wrap" style="padding-block:60px;text-align:center;color:#9C988F">This simulation needs JavaScript. Please enable it and reload.</div></noscript>
+
+<main id="main">
+
+  <!-- ─── INTRO ─── -->
+  <section id="view-intro" class="view-intro" aria-labelledby="intro-title">
+    <div class="hero-grid"></div><div class="hero-glow"></div>
+    <div class="wrap intro-inner">
+      <p class="label center fade-in" style="--d:0s">Trader U // Simulation</p>
+      <h1 id="intro-title" class="h1" tabindex="-1">
+        <span class="hero-line"><span style="--d:.05s">TEST YOUR</span></span>
+        <span class="hero-line"><span style="--d:.16s;color:var(--accent)">SKILLS.</span></span>
+      </h1>
+      <p class="sub fade-in" style="--d:.34s">3 Markets. $100. You Make the Decisions.</p>
+      <p class="rules fade-in" style="--d:.44s"><span>No real money.</span><span>No second chances.</span><span>Make the call.</span></p>
+      <div class="explain fade-in" style="--d:.56s">
+        <p>You'll be placed into three simulated market situations.</p>
+        <p>Watch what happens.</p>
+        <p>Pay attention to the information available.</p>
+        <p>Make your decision.</p>
+      </div>
+      <ol class="rounds fade-in" style="--d:.66s" aria-label="The three rounds">
+        <li><b>01</b> Find the entry</li>
+        <li><b>02</b> Manage the position</li>
+        <li><b>03</b> Control the FOMO</li>
+      </ol>
+      <div class="intro-cta fade-in" style="--d:.76s">
+        <button type="button" id="btn-start" class="btn btn-primary">Start Simulation</button>
+        <p class="fine" style="margin-top:16px">Educational simulation only. No real assets or funds are used.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TERMINAL ─── -->
+  <section id="view-terminal" hidden aria-label="Simulated trading terminal">
+    <div class="term-wrap">
+      <div class="term" id="term">
+        <header class="term-top">
+          <div class="tt-round"><span class="tt-badge" id="tt-round">ROUND 1 / 3</span><span class="tt-title" id="tt-title" tabindex="-1">FIND THE ENTRY</span></div>
+          <div class="tt-market">
+            <span class="tt-ticker" id="tt-ticker">$OTTER</span><span class="tt-name" id="tt-name">Neon Otter</span>
+            <span class="tt-mcap" id="tt-mcap">$100K</span>
+            <span class="tt-change" id="tt-change">0.0%</span>
+            <span class="tt-unit" id="tt-unit"></span>
+          </div>
+          <div class="tt-status"><span class="live is-idle" id="tt-live"><i class="dot"></i><span id="tt-status">LIVE SIMULATION</span></span><span id="tt-timer">0:00 / 1:00</span></div>
+        </header>
+        <div class="term-progress" aria-hidden="true"><i id="tt-progress"></i></div>
+
+        <div class="term-body">
+          <div class="term-chart" id="chart-panel">
+            <div class="chart-legend" id="chart-legend" aria-hidden="true"></div>
+            <div class="chart-host" id="chart-host"></div>
+            <div class="paused-badge" id="paused-badge" hidden>PAUSED</div>
+
+            <div class="overlay" id="brief-overlay" hidden role="group" aria-labelledby="brief-title">
+              <div class="overlay-card">
+                <p class="label" id="brief-eyebrow">ROUND 1</p>
+                <h2 class="ov-title" id="brief-title" tabindex="-1">FIND THE ENTRY</h2>
+                <div class="ov-lines" id="brief-lines"></div>
+                <p class="ov-setup" id="brief-setup"></p>
+                <p class="ov-question" id="brief-question">What do you do?</p>
+                <div class="ov-card-cta">
+                  <button type="button" class="btn btn-primary" id="btn-begin">Start round</button>
+                  <span class="fine">The market clock starts when you press start.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overlay" id="resume-overlay" hidden role="group" aria-label="Simulation restored">
+              <div class="overlay-card" style="text-align:center">
+                <p class="label center" style="justify-content:center">Session restored</p>
+                <p class="ov-lines" style="margin:0 0 16px"><span style="color:var(--ink2);font-size:15px">Your progress was saved. The market is paused.</span></p>
+                <button type="button" class="btn btn-primary" id="btn-resume">Resume simulation</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="term-side">
+            <section class="panel p-stats" id="panel-stats" aria-label="Market statistics">
+              <h3 class="panel-h">Market</h3>
+              <dl>
+                <div class="kv"><dt>Market Cap</dt><dd id="st-mcap">-</dd></div>
+                <div class="kv"><dt>Volume</dt><dd id="st-vol">-</dd></div>
+                <div class="kv"><dt>Liquidity</dt><dd id="st-liq">-</dd></div>
+                <div class="kv" style="display:block"><div style="display:flex;justify-content:space-between;gap:12px"><dt>Buys / Sells</dt><dd id="st-bs">-</dd></div><div class="bsbar" aria-hidden="true"><i id="st-bar"></i><i id="st-bar2"></i></div></div>
+                <div class="kv"><dt>Momentum</dt><dd><span class="mom" id="st-mom">-</span></dd></div>
+                <div class="kv"><dt>Social Activity</dt><dd id="st-social">-</dd></div>
+              </dl>
+            </section>
+
+            <section class="panel p-port" id="panel-port" aria-label="Portfolio">
+              <h3 class="panel-h">Portfolio (simulated)</h3>
+              <div class="kv-grid">
+                <div class="kv"><span class="k">Cash</span><span class="v" id="pf-cash">-</span></div>
+                <div class="kv"><span class="k">Position</span><span class="v" id="pf-pos">-</span></div>
+                <div class="kv"><span class="k">Unrealized</span><span class="v" id="pf-unreal">-</span></div>
+                <div class="kv"><span class="k">Realized</span><span class="v" id="pf-real">-</span></div>
+              </div>
+              <div class="kv pf-total"><span class="k">Total value</span><span class="v" id="pf-total">-</span></div>
+              <p class="pf-detail" id="pf-detail"></p>
+            </section>
+
+            <section class="panel p-act" id="panel-actions" aria-label="Actions">
+              <h3 class="panel-h">Order</h3>
+              <p class="act-mini" id="act-mini" aria-hidden="true"><span>MCAP <b id="am-mcap">-</b></span><span>P&amp;L <b id="am-pnl">-</b></span></p>
+              <p class="act-q" id="act-question">What do you do?</p>
+              <div class="act-grid" id="act-grid" data-layout="entry"></div>
+              <p class="act-status" id="act-status" hidden></p>
+              <div class="ff" id="ff-wrap" hidden><button type="button" class="tbtn tbtn-ghost" id="btn-ff" aria-pressed="false"><span class="tb-l">Fast forward</span><span class="tb-s" id="ff-sub"></span></button></div>
+            </section>
+
+            <section class="panel p-reflect" id="panel-reflect" hidden aria-labelledby="rf-title">
+              <p class="label" id="rf-label" style="margin-bottom:8px">Round 1 reflection</p>
+              <h3 class="rf-h" id="rf-title" tabindex="-1">Your decision</h3>
+              <p class="rf-none" id="rf-none" hidden></p>
+              <dl id="rf-fields"></dl>
+              <label class="rf-q" for="rf-input" id="rf-question">What information influenced your decision?</label>
+              <textarea class="rf-input" id="rf-input" rows="3" maxlength="500" placeholder="A sentence or two is enough."></textarea>
+              <div class="rf-cta"><button type="button" class="btn btn-primary" id="btn-continue">Continue</button></div>
+            </section>
+          </div>
+
+          <div class="term-bottom">
+            <section aria-label="Market feed"><h3 class="panel-h">Market feed</h3><ul class="list" id="feed-list"></ul></section>
+            <section aria-label="Your activity"><h3 class="panel-h">Your activity</h3><ul class="list" id="trades-list"></ul></section>
+          </div>
+        </div>
+      </div>
+      <p class="fine" style="margin-top:14px;text-align:center">Simulated market exercise for educational purposes only. No real assets or funds are used.</p>
+    </div>
+  </section>
+
+  <!-- ─── RESULTS ─── -->
+  <section id="view-results" class="view-results" hidden aria-labelledby="res-title">
+    <div class="res-wrap">
+      <p class="label">Trader U // Simulation complete</p>
+      <h1 class="res-h" id="res-title" tabindex="-1">YOUR DECISIONS</h1>
+      <div id="res-rounds"></div>
+      <div class="res-close">
+        <p class="big">3 decisions.<br/>3 situations traders deal with every day.</p>
+        <p>Knowing what a chart is doing is only part of trading.</p>
+        <p class="em">The harder part is deciding what YOU are going to do.</p>
+        <span class="res-class">We'll break these decisions down in class.</span>
+        <div class="res-actions">
+          <button type="button" class="btn btn-primary" id="btn-restart">Restart simulation</button>
+          <a class="btn btn-outline" href="../">Back to Trader U</a>
+        </div>
+        <p class="fine" style="margin-top:22px">Simulated market exercise for educational purposes only. No real assets or funds are used.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <a href="../" class="wordmark">TRADER U</a>
+    <div class="foot-links">
+      <a href="../terms.html">Terms of Service</a><a href="../privacy.html">Privacy Policy</a><a href="../refund.html">Refund Policy</a><a href="../eula.html">EULA</a>
+    </div>
+    <p class="fine disclaimer">Trader U provides educational content only. Trading involves risk and losses are possible. Nothing shown here is financial advice or a guarantee of results.</p>
+  </div>
+</footer>
+
+<div id="sr-live" class="sr-only" aria-live="polite" role="status"></div>
+
+<script src="scenarios.js"></script>
+<script src="engine.js"></script>
+<script src="chart.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
