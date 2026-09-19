@@ -1,19 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Test Your Skills | Trader U</title>
-<meta name="description" content="A simulated trading exercise. 3 markets. $100. You make the decisions. No real money."/>
-<link rel="canonical" href="https://traderuinsider.com/test-your-skills/"/>
-<meta property="og:type" content="website"/>
-<meta property="og:title" content="Test Your Skills | Trader U"/>
-<meta property="og:description" content="3 markets. $100. You make the decisions. A simulated trading exercise from Trader U."/>
-<meta property="og:url" content="https://traderuinsider.com/test-your-skills/"/>
-<meta property="og:site_name" content="Trader U"/>
-<meta name="twitter:card" content="summary"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
-<style>
   :root {
     --void: #0A0A0B; --surface: #141416; --surface-2: #1C1C1F; --surface-3: #26262A;
     --ink: #F6F5F2; --ink2: #9C988F; --ink3: #6B675F;
@@ -149,11 +133,9 @@
   .p-stats { order: 4; } .p-port { order: 2; } .p-act { order: 99; } .p-reflect { order: 3; }
   .term-bottom { order: 5; display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--line); background: var(--surface); }
   .term-bottom > section { padding: 14px; min-width: 0; }
-  .term-bottom > section + section { border-top: 1px solid var(--line); }
-  .list { list-style: none; margin: 0; padding: 0; max-height: 158px; overflow-y: auto; }
+  .list { list-style: none; margin: 0; padding: 0; max-height: 176px; overflow-y: auto; }
   .list li { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 5px 0; font-size: 13px; line-height: 1.4; color: var(--ink2); border-bottom: 1px dashed rgba(255,255,255,0.06); }
   .list li time { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); padding-top: 1px; }
-  .list li.hot { color: var(--ink); } .list li.warn { color: #F4B183; }
   .list li .buy { color: var(--up); font-weight: 600; } .list li .sell { color: var(--down); font-weight: 600; }
   .list li .wait { color: var(--accent); font-weight: 600; } .list li .pass { color: var(--ink); font-weight: 600; } .list li .hold { color: var(--ink); font-weight: 600; }
   .list li .dim { color: var(--ink3); }
@@ -177,12 +159,8 @@
   .tbtn[hidden] { display: none; }
   .tbtn.is-picked { border-color: var(--accent); color: var(--accent); background: rgba(255,90,54,0.12); }
   .act-mini { display: none; }
-  .act-grid { display: grid; gap: 8px; }
-  .act-grid[data-layout="entry"] { grid-template-columns: 1fr 1fr; }
-  .act-grid[data-layout="entry"] .tbtn:first-child { grid-column: 1 / -1; }
-  .act-grid[data-layout="manage"] { grid-template-columns: repeat(3, 1fr); }
-  .act-grid[data-layout="manage"] .tbtn:last-child { grid-column: 1 / -1; }
-  .act-grid[data-layout="manage3"] { grid-template-columns: repeat(3, 1fr); }
+  .act-grid { display: grid; gap: 8px; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
+  .act-grid .tbtn.wide { grid-column: 1 / -1; }
   .tbtn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 6px 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; touch-action: manipulation; transition: background-color .15s ease, border-color .15s ease, opacity .15s ease; }
   .tbtn .tb-l { font-weight: 700; font-size: 13px; }
   .tbtn .tb-s { font-size: 11px; color: inherit; opacity: 0.75; }
@@ -212,10 +190,10 @@
     .term-body { display: grid; grid-template-columns: minmax(0, 1fr) 344px; grid-template-rows: auto 1fr; grid-template-areas: "chart side" "bottom side"; align-items: start; }
     .term-side { display: flex; flex-direction: column; grid-area: side; border-left: 1px solid var(--line); align-self: stretch; }
     .term-chart { grid-area: chart; }
-    .term-bottom { grid-area: bottom; grid-template-columns: 1fr 1fr; align-self: stretch; }
-    .term-bottom > section + section { border-top: 0; border-left: 1px solid var(--line); }
+    .term-bottom { grid-area: bottom; align-self: stretch; }
     .term-side .panel:first-child { border-top: 0; }
-    .p-stats, .p-port, .p-act, .p-reflect { order: 0; }
+    .p-act { order: 0; border-top: 0; } .p-port { order: 1; } .p-stats { order: 2; } .p-reflect { order: 0; }
+    .term-side .panel:first-child { border-top: 0; }
     .p-act { margin-top: 0; }
   }
   @media (max-width: 899px) {
@@ -225,10 +203,6 @@
     .act-card { margin-bottom: 8px; }
     .act-mini { display: flex; justify-content: space-between; gap: 10px; margin: 0 0 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink2); }
     .act-mini b { color: var(--ink); font-weight: 500; }
-    .act-grid[data-layout="entry"] { grid-template-columns: 1.5fr 1fr 1fr; }
-    .act-grid[data-layout="entry"] .tbtn:first-child { grid-column: auto; }
-    .act-grid[data-layout="manage"] { grid-template-columns: repeat(4, 1fr); }
-    .act-grid[data-layout="manage"] .tbtn:last-child { grid-column: auto; }
     .tbtn { min-height: 50px; padding: 5px 4px; }
     .tbtn .tb-l { font-size: 12px; }
     .act-status { font-size: 12px; }
@@ -286,196 +260,99 @@
     .btn, .tbtn { transition: none !important; }
     .act-card.flash { animation: none !important; }
   }
-</style>
-</head>
-<body>
-<a class="skip" href="#main">Skip to content</a>
 
-<nav class="nav" aria-label="Trader U">
-  <div class="wrap nav-inner">
-    <a href="../" class="wordmark">TRADER U</a>
-    <span class="nav-tag">Test Your Skills</span>
-  </div>
-</nav>
+  /* ═══════════════ Adaptive simulator additions ═══════════════ */
+  h1, h2, h3 { text-wrap: balance; }
+  .h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(46px, 11vw, 110px); line-height: 0.95; letter-spacing: -0.035em; margin: 0 0 18px; text-align: center; }
+  .view { padding: clamp(28px, 6vw, 64px) 0 clamp(40px, 7vw, 80px); }
+  .ob-wrap { max-width: 720px; margin-inline: auto; padding-inline: 20px; }
+  .ob-step { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); margin: 0 0 10px; }
+  .ob-h { font-family: var(--font-heading); font-weight: 800; font-size: clamp(28px, 6vw, 44px); line-height: 1.02; letter-spacing: -0.02em; margin: 0 0 8px; text-transform: uppercase; }
+  .ob-sub { color: var(--ink2); font-size: 15px; line-height: 1.55; margin: 0 0 22px; }
+  .opt-list { display: grid; gap: 10px; margin: 0 0 22px; padding: 0; list-style: none; }
+  .opt { display: block; width: 100%; text-align: left; padding: 16px 18px; background: var(--surface); border: 1px solid var(--line-strong); color: var(--ink); cursor: pointer; font: inherit; transition: border-color .15s ease, background-color .15s ease; }
+  .opt:hover { border-color: var(--accent); }
+  .opt[aria-pressed="true"], .opt[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .opt b { display: block; font-family: var(--font-heading); font-weight: 800; font-size: 16px; letter-spacing: 0.03em; text-transform: uppercase; }
+  .opt span { display: block; margin-top: 4px; font-size: 14px; color: var(--ink2); line-height: 1.45; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+  .chip { padding: 10px 14px; background: transparent; border: 1px solid var(--line-strong); color: var(--ink); cursor: pointer; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .chip:hover { border-color: var(--accent); }
+  .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .chip:disabled { opacity: .4; cursor: not-allowed; }
+  .q-h { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink2); margin: 0 0 10px; }
+  .ob-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 8px; }
+  .note-box { border: 1px solid var(--line-strong); border-left: 2px solid var(--accent); background: var(--surface); padding: 14px 16px; margin: 0 0 20px; font-size: 14px; line-height: 1.55; color: var(--ink2); }
+  .note-box b { color: var(--ink); }
+  .plan { list-style: none; margin: 0 0 22px; padding: 0; counter-reset: p; border: 1px solid var(--line); }
+  .plan li { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: baseline; padding: 12px 14px; border-top: 1px solid var(--line); background: var(--surface); }
+  .plan li:first-child { border-top: 0; }
+  .plan li::before { counter-increment: p; content: counter(p, decimal-leading-zero); font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .plan b { font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: 0.03em; text-transform: uppercase; }
+  .plan small { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .diff-list { margin: 0 0 22px; padding: 0 0 0 18px; color: var(--ink2); font-size: 14px; line-height: 1.7; }
 
-<div id="presenter-bar" class="presenter-bar" hidden role="toolbar" aria-label="Presenter controls">
-  <b>Presenter</b>
-  <button type="button" id="btn-pause" class="pbtn">Pause</button>
-  <button type="button" id="btn-prestart" class="pbtn">Restart scenario</button>
-  <span id="presenter-state"></span>
-</div>
+  /* terminal additions */
+  .tt-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); border: 1px solid var(--line-strong); padding: 2px 6px; white-space: nowrap; }
+  .kv .k small { display: block; margin-top: 3px; font-family: var(--font-body); font-size: 11.5px; letter-spacing: 0; text-transform: none; color: var(--ink3); line-height: 1.35; font-weight: 400; }
+  .kv.dim .v, .kv.dim .k { opacity: .8; }
+  .kv .v.up { color: var(--up); } .kv .v.down { color: var(--down); }
+  .p-tracker { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line-strong); }
+  .p-session { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .p-session .kv .v { color: var(--ink2); }
+  .thesis { margin: 0 0 10px; padding: 8px 10px; border: 1px solid var(--line-strong); background: var(--surface-2); font-size: 13px; line-height: 1.45; color: var(--ink2); }
+  .thesis b { display: block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 2px; font-weight: 500; }
+  .hint-row { margin-top: 10px; }
+  .hint-btn { width: 100%; height: 36px; background: transparent; border: 1px dashed var(--line-strong); color: var(--ink2); cursor: pointer; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .hint-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .hint-text { margin: 8px 0 0; font-size: 13px; line-height: 1.5; color: var(--ink); border-left: 2px solid var(--accent); padding-left: 10px; }
+  .size-form { display: flex; gap: 8px; margin: 0 0 8px; }
+  .size-form input { flex: 1; min-width: 0; height: 44px; padding: 0 12px; background: var(--void); color: var(--ink); border: 1px solid var(--line-strong); font: inherit; font-family: var(--font-mono); font-size: 16px; border-radius: 0; }
+  .size-form input:focus { border-color: var(--accent); outline: none; }
+  .size-form button { height: 44px; padding: 0 14px; cursor: pointer; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); }
+  .size-form button.go { background: var(--up); border-color: var(--up); color: #04120D; font-weight: 700; }
+  .size-err { margin: -2px 0 8px; font-size: 12px; color: var(--down); min-height: 0; }
+  .stage-card { max-width: 480px; }
+  .stage-card .big { font-family: var(--font-heading); font-weight: 800; font-size: clamp(26px, 6vw, 38px); line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; margin: 0 0 12px; }
+  .stage-card .big.loss { color: var(--down); }
+  .stage-card p { margin: 0 0 6px; color: var(--ink2); font-size: 15px; line-height: 1.5; }
+  .chips-inline { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 12px 0 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink2); }
+  .chips-inline span::before { content: ""; display: inline-block; width: 5px; height: 5px; background: var(--accent); margin-right: 7px; vertical-align: 1px; }
 
-<noscript><div class="wrap" style="padding-block:60px;text-align:center;color:#9C988F">This simulation needs JavaScript. Please enable it and reload.</div></noscript>
+  /* results */
+  .res-lead { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); margin: 0 0 24px; display: flex; flex-wrap: wrap; gap: 6px 22px; }
+  .res-lead b { color: var(--ink); font-weight: 500; }
+  .rv-block { border: 1px solid var(--line); border-left: 2px solid var(--accent); background: var(--surface); padding: 18px 18px 14px; margin-bottom: 12px; }
+  .rv-block h2 { font-family: var(--font-heading); font-weight: 800; font-size: 16px; letter-spacing: .05em; margin: 0 0 8px; text-transform: uppercase; }
+  .rv-block p { margin: 0 0 7px; font-size: 15px; line-height: 1.55; color: var(--ink2); }
+  .rv-block p:first-of-type { color: var(--ink); }
+  .skill-grid { display: grid; gap: 12px; grid-template-columns: 1fr; margin: 6px 0 26px; }
+  @media (min-width: 720px) { .skill-grid { grid-template-columns: 1fr 1fr; } }
+  .skill { border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+  .skill h3 { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
+  .skill p { margin: 0 0 6px; font-size: 14px; line-height: 1.5; color: var(--ink2); }
+  .sec-h { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); margin: 28px 0 12px; }
+  .res-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
 
-<main id="main">
-
-  <!-- ─── INTRO ─── -->
-  <section id="view-intro" class="view-intro" aria-labelledby="intro-title">
-    <div class="hero-grid"></div><div class="hero-glow"></div>
-    <div class="wrap intro-inner">
-      <p class="label center fade-in" style="--d:0s">Trader U // Simulation</p>
-      <h1 id="intro-title" class="h1" tabindex="-1">
-        <span class="hero-line"><span style="--d:.05s">TEST YOUR</span></span>
-        <span class="hero-line"><span style="--d:.16s;color:var(--accent)">SKILLS.</span></span>
-      </h1>
-      <p class="sub fade-in" style="--d:.34s">3 Markets. $100. You Make the Decisions.</p>
-      <p class="rules fade-in" style="--d:.44s"><span>No real money.</span><span>No second chances.</span><span>Make the call.</span></p>
-      <div class="explain fade-in" style="--d:.56s">
-        <p>You'll be placed into three simulated market situations.</p>
-        <p>Watch what happens.</p>
-        <p>Pay attention to the information available.</p>
-        <p>Make your decision.</p>
-      </div>
-      <ol class="rounds fade-in" style="--d:.66s" aria-label="The three rounds">
-        <li><b>01</b> Find the entry</li>
-        <li><b>02</b> Manage the position</li>
-        <li><b>03</b> Control the FOMO</li>
-      </ol>
-      <div class="intro-cta fade-in" style="--d:.76s">
-        <button type="button" id="btn-start" class="btn btn-primary">Start Simulation</button>
-        <p class="fine" style="margin-top:16px">Educational simulation only. No real assets or funds are used.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── TERMINAL ─── -->
-  <section id="view-terminal" hidden aria-label="Simulated trading terminal">
-    <div class="term-wrap">
-      <div class="term" id="term">
-        <header class="term-top">
-          <div class="tt-round"><span class="tt-badge" id="tt-round">ROUND 1 / 3</span><span class="tt-title" id="tt-title" tabindex="-1">FIND THE ENTRY</span></div>
-          <div class="tt-market">
-            <span class="tt-ticker" id="tt-ticker">$OTTER</span><span class="tt-name" id="tt-name">Neon Otter</span>
-            <span class="tt-mcap" id="tt-mcap">$100K</span>
-            <span class="tt-change" id="tt-change">0.0%</span>
-            <span class="tt-unit" id="tt-unit"></span>
-          </div>
-          <div class="tt-status"><span class="live is-idle" id="tt-live"><i class="dot"></i><span id="tt-status">LIVE SIMULATION</span></span><span id="tt-timer">0:00 / 1:00</span></div>
-        </header>
-        <div class="term-progress" aria-hidden="true"><i id="tt-progress"></i></div>
-
-        <div class="term-body">
-          <div class="term-chart" id="chart-panel">
-            <div class="chart-legend" id="chart-legend" aria-hidden="true"></div>
-            <div class="chart-host" id="chart-host"></div>
-            <div class="paused-badge" id="paused-badge" hidden>PAUSED</div>
-
-            <div class="overlay" id="brief-overlay" hidden role="group" aria-labelledby="brief-title">
-              <div class="overlay-card">
-                <p class="label" id="brief-eyebrow">ROUND 1</p>
-                <h2 class="ov-title" id="brief-title" tabindex="-1">FIND THE ENTRY</h2>
-                <div class="ov-lines" id="brief-lines"></div>
-                <p class="ov-setup" id="brief-setup"></p>
-                <p class="ov-question" id="brief-question">What do you do?</p>
-                <div class="ov-card-cta">
-                  <button type="button" class="btn btn-primary" id="btn-begin">Start round</button>
-                  <span class="fine">The market clock starts when you press start.</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="overlay" id="resume-overlay" hidden role="group" aria-label="Simulation restored">
-              <div class="overlay-card" style="text-align:center">
-                <p class="label center" style="justify-content:center">Session restored</p>
-                <p class="ov-lines" style="margin:0 0 16px"><span style="color:var(--ink2);font-size:15px">Your progress was saved. The market is paused.</span></p>
-                <button type="button" class="btn btn-primary" id="btn-resume">Resume simulation</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="term-side">
-            <section class="panel p-stats" id="panel-stats" aria-label="Market statistics">
-              <h3 class="panel-h">Market</h3>
-              <dl>
-                <div class="kv"><dt>Market Cap</dt><dd id="st-mcap">-</dd></div>
-                <div class="kv"><dt>Volume</dt><dd id="st-vol">-</dd></div>
-                <div class="kv"><dt>Liquidity</dt><dd id="st-liq">-</dd></div>
-                <div class="kv" style="display:block"><div style="display:flex;justify-content:space-between;gap:12px"><dt>Buys / Sells</dt><dd id="st-bs">-</dd></div><div class="bsbar" aria-hidden="true"><i id="st-bar"></i><i id="st-bar2"></i></div></div>
-                <div class="kv"><dt>Momentum</dt><dd><span class="mom" id="st-mom">-</span></dd></div>
-                <div class="kv"><dt>Social Activity</dt><dd id="st-social">-</dd></div>
-              </dl>
-            </section>
-
-            <section class="panel p-port" id="panel-port" aria-label="Portfolio">
-              <h3 class="panel-h">Portfolio (simulated)</h3>
-              <div class="kv-grid">
-                <div class="kv"><span class="k">Cash</span><span class="v" id="pf-cash">-</span></div>
-                <div class="kv"><span class="k">Position</span><span class="v" id="pf-pos">-</span></div>
-                <div class="kv"><span class="k">Unrealized</span><span class="v" id="pf-unreal">-</span></div>
-                <div class="kv"><span class="k">Realized</span><span class="v" id="pf-real">-</span></div>
-              </div>
-              <div class="kv pf-total"><span class="k">Total value</span><span class="v" id="pf-total">-</span></div>
-              <p class="pf-detail" id="pf-detail"></p>
-            </section>
-
-            <section class="panel p-act" id="panel-actions" aria-label="Actions">
-              <h3 class="panel-h">Order</h3>
-              <p class="act-mini" id="act-mini" aria-hidden="true"><span>MCAP <b id="am-mcap">-</b></span><span>P&amp;L <b id="am-pnl">-</b></span></p>
-              <div class="act-card" id="act-card" data-tone="">
-                <p class="act-q" id="act-question" tabindex="-1">What do you do?</p>
-                <p class="act-status" id="act-status" hidden></p>
-              </div>
-              <div class="act-grid" id="act-grid" data-layout="entry"></div>
-              <div class="ff" id="ff-wrap" hidden><button type="button" class="tbtn tbtn-ghost" id="btn-ff" aria-pressed="false"><span class="tb-l">Fast forward</span><span class="tb-s" id="ff-sub"></span></button></div>
-            </section>
-
-            <section class="panel p-reflect" id="panel-reflect" hidden aria-labelledby="rf-title">
-              <p class="label" id="rf-label" style="margin-bottom:8px">Round 1 reflection</p>
-              <h3 class="rf-h" id="rf-title" tabindex="-1">Your decision</h3>
-              <p class="rf-none" id="rf-none" hidden></p>
-              <dl id="rf-fields"></dl>
-              <label class="rf-q" for="rf-input" id="rf-question">What information influenced your decision?</label>
-              <textarea class="rf-input" id="rf-input" rows="3" maxlength="500" placeholder="A sentence or two is enough."></textarea>
-              <div class="rf-cta"><button type="button" class="btn btn-primary" id="btn-continue">Continue</button></div>
-            </section>
-          </div>
-
-          <div class="term-bottom">
-            <section aria-label="Market feed"><h3 class="panel-h">Market feed</h3><ul class="list" id="feed-list"></ul></section>
-            <section aria-label="Your activity"><h3 class="panel-h">Your activity</h3><ul class="list" id="trades-list"></ul></section>
-          </div>
-        </div>
-      </div>
-      <p class="fine" style="margin-top:14px;text-align:center">Simulated market exercise for educational purposes only. No real assets or funds are used.</p>
-    </div>
-  </section>
-
-  <!-- ─── RESULTS ─── -->
-  <section id="view-results" class="view-results" hidden aria-labelledby="res-title">
-    <div class="res-wrap">
-      <p class="label">Trader U // Simulation complete</p>
-      <h1 class="res-h" id="res-title" tabindex="-1">YOUR DECISIONS</h1>
-      <div id="res-rounds"></div>
-      <div class="res-close">
-        <p class="big">3 decisions.<br/>3 situations traders deal with every day.</p>
-        <p>Knowing what a chart is doing is only part of trading.</p>
-        <p class="em">The harder part is deciding what YOU are going to do.</p>
-        <span class="res-class">We'll break these decisions down in class.</span>
-        <div class="res-actions">
-          <button type="button" class="btn btn-primary" id="btn-restart">Restart simulation</button>
-          <a class="btn btn-outline" href="../">Back to Trader U</a>
-        </div>
-        <p class="fine" style="margin-top:22px">Simulated market exercise for educational purposes only. No real assets or funds are used.</p>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap foot">
-    <a href="../" class="wordmark">TRADER U</a>
-    <div class="foot-links">
-      <a href="../terms.html">Terms of Service</a><a href="../privacy.html">Privacy Policy</a><a href="../refund.html">Refund Policy</a><a href="../eula.html">EULA</a>
-    </div>
-    <p class="fine disclaimer">Trader U provides educational content only. Trading involves risk and losses are possible. Nothing shown here is financial advice or a guarantee of results.</p>
-  </div>
-</footer>
-
-<div id="sr-live" class="sr-only" aria-live="polite" role="status"></div>
-
-<script src="scenarios.js"></script>
-<script src="engine.js"></script>
-<script src="chart.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+  /* replay */
+  .rp-top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--line); border-bottom: 0; background: var(--surface); }
+  .rp-title { font-family: var(--font-heading); font-weight: 800; font-size: 16px; text-transform: uppercase; letter-spacing: .03em; }
+  .rp-title small { display: block; font-family: var(--font-mono); font-weight: 400; font-size: 10px; letter-spacing: .1em; color: var(--ink3); }
+  .rp-nav { display: flex; gap: 8px; }
+  .rp-body { display: grid; grid-template-columns: 1fr; border: 1px solid var(--line); background: var(--surface); }
+  .rp-chart { background: var(--void); position: relative; --c-up: #2ED3A0; --c-down: #EF4565; }
+  .rp-side { padding: 14px; border-top: 1px solid var(--line); }
+  .rp-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--surface); }
+  .rp-controls input[type=range] { flex: 1; min-width: 140px; accent-color: var(--accent); }
+  .rp-controls .pbtn { height: 36px; }
+  .anchor-list { list-style: none; margin: 0; padding: 0; max-height: 260px; overflow-y: auto; }
+  .anchor-list li button { display: grid; grid-template-columns: 44px 1fr; gap: 8px; width: 100%; text-align: left; padding: 6px 4px; background: transparent; border: 0; border-bottom: 1px dashed rgba(255,255,255,.06); color: var(--ink2); font: inherit; font-size: 13px; line-height: 1.4; cursor: pointer; }
+  .anchor-list li button:hover { color: var(--ink); }
+  .anchor-list li button.now { color: var(--ink); background: var(--accent-soft); }
+  .anchor-list time { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); padding-top: 1px; }
+  .anchor-list .decision { color: var(--up); font-weight: 600; }
+  @media (min-width: 900px) { .rp-body { grid-template-columns: minmax(0, 1fr) 320px; } .rp-side { border-top: 0; border-left: 1px solid var(--line); } }
+  .p-tracker .kv .v.ok { color: var(--up); }
+  @media (max-width: 899px) { .p-act { max-height: 52vh; overflow-y: auto; } }
+  .ov-context { margin: 12px 0 0; padding: 8px 10px; border-left: 2px solid var(--accent); background: var(--surface-2); font-size: 13px; line-height: 1.5; color: var(--ink2); }
+  .ov-fine { font-size: 12px; color: var(--ink3); }

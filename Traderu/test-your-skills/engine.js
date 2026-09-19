@@ -2,12 +2,8 @@
  * TEST YOUR SKILLS: simulation engine.
  *
  * Pure logic. No DOM, no network, no randomness. Everything is driven by scenario data
- * (scenarios.js).
- *
- * The market is scripted, but some scenarios BRANCH on the student's entry. A branch is chosen from
- * the entry's zone (see scenario.entryZones) and replaces the rest of the path from the next price
- * tick onward. Price is still a pure function of (scenario, the recorded decisions, time), so a
- * refresh replays the same decisions and lands on the same branch. Nothing is random.
+ * (scenarios.js). The market path is a pure function of simulation time, so every user sees
+ * the same market and a click never changes the future.
  *
  * Money model: the user owns a fraction of the token supply ("shares" = usd / marketCap).
  * Position value = shares x current market cap. Sells always act on the *remaining* position.
@@ -43,10 +39,6 @@
     pct: function (f) { f = num(f); if (Math.abs(f) < 0.0005) f = 0; return (f < 0 ? '-' : '+') + Math.abs(f * 100).toFixed(1) + '%'; },
     pct0: function (f) { return Math.round(num(f) * 100) + '%'; },
     pctAbs: function (f) { return Math.abs(num(f) * 100).toFixed(1) + '%'; },
-    usd0: function (v) {            // "$100" when whole, "$100.50" otherwise
-      v = num(v);
-      return Math.abs(v - Math.round(v)) < 0.005 ? (v < 0 ? '-$' : '$') + commas(Math.abs(Math.round(v))) : fmt.usd(v);
-    },
     int: function (v) { return String(Math.round(num(v))); },
     signed: function (v) { v = Math.round(num(v)); return (v < 0 ? '-' : '+') + Math.abs(v) + '%'; },
     volume: function (v) { v = num(v); return v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' + Math.round(v / 1000) + 'K'; },
@@ -84,11 +76,8 @@
       v[j] = val;
     }
     v[0] = cd.o; v[t1] = e1; v[t2] = e2; v[T] = cd.c;
-    return finishTicks(v);
-  }
-  function finishTicks(v) {
-    var pmax = new Array(v.length), pmin = new Array(v.length);
-    for (var j = 0; j < v.length; j++) {
+    var pmax = new Array(T + 1), pmin = new Array(T + 1);
+    for (j = 0; j <= T; j++) {
       pmax[j] = j ? Math.max(pmax[j - 1], v[j]) : v[j];
       pmin[j] = j ? Math.min(pmin[j - 1], v[j]) : v[j];
     }
@@ -105,16 +94,14 @@
     var hist = (scenario.history || []).map(function (a) { return normCandle(a, unit); });
     var live = (scenario.candles || []).map(function (a) { return normCandle(a, unit); });
     if (!live.length) throw new Error('Scenario has no live candles');
-    // `all` and `ticks` are edited in place when a branch replaces the rest of the path
     var all = hist.concat(live), H = hist.length, N = live.length;
     var ticks = all.map(function (c, i) { return buildTicks(c, i, T); });
     var candleMs = scenario.candleMs || cfg.candleMs || 1000;
     var D = N * candleMs;
     var startPos = scenario.startingPosition || null;
-    var baseline = num(scenario.baselineCapital, cfg.baselineCapital || 100);
     var phases = scenario.phases || [];
     var revPhase = null; phases.forEach(function (p) { if (p.reversal && !revPhase) revPhase = p; });
-    var ath = 0; hist.forEach(function (c) { if (c.h > ath) ath = c.h; });
+    var baseline = num(scenario.baselineCapital, cfg.baselineCapital || 100);
 
     var st = { cash: num(scenario.startingCash), shares: 0, cost: 0, realized: 0 };
     if (startPos) { st.shares = startPos.costUsd / startPos.entryMcap; st.cost = startPos.costUsd; }
@@ -123,7 +110,23 @@
 
     var sim = { scenario: scenario, cfg: cfg, all: all, H: H, N: N, candleMs: candleMs, duration: D,
       elapsed: 0, started: false, locked: false, decision: null, decisionT: null, decisionMcap: null,
-      entry: null, trades: [], log: [], actions: [], branch: null, firstShown: live[0].o, ath: ath };
+      entry: null, trades: [], log: [], actions: [] };
+
+    // livePeak: the highest print anywhere on the scripted path
+    var livePeak = 0, livePeakT = 0, k, j;
+    for (k = 0; k < N; k++) for (j = 0; j <= T; j++) {
+      var pv = ticks[H + k].v[j];
+      if (pv > livePeak) { livePeak = pv; livePeakT = (k + j / T) * candleMs; }
+    }
+    sim.livePeak = livePeak; sim.livePeakT = livePeakT;
+    sim.reversalT = revPhase ? revPhase.from * candleMs : livePeakT;
+    // Which scripted phase (see scenario.phases) a moment in simulation time falls in. Recap use only.
+    function phaseAt(t) {
+      var u = t / candleMs, i;
+      for (i = 0; i < phases.length; i++) if (u >= phases[i].from - 1e-9 && u < phases[i].to - 1e-9) return phases[i].id;
+      return phases.length ? phases[phases.length - 1].id : null;
+    }
+    sim.phaseAt = phaseAt;
 
     function locate(t) {
       t = clamp(t, 0, D);
@@ -138,84 +141,12 @@
     sim.priceAt = priceAt;
     sim.price = function () { return priceAt(sim.elapsed); };
 
-    // highest / lowest print anywhere on the scripted path between two times (recap facts)
-    function extremes(t0, t1) {
-      t0 = clamp(t0, 0, D); t1 = clamp(t1, 0, D);
-      var hi = Math.max(priceAt(t0), priceAt(t1)), lo = Math.min(priceAt(t0), priceAt(t1)), hiT = t0, loT = t0, kk, jj, tt, pv;
-      for (kk = Math.floor(t0 / candleMs); kk < N && kk * candleMs <= t1; kk++) for (jj = 0; jj <= T; jj++) {
-        tt = (kk + jj / T) * candleMs; if (tt < t0 || tt > t1) continue;
-        pv = ticks[H + kk].v[jj]; if (pv > hi) { hi = pv; hiT = tt; } if (pv < lo) { lo = pv; loT = tt; }
-      }
-      return { high: hi, highT: hiT, low: lo, lowT: loT };
-    }
-    function refreshShape() {
-      sim.N = N; sim.duration = D;
-      var e = extremes(0, D);
-      sim.livePeak = e.high; sim.livePeakT = e.highT; sim.liveLow = e.low; sim.liveLowT = e.lowT;
-    }
-    refreshShape();
-    sim.reversalT = revPhase ? revPhase.from * candleMs : sim.livePeakT;
-
-    // Which scripted phase (see scenario.phases) a moment falls in. Recap use only.
-    function phaseAt(t) {
-      var u = t / candleMs, i;
-      for (i = 0; i < phases.length; i++) if (u >= phases[i].from - 1e-9 && u < phases[i].to - 1e-9) return phases[i].id;
-      return phases.length ? phases[phases.length - 1].id : null;
-    }
-    sim.phaseAt = phaseAt;
-
     // The candle currently forming, with running high/low so far.
     sim.forming = function () {
       var L = locate(sim.elapsed), c = all[H + L.k], tk = ticks[H + L.k];
       var px = priceAt(sim.elapsed), pj = Math.min(T, Math.floor(L.p * T));
       return { index: H + L.k, k: L.k, p: L.p, o: c.o, h: Math.max(tk.max[pj], px), l: Math.min(tk.min[pj], px), c: px, v: c.v * L.p };
     };
-
-    /* ---- entry zones and branching ---- */
-    // First matching zone wins. Bounds: minPrice / maxPrice in the candles' units ($K), from / to in candles, phases by id.
-    function zoneFor(price, t) {
-      var zs = scenario.entryZones || [], u = t / candleMs, ph = phaseAt(t), i, z, p = price / unit;
-      for (i = 0; i < zs.length; i++) {
-        z = zs[i];
-        if (z.minPrice != null && p < z.minPrice) continue;
-        if (z.maxPrice != null && p > z.maxPrice) continue;
-        if (z.from != null && u < z.from) continue;
-        if (z.to != null && u >= z.to) continue;
-        if (z.phases && z.phases.indexOf(ph) === -1) continue;
-        return z.id;
-      }
-      return null;
-    }
-    // Replace the rest of the path with a branch template, starting at the next price tick so the
-    // price the student just paid is not disturbed. Template candle 0 is the remainder of the candle the
-    // student acted in; the others are full candles. Template numbers are ratios of the price at the start.
-    function applyBranch(br) {
-      var L = locate(sim.elapsed), k0 = L.k, jb = Math.ceil(L.p * T - 1e-9), full = jb >= T, idx0, prefix, subT, pb, tpl = br.candles, first = tpl[0], sub, i;
-      if (full) { idx0 = H + k0 + 1; prefix = []; subT = T; pb = all[H + k0].c; }
-      else { idx0 = H + k0; prefix = ticks[idx0].v.slice(0, jb); subT = T - jb; pb = ticks[idx0].v[jb]; }
-      var cd0 = { o: pb, h: Math.max(pb * first[1], pb, pb * first[3]), l: Math.max(Math.min(pb * first[2], pb, pb * first[3]), 1), c: pb * first[3], v: num(first[4]) * unit };
-      if (subT >= 4) sub = buildTicks(cd0, idx0, subT).v;
-      else { sub = []; for (i = 0; i <= subT; i++) sub.push(pb + (cd0.c - pb) * i / subT); }
-      var v = prefix.concat(sub), hi = -Infinity, lo = Infinity;
-      for (i = 0; i < v.length; i++) { if (v[i] > hi) hi = v[i]; if (v[i] < lo) lo = v[i]; }
-      all.length = idx0; ticks.length = idx0;
-      all.push({ o: full ? pb : v[0], h: hi, l: lo, c: v[T], v: cd0.v });
-      ticks.push(finishTicks(v));
-      for (i = 1; i < tpl.length; i++) {
-        var a = tpl[i], prevC = all[all.length - 1].c;
-        var cd = normCandle([prevC * 1 / unit, pb * a[1] / unit, pb * a[2] / unit, pb * a[3] / unit, a[4]], unit);
-        all.push(cd); ticks.push(buildTicks(cd, all.length - 1, T));
-      }
-      N = all.length - H; D = N * candleMs;
-      sim.branch = { id: br.id, zone: br.zone, t: sim.elapsed, k: idx0 - H, startT: (idx0 - H) * candleMs, price0: pb, length: tpl.length };
-      refreshShape();
-      sim.reversalT = br.reversalAt != null ? (idx0 - H + br.reversalAt) * candleMs : sim.livePeakT;
-    }
-    function branchFor(zone) {
-      var bs = scenario.branches || [], i;
-      for (i = 0; i < bs.length; i++) if (bs[i].zone === zone) return bs[i];
-      return null;
-    }
 
     /* ---- portfolio ---- */
     function value(state, price) {
@@ -228,7 +159,6 @@
     sim.portfolio = function () { return value(st, sim.price()); };
     function snap() { return { cash: st.cash, shares: st.shares, cost: st.cost, realized: st.realized }; }
     function hasPosition() { return st.shares * sim.price() >= 0.005 && st.shares > EPS; }
-    sim.remainingFraction = function () { var base = initialShares > EPS ? initialShares : (sim.entry ? sim.trades[0].shares : 0); return base > EPS ? st.shares / base : 0; };
 
     /* ---- actions ---- */
     function defFor(id, pct) {
@@ -259,18 +189,18 @@
       if (!chk.enabled) return { ok: false, reason: chk.reason };
       var price = sim.price(), t = sim.elapsed, rec = { type: id, t: t, mcap: price };
       if (!(price > 0) || !isFinite(price)) return { ok: false, reason: 'bad-price' };
-      var branchTo = null;
 
       if (id === 'buy') {
         var usd = st.cash, bought = usd / price;
         st.shares += bought; st.cash -= usd; st.cost += usd;
         if (Math.abs(st.cash) < 1e-9) st.cash = 0;
         rec.usd = usd; rec.shares = bought;
-        var L = locate(t), gi = H + L.k, streak = 0, zone = zoneFor(price, t);
+        var L = locate(t), gi = H + L.k, streak = 0;
         while (gi - 1 - streak >= 0 && all[gi - 1 - streak].c > all[gi - 1 - streak].o && streak < 12) streak++;
-        sim.entry = { t: t, mcap: price, k: L.k, streak: streak, phase: phaseAt(t), zone: zone };
-        rec.zone = zone; rec.after = snap(); sim.trades.push(rec); lockIf('buy');
-        branchTo = branchFor(zone);
+        var cx = statsAt(t) || {};
+        sim.entry = { t: t, mcap: price, k: L.k, streak: streak, phase: phaseAt(t),
+          momentum: cx.momentum || null, social: cx.social == null ? null : cx.social, buys: cx.buys == null ? null : cx.buys };
+        rec.after = snap(); sim.trades.push(rec); lockIf('buy');
       } else if (id === 'sell') {
         var f = clamp(num(pct, 1), 0.0001, 1), sellShares = f >= 0.9999 ? st.shares : st.shares * f;
         var proceeds = sellShares * price, costPart = f >= 0.9999 ? st.cost : st.cost * (sellShares / st.shares);
@@ -288,8 +218,7 @@
         lockIf(id);
       }
       sim.log.push(rec); sim.actions.push({ type: id, pct: pct, t: t });
-      if (branchTo) applyBranch(branchTo);
-      return { ok: true, trade: rec, branched: !!branchTo };
+      return { ok: true, trade: rec };
     };
 
     /* ---- clock ---- */
@@ -298,19 +227,25 @@
     sim.done = function () { return sim.started && sim.elapsed >= D - 1e-9; };
     sim.progress = function () { return D ? sim.elapsed / D : 0; };
 
-    /* ---- market stats: derived from the candles themselves, so they follow whatever branch is playing ---- */
-    var baseVol = 0; (function () { var n = Math.min(8, H || N), i; for (i = 0; i < n; i++) baseVol += (H ? all[i] : all[H + i]).v; baseVol = n ? baseVol / n : 1; })();
+    /* ---- market stats & feed ---- */
     function statsAt(t) {
-      var L = locate(t), gi = H + L.k, px = priceAt(t), a = Math.max(0, gi - 4), base = all[a].o, ret = base > 0 ? px / base - 1 : 0, i, vol = 0, recent = 0, rn = 0;
-      for (i = Math.max(0, gi - 23); i <= gi; i++) vol += all[i].v * (i === gi ? L.p : 1);
-      for (i = Math.max(0, gi - 5); i <= gi; i++) { recent += all[i].v * (i === gi ? Math.max(L.p, 0.3) : 1); rn += i === gi ? Math.max(L.p, 0.3) : 1; }
-      var ratio = baseVol > 0 && rn > 0 ? (recent / rn) / baseVol : 1;
-      var mom = ret >= 0.12 ? 'EXTREME' : ret >= 0.05 ? 'HIGH' : ret >= 0.015 ? 'BUILDING' : ret > -0.015 ? 'STEADY' : ret > -0.06 ? 'FADING' : 'WEAKENING';
-      var buys = clamp(50 + 300 * ret, 14, 88);
-      return { volume: vol, liquidity: px * 0.3, buys: buys, sells: 100 - buys, social: clamp((ratio - 1) * 60, -40, 900), momentum: mom };
+      var ks = scenario.stats || [], u = t / candleMs, i = 0;
+      if (!ks.length) return null;
+      while (i < ks.length - 1 && ks[i + 1].at <= u) i++;
+      var a = ks[i], b = ks[Math.min(i + 1, ks.length - 1)];
+      var f = b.at > a.at ? clamp((u - a.at) / (b.at - a.at), 0, 1) : 0;
+      function L(x, y) { return num(x) + (num(y) - num(x)) * f; }
+      var buys = L(a.buys, b.buys);
+      return { volume: L(a.volume, b.volume) * unit, liquidity: L(a.liquidity, b.liquidity) * unit,
+        buys: buys, sells: 100 - buys, social: L(a.social, b.social), momentum: a.momentum };
     }
     sim.statsAt = statsAt;
     sim.stats = function () { return statsAt(sim.elapsed); };
+    sim.feed = function () {
+      var out = [], evs = scenario.events || [];
+      for (var i = 0; i < evs.length; i++) if (evs[i].at * candleMs <= sim.elapsed + 1e-6) out.push({ t: evs[i].at * candleMs, text: evs[i].text, tone: evs[i].tone || '' });
+      return out;
+    };
 
     /* ---- replay: exact analytics independent of frame rate ---- */
     function replay(tEnd) {
@@ -353,7 +288,7 @@
       var soldBefore = 0, soldBeforeRev = 0, sharesAtRev = initialShares;
       sells.forEach(function (x) {
         if (totalInitial <= EPS) return;
-        if (x.t < sim.livePeakT - 1e-6) soldBefore += x.shares / totalInitial;
+        if (x.t < livePeakT - 1e-6) soldBefore += x.shares / totalInitial;
         if (x.t < sim.reversalT - 1e-6) soldBeforeRev += x.shares / totalInitial;
       });
       sim.trades.forEach(function (x) { if (x.t <= sim.reversalT + 1e-6) sharesAtRev = x.after.shares; });
@@ -361,25 +296,13 @@
       var waitsBefore = waits.filter(function (x) { return !en || x.t < en.t; }).length;
       var passT = sim.decision === 'pass' ? sim.decisionT : null;
       var decision = sim.decision || (sim.done() ? 'none' : null);
-      if (!sim.decision && en) decision = 'buy';
+      if (!sim.decision && sim.entry) decision = 'buy';
       var positionPnl = pf.realized + pf.unrealized;
-      var afterEntry = en ? extremes(en.t, tEnd) : null, afterPass = passT != null ? extremes(passT, tEnd) : null;
-      var finalExitT = sells.length && !hasPosition() ? sells[sells.length - 1].t : null;
-      var afterExit = finalExitT != null ? extremes(finalExitT, tEnd) : null;
-      var lowBefore = en ? extremes(0, en.t).low : null;
-      return {
+      var sum = {
         scenarioId: scenario.id, done: sim.done(),
-        firstShownMcap: sim.firstShown, peakMcap: sim.livePeak, peakT: sim.livePeakT, lowMcap: sim.liveLow, finalMcap: price,
-        athMcap: ath || null, moveSinceStartPct: sim.firstShown > 0 ? price / sim.firstShown - 1 : 0,
+        firstShownMcap: live[0].o, peakMcap: livePeak, peakT: livePeakT, finalMcap: price,
         startEntryMcap: startPos ? startPos.entryMcap : null,
-        entryMcap: en ? en.mcap : null, entry: en, entryT: en ? en.t : null, entryPhase: en ? en.phase : null, entryZone: en ? en.zone : null,
-        entryBelowAth: en && ath ? 1 - en.mcap / ath : null,
-        entryAboveLow: en && lowBefore > 0 ? en.mcap / lowBefore - 1 : null,
-        entryFromStartPct: en && sim.firstShown > 0 ? en.mcap / sim.firstShown - 1 : null,
-        lowBeforeEntry: lowBefore, lowAfterEntry: afterEntry ? afterEntry.low : null,
-        peakGainPct: en && m.peakAfterEntry != null ? m.peakAfterEntry / en.mcap - 1 : null,
-        finalVsEntryPct: en ? price / en.mcap - 1 : null,
-        troughUnrealPct: m.trough,
+        entryMcap: sim.entry ? sim.entry.mcap : null, entry: sim.entry,
         decision: decision, decisionMcap: sim.decisionMcap,
         cash: pf.cash, positionValue: pf.positionValue, totalValue: pf.total,
         unrealizedPnl: pf.unrealized, realizedPnl: pf.realized, positionPnl: positionPnl,
@@ -389,24 +312,27 @@
         drawdownFromPeakPct: m.peakTotal > EPS ? Math.max(0, (m.peakTotal - pf.total) / m.peakTotal) : 0,
         peakAfterEntry: m.peakAfterEntry,
         sells: sells, firstExitMcap: sells.length ? sells[0].mcap : null, firstExitT: sells.length ? sells[0].t : null,
-        firstSellPhase: sells.length ? phaseAt(sells[0].t) : null,
-        secsToFirstExit: sells.length && en ? Math.max(0, Math.round((sells[0].t - en.t) / 1000)) : null,
-        finalExitMcap: finalExitT != null ? sells[sells.length - 1].mcap : null, finalExitT: finalExitT,
-        highAfterFinalExit: afterExit ? afterExit.high : null,
+        finalExitMcap: sells.length && !hasPosition() ? sells[sells.length - 1].mcap : null,
         soldBeforePeakPct: soldBefore, remainingPct: totalInitial > EPS ? pf.shares / totalInitial : 0,
         waitCount: waits.length, waitText: times(waits.length),
         waitsBeforeEntry: waitsBefore, waitsBeforeEntryText: times(waitsBefore),
-        passT: passT, passMcap: passT != null ? sim.decisionMcap : null, passPhase: passT != null ? phaseAt(passT) : null,
-        lowAfterPass: afterPass ? afterPass.low : null,
-        reversalT: sim.reversalT, branchId: sim.branch ? sim.branch.id : null,
+        entryT: en ? en.t : null, entryPhase: en ? en.phase : null,
+        entryMomentum: en ? en.momentum : null, entrySocial: en ? en.social : null, entryBuys: en ? en.buys : null,
+        troughUnrealPct: m.trough,
+        peakGainPct: en && s_ok(m.peakAfterEntry) ? m.peakAfterEntry / en.mcap - 1 : null,
+        finalVsEntryPct: en ? price / en.mcap - 1 : null,
+        passT: passT, passPhase: passT != null ? phaseAt(passT) : null,
+        secsToReversal: passT != null ? Math.max(0, Math.round((sim.reversalT - passT) / 1000)) : null,
+        reversalT: sim.reversalT,
         soldBeforeReversalPct: soldBeforeRev,
         heldAtReversalPct: totalInitial > EPS && en && en.t < sim.reversalT ? sharesAtRev / totalInitial : 0,
         holdCount: sim.log.filter(function (x) { return x.type === 'hold'; }).length,
         hasPosition: hasPosition(), baseline: baseline
       };
+      return sum;
     };
 
-    /* ---- persistence: decisions are replayed, so a restored session lands on the same branch ---- */
+    /* ---- persistence ---- */
     sim.snapshot = function () { return { started: sim.started, elapsed: sim.elapsed, actions: sim.actions.map(function (a) { return { type: a.type, pct: a.pct, t: a.t }; }) }; };
     sim.restore = function (snapshot) {
       if (!snapshot) return sim;
@@ -423,31 +349,27 @@
   /* ---------------------------------------------------------------- recap text */
   TYS.recapFlags = function (s) {
     var startedWithPos = s.startEntryMcap != null, entered = s.entryMcap != null, sells = s.sells || [];
-    var quick = entered && sells.length > 0 && s.secsToFirstExit != null && s.secsToFirstExit <= 4;
     var flags = {
       entered: entered,
-      notEntered: !entered,
       passed: s.decision === 'pass',
       none: s.decision === 'none' && !entered,
+      streak2: !!(s.entry && s.entry.streak >= 2),
       noSells: startedWithPos && sells.length === 0,
       soldBeforePeak: s.soldBeforePeakPct > 0.0005,
       firstSellAfterPeak: sells.length > 0 && s.firstExitT >= s.peakT - 1e-6,
-      hasSells: sells.length > 0,
       flat: sells.length > 0 && !s.hasPosition,
       stillOpen: sells.length > 0 && s.hasPosition,
       waited: s.waitCount > 0,
+      hadDrawdown: entered && s.troughUnrealPct != null && s.troughUnrealPct < -0.03,
       waitedBefore: entered && s.waitsBeforeEntry > 0,
       noWaitBefore: entered && s.waitsBeforeEntry === 0,
-      hadDrawdown: entered && s.troughUnrealPct != null && s.troughUnrealPct < -0.03,
       enteredNoSells: entered && sells.length === 0,
-      quickExit: quick,
       soldBeforeReversal: entered && s.soldBeforeReversalPct > 0.0005,
-      heldIntoReversal: entered && s.heldAtReversalPct > 0.0005
+      heldIntoReversal: entered && s.heldAtReversalPct > 0.0005,
+      firstSellAfterReversal: entered && sells.length > 0 && s.firstExitT >= s.reversalT - 1e-6 && s.entryT < s.reversalT
     };
-    if (s.entryZone) flags['zone_' + s.entryZone] = true;
     if (s.entryPhase) flags['entry_' + s.entryPhase] = true;
     if (s.passPhase) flags['pass_' + s.passPhase] = true;
-    if (s.firstSellPhase) flags['firstSell_' + s.firstSellPhase] = true;
     return flags;
   };
   TYS.formatValue = function (s, f) {
@@ -485,18 +407,17 @@
     return { heading: r.heading || scenario.title, sentences: sentences,
       fields: (r.fields || []).map(function (f) { return { label: f.label, value: TYS.formatValue(s, f) }; }) };
   };
-  // One line of the student's decision history: {t, clock, kind, name, detail}. Used by Your Activity and the results.
-  // Shows only what the student did: "00:16 BUY $100 @ $52.4K", "00:24 SELL 50% @ $78.2K", "00:08 WAIT".
+  // One line of the user's decision history: {t, clock, kind, name, detail}. Used by the activity list and the results.
   TYS.describeLog = function (scenario, tr) {
-    var acts = scenario.actions || [], name, detail = '', i;
+    var acts = scenario.actions || [], name, detail = '@ ' + fmt.mcap(tr.mcap), i;
     if (tr.type === 'sell') name = 'SELL ' + fmt.pct0(tr.pct);
     else {
       name = tr.type.toUpperCase();
       for (i = 0; i < acts.length; i++) if (acts[i].id === tr.type && acts[i].label) { name = acts[i].label; break; }
     }
-    if (tr.type === 'buy') detail = fmt.usd0(tr.usd) + ' @ ' + fmt.mcap(tr.mcap);
-    else if (tr.type === 'sell') detail = '@ ' + fmt.mcap(tr.mcap);
-    return { t: tr.t, clock: fmt.clock(tr.t), kind: tr.type, name: name, detail: detail };
+    if (tr.type === 'buy') detail = fmt.usd(tr.usd) + ' ' + detail;
+    return { t: tr.t, clock: fmt.clock(tr.t), kind: tr.type, name: name, detail: detail,
+      extra: tr.type === 'sell' ? fmt.signedUsd(tr.realizedDelta) + ' realized' : '' };
   };
   TYS.buildReflection = function (scenario, s) {
     var r = scenario.reflection || {}, entered = s.entryMcap != null || s.startEntryMcap != null;
@@ -517,15 +438,7 @@
     }
     chk(sc.history, 'history'); chk(sc.candles, 'candles');
     if (sc.history && sc.history.length && sc.candles.length && Math.abs(sc.history[sc.history.length - 1][3] - sc.candles[0][0]) > 0.5) issues.push('first live candle does not open at the last history close');
-    (sc.branches || []).forEach(function (b) {
-      if (!b.candles || !b.candles.length) { issues.push('branch ' + b.id + ' has no candles'); return; }
-      if (Math.abs(b.candles[0][0] - 1) > 1e-6) issues.push('branch ' + b.id + ': first candle must open at 1 (a ratio of the entry price)');
-      b.candles.forEach(function (a, i) {
-        if (a.slice(0, 4).some(function (x) { return !isFinite(x) || x <= 0; })) issues.push('branch ' + b.id + '[' + i + '] is not a valid candle');
-        else if (a[1] < Math.max(a[0], a[3]) - 1e-9 || a[2] > Math.min(a[0], a[3]) + 1e-9) issues.push('branch ' + b.id + '[' + i + '] high/low do not contain open/close');
-      });
-      if (!(sc.entryZones || []).some(function (z) { return z.id === b.zone; })) issues.push('branch ' + b.id + ' refers to unknown zone ' + b.zone);
-    });
+    var last = -1; (sc.stats || []).forEach(function (k) { if (k.at < last) issues.push('stats keyframes must be in ascending order'); last = k.at; });
     return issues;
   };
 })(typeof window !== 'undefined' ? window : globalThis);

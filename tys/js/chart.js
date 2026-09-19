@@ -136,11 +136,12 @@
       (model.lines || []).forEach(function (ln) {
         if (ln.price < yMin || ln.price > yMax) return;
         var ly = Math.round(Y(ln.price)) + 0.5;
-        ctx.strokeStyle = C.accent; ctx.globalAlpha = 0.85; ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = ln.level ? 'rgba(255,255,255,0.55)' : C.accent; ctx.globalAlpha = ln.level ? 0.7 : 0.85; ctx.setLineDash(ln.level ? [2, 4] : [4, 4]);
         ctx.beginPath(); ctx.moveTo(L.plotL, ly); ctx.lineTo(L.plotR, ly); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
       });
 
       // markers
+      function col2(m) { return m.type === 'sell' ? C.down : C.up; }
       (model.markers || []).forEach(function (m) {
         if (m.index < start || m.index > fi) return;
         var cd2 = candleAt(m.index), mx = X(m.index), buy = m.type !== 'sell';
@@ -150,17 +151,21 @@
         ctx.fillStyle = '#0A0A0B'; ctx.textAlign = 'center'; ctx.font = 'bold 10px "JetBrains Mono", monospace';
         ctx.fillText(m.type === 'sell' ? 'S' : (m.type === 'entry' ? 'E' : 'B'), mx, my + 0.5);
         ctx.font = '11px "JetBrains Mono", ui-monospace, monospace';
+        if (m.note) { ctx.fillStyle = col2(m); ctx.textAlign = 'center'; ctx.fillText(m.note, mx, buy ? my + 17 : my - 17); }
       });
       ctx.restore();
 
       // axis tags: entry lines and live price
+      var placed = [];   // axis tags already drawn this frame, so close prices do not draw on top of each other
       function tag(price, text, fill, ink) {
-        var ty = Math.round(Y(price)), tw = L.axisW - 6;
+        var ty = Math.round(Y(price)), tw = L.axisW - 6, raw = ty;
         ty = Math.max(L.plotT + 8, Math.min(L.priceB - 2, ty));
+        placed.forEach(function (o) { if (Math.abs(ty - o.y) < 19) ty = o.y + (raw >= o.raw ? 19 : -19); });
+        placed.push({ y: ty, raw: raw });
         ctx.fillStyle = fill; ctx.fillRect(L.plotR + 2, ty - 9, tw + 2, 18);
         ctx.fillStyle = ink; ctx.textAlign = 'left'; ctx.fillText(text, L.plotR + 6, ty + 0.5);
       }
-      (model.lines || []).forEach(function (ln) { if (ln.price >= yMin && ln.price <= yMax) tag(ln.price, ln.label || TYS.fmt.mcap(ln.price), C.accent, '#0A0A0B'); });
+      (model.lines || []).forEach(function (ln) { if (ln.price >= yMin && ln.price <= yMax) tag(ln.price, ln.label || TYS.fmt.mcap(ln.price), ln.level ? '#3A3A40' : C.accent, ln.level ? C.ink : '#0A0A0B'); });
       var f = model.forming, fup = f.c >= f.o, py = Math.round(Y(f.c)) + 0.5;
       ctx.strokeStyle = fup ? C.up : C.down; ctx.globalAlpha = 0.55; ctx.setLineDash([2, 3]);
       ctx.beginPath(); ctx.moveTo(L.plotL, py); ctx.lineTo(L.plotR, py); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;

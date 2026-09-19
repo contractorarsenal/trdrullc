@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trader U Skills Simulator</title>
+<meta name="robots" content="noindex, nofollow"/>
+<meta name="description" content="A simulated trading exercise. No real money."/>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Trader U">
+  <div class="wrap nav-inner">
+    <a href="../" class="wordmark">TRADER U</a>
+    <span class="nav-tag">Skills Simulator</span>
+  </div>
+</nav>
+
+<div id="presenter-bar" class="presenter-bar" hidden role="toolbar" aria-label="Presenter controls">
+  <b>Presenter</b>
+  <button type="button" id="btn-pause" class="pbtn">Pause</button>
+  <button type="button" id="btn-next-event" class="pbtn">Next event</button>
+  <button type="button" id="btn-prestart" class="pbtn">Restart scenario</button>
+  <span id="presenter-state"></span>
+</div>
+
+<noscript><div class="wrap" style="padding-block:60px;text-align:center;color:#9C988F">This simulation needs JavaScript. Please enable it and reload.</div></noscript>
+
+<main id="main">
+
+  <!-- INTRO -->
+  <section id="view-intro" class="view-intro" aria-labelledby="intro-title">
+    <div class="hero-grid"></div><div class="hero-glow"></div>
+    <div class="wrap intro-inner">
+      <p class="label center fade-in" style="--d:0s">Trader U // Simulation</p>
+      <h1 id="intro-title" class="h1" tabindex="-1">
+        <span class="hero-line"><span style="--d:.05s">TEST YOUR</span></span>
+        <span class="hero-line"><span style="--d:.16s;color:var(--accent)">SKILLS.</span></span>
+      </h1>
+      <p class="sub fade-in" style="--d:.34s">Real decisions. Simulated money. $100.</p>
+      <p class="rules fade-in" style="--d:.44s"><span>No real money.</span><span>No second chances.</span><span>Make the call.</span></p>
+      <div class="explain fade-in" style="--d:.56s">
+        <p>Tell us how you trade.</p>
+        <p>The simulator adapts to you.</p>
+        <p>Watch the market. Make the decision.</p>
+      </div>
+      <div class="intro-cta fade-in" style="--d:.76s">
+        <button type="button" id="btn-start" class="btn btn-primary">Begin</button>
+        <p class="fine" style="margin-top:16px">Educational simulation only. No real assets or funds are used.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONBOARDING: profile, follow-ups, calibration, session plan (rendered by JS) -->
+  <section id="view-onboard" class="view" hidden aria-label="Trader profile">
+    <div class="ob-wrap" id="ob-root"></div>
+  </section>
+
+  <!-- TERMINAL -->
+  <section id="view-terminal" hidden aria-label="Simulated trading terminal">
+    <div class="term-wrap">
+      <div class="term" id="term">
+        <header class="term-top">
+          <div class="tt-round"><span class="tt-badge" id="tt-round">SCENARIO 1 / 5</span><span class="tt-title" id="tt-title" tabindex="-1">FIND THE ENTRY</span><span class="tt-tag" id="tt-level">STUDENT</span><span class="tt-tag" id="tt-stage" hidden></span></div>
+          <div class="tt-market" aria-live="off"><span class="tt-ticker" id="tt-ticker">$TICKER</span><span class="tt-name" id="tt-name"></span><span class="tt-mcap" id="tt-mcap">$0</span><span class="tt-change" id="tt-change"></span><span class="tt-unit" id="tt-unit"></span></div>
+          <div class="tt-status"><span class="live is-idle" id="tt-live"><i class="dot"></i><span id="tt-status">LIVE SIMULATION</span></span><span id="tt-timer">0:00 / 0:00</span></div>
+        </header>
+        <div class="term-progress" aria-hidden="true"><i id="tt-progress"></i></div>
+
+        <div class="term-body">
+          <div class="term-chart" id="chart-panel">
+            <div class="chart-legend" id="chart-legend" aria-hidden="true"></div>
+            <div class="chart-host" id="chart-host"></div>
+            <div class="paused-badge" id="paused-badge" hidden>PAUSED</div>
+
+            <div class="overlay" id="brief-overlay" hidden>
+              <div class="overlay-card">
+                <p class="label" id="brief-eyebrow">SCENARIO 1</p>
+                <h2 class="ov-title" id="brief-title" tabindex="-1">FIND THE ENTRY</h2>
+                <div class="ov-lines" id="brief-lines"></div>
+                <p class="ov-context" id="brief-context" hidden></p>
+                <div class="ov-setup" id="brief-setup"></div>
+                <p class="ov-question" id="brief-question"></p>
+                <div class="ov-card-cta"><button type="button" class="btn btn-primary" id="btn-begin">Start</button><span class="ov-fine">The market clock starts when you press start.</span></div>
+              </div>
+            </div>
+
+            <div class="overlay" id="stage-overlay" hidden>
+              <div class="overlay-card stage-card">
+                <p class="label" id="stage-eyebrow"></p>
+                <h2 class="big" id="stage-big" tabindex="-1"></h2>
+                <div id="stage-lines"></div>
+                <div class="chips-inline" id="stage-chips"></div>
+                <button type="button" class="btn btn-primary" id="btn-stage">Continue</button>
+              </div>
+            </div>
+
+            <div class="overlay" id="resume-overlay" hidden>
+              <div class="overlay-card">
+                <p class="label">Session restored</p>
+                <h2 class="ov-title">Paused where you left off.</h2>
+                <button type="button" class="btn btn-primary" id="btn-resume">Resume</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="term-side">
+            <section class="panel p-stats" id="panel-stats" aria-label="Market statistics">
+              <h3 class="panel-h">Market</h3>
+              <div id="market-rows"></div>
+            </section>
+
+            <section class="panel p-port" id="panel-port" aria-label="Portfolio">
+              <h3 class="panel-h">Portfolio (simulated)</h3>
+              <div class="kv-grid">
+                <div class="kv"><span class="k">Cash</span><span class="v" id="pf-cash">-</span></div>
+                <div class="kv"><span class="k">Position</span><span class="v" id="pf-pos">-</span></div>
+                <div class="kv"><span class="k">Unrealized</span><span class="v" id="pf-unreal">-</span></div>
+                <div class="kv"><span class="k">Realized</span><span class="v" id="pf-real">-</span></div>
+              </div>
+              <div class="kv pf-total"><span class="k">Total value</span><span class="v" id="pf-total">-</span></div>
+              <p class="pf-detail" id="pf-detail"></p>
+              <div class="p-tracker" id="pf-tracker" hidden aria-label="Capital tracker"></div>
+              <div class="p-session" id="pf-session" hidden aria-label="Session"></div>
+            </section>
+
+            <section class="panel p-act" id="panel-actions" aria-label="Actions">
+              <h3 class="panel-h">Order</h3>
+              <p class="act-mini" id="act-mini" aria-hidden="true"><span>MCAP <b id="am-mcap">-</b></span><span>P&amp;L <b id="am-pnl">-</b></span></p>
+              <p class="thesis" id="thesis" hidden></p>
+              <div class="act-card" id="act-card" data-tone="">
+                <p class="act-q" id="act-question" tabindex="-1">What do you do?</p>
+                <p class="act-status" id="act-status" hidden></p>
+              </div>
+              <form class="size-form" id="size-form" hidden novalidate>
+                <input id="size-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Amount in $" aria-label="Amount to buy in dollars"/>
+                <button type="submit" class="go">Buy</button>
+                <button type="button" id="size-cancel">Cancel</button>
+              </form>
+              <p class="size-err" id="size-err" role="alert" hidden></p>
+              <div class="act-grid" id="act-grid"></div>
+              <div class="hint-row" id="hint-row" hidden><button type="button" class="hint-btn" id="btn-hint">Need a hint?</button><p class="hint-text" id="hint-text" hidden></p></div>
+              <div class="ff" id="ff-wrap" hidden><button type="button" class="tbtn tbtn-ghost" id="btn-ff" aria-pressed="false"><span class="tb-l">Fast forward</span><span class="tb-s" id="ff-sub"></span></button></div>
+            </section>
+
+            <section class="panel p-reflect" id="panel-reflect" hidden aria-labelledby="rf-title">
+              <p class="label" id="rf-label" style="margin-bottom:8px">Reflection</p>
+              <h3 class="rf-h" id="rf-title" tabindex="-1">Your decision</h3>
+              <p class="rf-none" id="rf-none" hidden></p>
+              <dl id="rf-fields"></dl>
+              <label class="rf-q" for="rf-input" id="rf-question">What information influenced your decision?</label>
+              <textarea class="rf-input" id="rf-input" rows="3" maxlength="500" placeholder="A sentence or two is enough."></textarea>
+              <div class="rf-cta"><button type="button" class="btn btn-primary" id="btn-continue">Continue</button></div>
+            </section>
+          </div>
+
+          <div class="term-bottom">
+            <section aria-label="Your activity"><h3 class="panel-h">Your activity</h3><ul class="list" id="trades-list"></ul></section>
+          </div>
+        </div>
+      </div>
+      <p class="fine" style="margin-top:14px;text-align:center">Simulated market exercise for educational purposes only. No real assets or funds are used.</p>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="view-results" class="view view-results" hidden aria-labelledby="res-title">
+    <div class="res-wrap">
+      <p class="label" style="margin-bottom:12px">Trader U // Simulation complete</p>
+      <h1 class="res-h" id="res-title" tabindex="-1">YOUR TRADING DECISIONS</h1>
+      <div id="res-body"></div>
+      <div class="res-close">
+        <p class="big" id="res-close-big">Every scenario is a situation traders deal with every day.</p>
+        <p>Knowing what a chart is doing is only part of trading.</p>
+        <p class="em">The harder part is deciding what YOU are going to do.</p>
+        <span class="res-class">We'll break these decisions down in class.</span>
+        <div class="res-actions">
+          <button type="button" class="btn btn-primary" id="btn-replay">Replay my session</button>
+          <button type="button" class="btn btn-outline" id="btn-restart">Restart simulation</button>
+          <a class="btn btn-outline" href="../">Back to Trader U</a>
+        </div>
+        <p class="fine" style="margin-top:22px">Simulated market exercise for educational purposes only. No real assets or funds are used.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPLAY -->
+  <section id="view-replay" class="view" hidden aria-label="Session replay">
+    <div class="wrap" style="max-width:1180px">
+      <p class="label" style="margin-bottom:12px">Trader U // Replay</p>
+      <div class="rp-top">
+        <div class="rp-title" id="rp-title" tabindex="-1">Scenario<small id="rp-sub"></small></div>
+        <div class="rp-nav"><button type="button" class="pbtn" id="rp-prev-sc">Previous</button><button type="button" class="pbtn" id="rp-next-sc">Next</button><button type="button" class="pbtn" id="rp-back">Back to results</button></div>
+      </div>
+      <div class="rp-body">
+        <div class="rp-chart"><div class="chart-legend" id="rp-legend" aria-hidden="true"></div><div class="chart-host" id="rp-chart-host"></div></div>
+        <div class="rp-side">
+          <h3 class="panel-h">At this moment</h3>
+          <div id="rp-state"></div>
+          <h3 class="panel-h" style="margin-top:16px">Moments</h3>
+          <ul class="anchor-list" id="rp-anchors"></ul>
+        </div>
+      </div>
+      <div class="rp-controls">
+        <button type="button" class="pbtn" id="rp-play">Play</button>
+        <button type="button" class="pbtn" id="rp-prev-ev">Prev event</button>
+        <button type="button" class="pbtn" id="rp-next-ev">Next event</button>
+        <input type="range" id="rp-range" min="0" max="1000" value="0" aria-label="Replay position"/>
+        <span class="fine" id="rp-clock" style="margin:0;min-width:96px;text-align:right">00:00</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <a href="../" class="wordmark">TRADER U</a>
+    <div class="foot-links">
+      <a href="../terms.html">Terms of Service</a><a href="../privacy.html">Privacy Policy</a><a href="../refund.html">Refund Policy</a><a href="../eula.html">EULA</a>
+    </div>
+    <p class="fine disclaimer">Trader U provides educational content only. Trading involves risk and losses are possible. Nothing shown here is financial advice or a guarantee of results.</p>
+  </div>
+</footer>
+
+<div class="sr-only" id="sr-live" aria-live="polite" aria-atomic="true"></div>
+
+<script src="js/format.js"></script>
+<script src="js/difficulty.js"></script>
+<script src="js/config.js"></script>
+<script src="js/market.js"></script>
+<script src="js/portfolio.js"></script>
+<script src="js/scenario.js"></script>
+<script src="js/scenarios/_common.js"></script>
+<script src="js/scenarios/find-the-entry.js"></script>
+<script src="js/scenarios/manage-the-2x.js"></script>
+<script src="js/scenarios/control-the-fomo.js"></script>
+<script src="js/scenarios/protect-the-moon-bag.js"></script>
+<script src="js/scenarios/stop-revenge-trading.js"></script>
+<script src="js/scenarios/cut-the-loss.js"></script>
+<script src="js/scenarios/fake-breakout.js"></script>
+<script src="js/scenarios/position-size.js"></script>
+<script src="js/scenarios/volume-without-conviction.js"></script>
+<script src="js/scenarios/right-coin-wrong-time.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/behavior.js"></script>
+<script src="js/session.js"></script>
+<script src="js/replay.js"></script>
+<script src="js/player.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/terminal.js"></script>
+<script src="js/review.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
