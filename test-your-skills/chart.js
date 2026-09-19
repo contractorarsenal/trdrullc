@@ -105,12 +105,14 @@
 
       // grid + axis labels
       var step = niceStep(span / 5), g = Math.ceil(yMin / step) * step;
+      var tagYs = (model.lines || []).map(function (ln) { return Y(ln.price); }).concat([Y(model.forming.c)]);
       ctx.lineWidth = 1;
       for (; g < yMax; g += step) {
         var gy = Math.round(Y(g)) + 0.5;
         if (gy < L.plotT || gy > L.priceB) continue;
         ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(L.plotL, gy); ctx.lineTo(L.plotR, gy); ctx.stroke();
-        ctx.fillStyle = C.text; ctx.textAlign = 'left'; ctx.fillText(TYS.fmt.mcap(g), L.plotR + 8, gy);
+        var nearTag = tagYs.some(function (ty) { return Math.abs(ty - gy) < 11; });   // the price / entry tags sit on top of the axis
+        if (!nearTag) { ctx.fillStyle = C.text; ctx.textAlign = 'left'; ctx.fillText(TYS.fmt.mcap(g), L.plotR + 8, gy); }
       }
       ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(L.plotR + 0.5, L.plotT); ctx.lineTo(L.plotR + 0.5, L.plotB); ctx.stroke();
 

@@ -155,15 +155,34 @@
   .list li time { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); padding-top: 1px; }
   .list li.hot { color: var(--ink); } .list li.warn { color: #F4B183; }
   .list li .buy { color: var(--up); font-weight: 600; } .list li .sell { color: var(--down); font-weight: 600; }
+  .list li .wait { color: var(--accent); font-weight: 600; } .list li .pass { color: var(--ink); font-weight: 600; } .list li .hold { color: var(--ink); font-weight: 600; }
+  .list li .dim { color: var(--ink3); }
   .list .empty { display: block; color: var(--ink3); font-size: 13px; }
 
-  .act-q { font-family: var(--font-heading); font-weight: 700; font-size: 16px; margin: 0 0 10px; }
+  .act-card { margin: 0 0 10px; padding: 2px 0 2px 10px; border-left: 2px solid transparent; transition: border-color .2s ease; }
+  .act-card[data-tone="buy"] { border-left-color: var(--up); }
+  .act-card[data-tone="wait"] { border-left-color: var(--accent); }
+  .act-card[data-tone="pass"] { border-left-color: var(--ink3); }
+  .act-card[data-tone="sell"] { border-left-color: var(--down); }
+  .act-card[data-tone="hold"] { border-left-color: var(--ink2); }
+  .act-card[data-tone="buy"] .act-q { color: var(--up); }
+  .act-card[data-tone="wait"] .act-q { color: var(--accent); }
+  .act-card[data-tone="sell"] .act-q { color: #FF8EA1; }
+  .act-card.flash { animation: actflash 1s ease-out; }
+  .act-card.flash[data-tone="buy"] { --flash: rgba(46,211,160,0.24); }
+  .act-card.flash[data-tone="sell"] { --flash: rgba(239,69,101,0.22); }
+  @keyframes actflash { from { background: var(--flash, rgba(255,90,54,0.22)); } to { background: transparent; } }
+  .act-q { font-family: var(--font-heading); font-weight: 700; font-size: 16px; margin: 0; letter-spacing: 0.01em; }
+  .act-q:focus { outline: none; }
+  .tbtn[hidden] { display: none; }
+  .tbtn.is-picked { border-color: var(--accent); color: var(--accent); background: rgba(255,90,54,0.12); }
   .act-mini { display: none; }
   .act-grid { display: grid; gap: 8px; }
   .act-grid[data-layout="entry"] { grid-template-columns: 1fr 1fr; }
   .act-grid[data-layout="entry"] .tbtn:first-child { grid-column: 1 / -1; }
   .act-grid[data-layout="manage"] { grid-template-columns: repeat(3, 1fr); }
   .act-grid[data-layout="manage"] .tbtn:last-child { grid-column: 1 / -1; }
+  .act-grid[data-layout="manage3"] { grid-template-columns: repeat(3, 1fr); }
   .tbtn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 6px 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; touch-action: manipulation; transition: background-color .15s ease, border-color .15s ease, opacity .15s ease; }
   .tbtn .tb-l { font-weight: 700; font-size: 13px; }
   .tbtn .tb-s { font-size: 11px; color: inherit; opacity: 0.75; }
@@ -174,7 +193,7 @@
   .tbtn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
   .tbtn:disabled { opacity: 0.32; cursor: not-allowed; }
   .tbtn[aria-disabled="true"] { opacity: 0.55; }
-  .act-status { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--ink2); }
+  .act-status { margin: 2px 0 0; font-size: 13px; line-height: 1.45; color: var(--ink2); }
   .act-status b { color: var(--ink); font-weight: 600; }
   .ff { margin-top: 10px; }
   .ff .tbtn { min-height: 40px; flex-direction: row; gap: 8px; width: 100%; }
@@ -202,7 +221,8 @@
   @media (max-width: 899px) {
     .p-act { position: sticky; bottom: 0; z-index: 20; border-top: 1px solid var(--line-strong); box-shadow: 0 -12px 24px rgba(0,0,0,0.5); padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
     .p-act .panel-h { display: none; }
-    .act-q { font-size: 14px; margin-bottom: 6px; }
+    .act-q { font-size: 14px; }
+    .act-card { margin-bottom: 8px; }
     .act-mini { display: flex; justify-content: space-between; gap: 10px; margin: 0 0 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink2); }
     .act-mini b { color: var(--ink); font-weight: 500; }
     .act-grid[data-layout="entry"] { grid-template-columns: 1.5fr 1fr 1fr; }
@@ -211,7 +231,7 @@
     .act-grid[data-layout="manage"] .tbtn:last-child { grid-column: auto; }
     .tbtn { min-height: 50px; padding: 5px 4px; }
     .tbtn .tb-l { font-size: 12px; }
-    .act-status { font-size: 12px; margin-top: 6px; }
+    .act-status { font-size: 12px; }
     .ff { margin-top: 6px; }
     .p-port .kv-grid { grid-template-columns: 1fr 1fr; }
   }
@@ -235,6 +255,13 @@
   .res-stats div:first-child { border-left: 0; }
   .res-stats dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); }
   .res-stats dd { margin: 4px 0 0; font-family: var(--font-mono); font-size: 17px; color: var(--ink); }
+  .res-log { list-style: none; margin: 14px 0 0; padding: 0; }
+  .res-log h3 { font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin: 0 0 4px; }
+  .res-log li { display: grid; grid-template-columns: 48px 1fr; gap: 8px; padding: 5px 0; font-size: 13px; line-height: 1.4; color: var(--ink2); border-bottom: 1px dashed rgba(255,255,255,0.06); }
+  .res-log li time { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); padding-top: 1px; }
+  .res-log li .buy { color: var(--up); font-weight: 600; } .res-log li .sell { color: var(--down); font-weight: 600; }
+  .res-log li .wait { color: var(--accent); font-weight: 600; } .res-log li .pass, .res-log li .hold { color: var(--ink); font-weight: 600; }
+  .res-log li .dim { color: var(--ink3); }
   .res-note { margin: 14px 0 0; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
   .res-note .k { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
   .res-note p { margin: 4px 0 0; font-size: 15px; line-height: 1.55; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -257,6 +284,7 @@
     .hero-line span, .fade-in { animation: none !important; opacity: 1 !important; transform: none !important; }
     .dot::after { animation: none !important; }
     .btn, .tbtn { transition: none !important; }
+    .act-card.flash { animation: none !important; }
   }
 </style>
 </head>
@@ -383,9 +411,11 @@
             <section class="panel p-act" id="panel-actions" aria-label="Actions">
               <h3 class="panel-h">Order</h3>
               <p class="act-mini" id="act-mini" aria-hidden="true"><span>MCAP <b id="am-mcap">-</b></span><span>P&amp;L <b id="am-pnl">-</b></span></p>
-              <p class="act-q" id="act-question">What do you do?</p>
+              <div class="act-card" id="act-card" data-tone="">
+                <p class="act-q" id="act-question" tabindex="-1">What do you do?</p>
+                <p class="act-status" id="act-status" hidden></p>
+              </div>
               <div class="act-grid" id="act-grid" data-layout="entry"></div>
-              <p class="act-status" id="act-status" hidden></p>
               <div class="ff" id="ff-wrap" hidden><button type="button" class="tbtn tbtn-ghost" id="btn-ff" aria-pressed="false"><span class="tb-l">Fast forward</span><span class="tb-s" id="ff-sub"></span></button></div>
             </section>
 

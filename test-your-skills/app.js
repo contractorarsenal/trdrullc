@@ -29,7 +29,7 @@
     'tt-live', 'tt-status', 'tt-timer', 'tt-progress', 'chart-legend', 'chart-host', 'paused-badge', 'brief-overlay', 'brief-eyebrow', 'brief-title',
     'brief-lines', 'brief-setup', 'brief-question', 'btn-begin', 'resume-overlay', 'btn-resume', 'panel-stats', 'st-mcap', 'st-vol', 'st-liq', 'st-bs',
     'st-bar', 'st-bar2', 'st-mom', 'st-social', 'panel-port', 'pf-cash', 'pf-pos', 'pf-unreal', 'pf-real', 'pf-total', 'pf-detail', 'panel-actions',
-    'am-mcap', 'am-pnl', 'act-question', 'act-grid', 'act-status', 'ff-wrap', 'btn-ff', 'ff-sub', 'panel-reflect', 'rf-label', 'rf-title', 'rf-none',
+    'am-mcap', 'am-pnl', 'act-card', 'act-question', 'act-grid', 'act-status', 'ff-wrap', 'btn-ff', 'ff-sub', 'panel-reflect', 'rf-label', 'rf-title', 'rf-none',
     'rf-fields', 'rf-question', 'rf-input', 'btn-continue', 'feed-list', 'trades-list', 'res-rounds', 'res-title', 'btn-restart', 'presenter-bar',
     'btn-pause', 'btn-prestart', 'presenter-state', 'sr-live', 'intro-title'
   ].forEach(function (id) { E[id] = $(id); });
@@ -46,6 +46,7 @@
   var state = { phase: 'intro', round: 0, records: [], paused: false, gate: false, ff: 1 };
   var sim = null, chart = null, actionBtns = [], legendEls = null;
   var lastTs = 0, lastSave = 0, cooldownUntil = 0, lastFeedN = -1, lastLogN = -1, markers = [], markersN = -1, noteTimer = 0;
+  var notice = null;   // transient confirmation shown in the order panel: {tone, title, sub, until}
 
   function newRecord() { return { started: false, elapsed: 0, actions: [], note: '' }; }
   function rec() { return state.records[state.round]; }
@@ -95,17 +96,37 @@
   }
 
   /* ------------------------------------------------------------ rounds */
+  var ENTRY_IDS = { buy: 1, wait: 1, pass: 1 };
+  function groupOf(def) { return def.group || (ENTRY_IDS[def.id] ? 'entry' : 'manage'); }
   function buildActions(sc) {
     E['act-grid'].textContent = ''; actionBtns = [];
-    E['act-grid'].setAttribute('data-layout', sc.actions.some(function (a) { return a.id === 'sell'; }) ? 'manage' : 'entry');
     sc.actions.forEach(function (def) {
       var b = el('button', 'tbtn ' + (def.id === 'buy' ? 'tbtn-buy' : def.id === 'sell' ? 'tbtn-sell' : 'tbtn-ghost'));
       b.type = 'button';
       var l = el('span', 'tb-l', def.label), s = el('span', 'tb-s', '');
       b.appendChild(l); b.appendChild(s);
-      b.addEventListener('click', function () { onAction(def); });
-      E['act-grid'].appendChild(b); actionBtns.push({ def: def, b: b, s: s });
+      b.addEventListener('click', function () { onAction(def, b); });
+      E['act-grid'].appendChild(b); actionBtns.push({ def: def, group: groupOf(def), b: b, s: s });
     });
+  }
+
+  /* ------------------------------------------------------------ feedback copy */
+  function fbCopy(key) {
+    var d = (CFG.feedback || {})[key] || {}, o = (scen().feedback || {})[key] || {};
+    return { title: o.title != null ? o.title : d.title, sub: o.sub != null ? o.sub : d.sub };
+  }
+  function fbFill(str, ctx) {
+    return String(str == null ? '' : str).replace(/\{(\w+)\}/g, function (_, k) { return ctx[k] != null ? ctx[k] : ''; });
+  }
+  function fbCtx(t) {
+    var pf = sim.portfolio(), ctx = { entry: pf.avgEntry ? fmt.mcap(pf.avgEntry) : (sim.entry ? fmt.mcap(sim.entry.mcap) : ''),
+      mcap: fmt.mcap(t ? t.mcap : sim.price()), realized: fmt.signedUsd(pf.realized), waits: sim.log.filter(function (x) { return x.type === 'wait'; }).length };
+    if (t && t.type === 'sell') { ctx.pct = fmt.pct0(t.pct); ctx.delta = fmt.signedUsd(t.realizedDelta); }
+    return ctx;
+  }
+  function flash(tone) {
+    var c = E['act-card']; c.setAttribute('data-tone', tone || ''); c.classList.remove('flash');
+    void c.offsetWidth; c.classList.add('flash');
   }
 
   function loadRound(i, opts) {
@@ -119,7 +140,7 @@
     E['tt-round'].textContent = 'ROUND ' + (i + 1) + ' / ' + SCEN.length;
     E['tt-title'].textContent = sc.title;
     E['tt-ticker'].textContent = sc.token.ticker; E['tt-name'].textContent = sc.token.name;
-    E['act-question'].textContent = sc.brief.question;
+    notice = null; E['act-card']._tone = undefined; E['act-card'].removeAttribute('data-tone');
     buildActions(sc); chart.reset();
     E['feed-list']._t = undefined; E['trades-list']._t = undefined;
     if (!r.started) state.phase = 'brief';
@@ -189,20 +210,25 @@
   }
 
   /* ------------------------------------------------------------ actions */
-  function labelFor(id) { var a = scen().actions.filter(function (x) { return x.id === id; })[0]; return a ? a.label : id.toUpperCase(); }
 
-  function onAction(def) {
+  function onAction(def, btn) {
     if (state.phase !== 'play' || state.gate || !sim) return;
     var now = performance.now(); if (now < cooldownUntil) return;
+    var hadFocus = document.activeElement === btn;
     var res = sim.act(def.id, { pct: def.pct });
     if (!res.ok) return;
     cooldownUntil = now + CFG.actionCooldownMs;
     var r = rec(); r.actions = sim.snapshot().actions; r.elapsed = sim.elapsed; save();
-    var t = res.trade, msg;
-    if (t.type === 'buy') msg = 'Bought ' + fmt.usd(t.usd) + ' at ' + fmt.mcap(t.mcap) + ' market cap.';
-    else if (t.type === 'sell') msg = 'Sold ' + fmt.pct0(t.pct) + ' of the position for ' + fmt.usd(t.usd) + '.';
-    else msg = labelFor(t.type) + ' at ' + fmt.mcap(t.mcap) + '.';
-    announce(sim.locked && !sim.done() ? msg + ' Decision locked.' : msg);
+    var t = res.trade, ctx = fbCtx(t), c = fbCopy(t.type), tone = t.type, title = fbFill(c.title, ctx), sub = fbFill(c.sub, ctx);
+    if (t.type === 'wait' || t.type === 'hold' || t.type === 'sell') {
+      // WAIT / HOLD / SELL do not end the round, so their confirmation is temporary.
+      notice = { tone: tone, title: title, sub: sub, until: now + (CFG.waitFeedbackMs || 3500) };
+      if (t.type === 'wait') { btn.classList.add('is-picked'); setTimeout(function () { btn.classList.remove('is-picked'); }, 1600); }
+    } else { notice = null; }
+    flash(tone);
+    announce(title + '. ' + sub);
+    // the pressed button may have just been swapped out (BUY -> SELL buttons): keep keyboard focus in the panel
+    if (hadFocus) setTimeout(function () { if (btn.hidden || btn.disabled) focusEl(E['act-question']); }, 0);
   }
 
   E['btn-ff'].addEventListener('click', function () {
@@ -266,26 +292,42 @@
     return pf;
   }
 
+  function baseCard(pf) {
+    var ph = state.phase, open = pf.shares > 1e-12 && pf.positionValue >= 0.005, ctx = fbCtx(null), c;
+    if (ph === 'brief') return { tone: '', title: scen().brief.question, sub: 'Start the round to begin the market clock.' };
+    if (sim.done()) return { tone: '', title: 'Round complete.', sub: '' };
+    if (sim.entry && open) { c = fbCopy('buy'); return { tone: 'buy', title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
+    if (sim.entry) { c = fbCopy('closed'); return { tone: 'sell', title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
+    if (sim.decision === 'pass') { c = fbCopy('pass'); return { tone: 'pass', title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
+    if (!sim.locked && ctx.waits > 0 && !scen().startingPosition) return { tone: 'wait', title: scen().brief.question, sub: fbFill(fbCopy('watching').sub, ctx) };
+    return { tone: '', title: scen().brief.question, sub: '' };
+  }
+
   function renderActions(pf) {
-    var locked = sim.locked, done = sim.done(), ph = state.phase;
-    var busy = performance.now() < cooldownUntil, blocked = state.gate || ph !== 'play';
+    var locked = sim.locked, done = sim.done(), ph = state.phase, sc = scen(), now = performance.now();
+    var busy = now < cooldownUntil, blocked = state.gate || ph !== 'play';
+    var hasEntry = actionBtns.some(function (a) { return a.group === 'entry'; }), hasManage = actionBtns.some(function (a) { return a.group === 'manage'; });
+    var manage = hasManage && (!hasEntry || !!sim.entry || !!sc.startingPosition);
+    var shown = 0, waits = sim.log.filter(function (x) { return x.type === 'wait'; }).length;
     actionBtns.forEach(function (a) {
+      var vis = (a.group === 'manage') === manage; a.b.hidden = !vis; if (vis) shown++;
       var st = sim.actionState(a.def.id, a.def.pct), sub = '';
       if (a.def.id === 'buy') sub = fmt.usd(pf.cash);
       else if (a.def.id === 'sell' && pf.positionValue >= 0.005) sub = '≈ ' + fmt.usd(pf.positionValue * a.def.pct);
+      else if (a.def.id === 'wait' && waits > 0) sub = 'x' + waits;
       setText(a.s, sub);
       a.b.disabled = !st.enabled || blocked;
       a.b.setAttribute('aria-disabled', busy && !a.b.disabled ? 'true' : 'false');
     });
-    var msg = '', msgHtmlBold = '';
-    if (ph === 'brief') msg = 'Start the round to begin the market clock.';
-    else if (done) msg = 'Round complete.';
-    else if (locked) { var m = scen().messages || {}; msg = m[sim.decision === 'exited' ? 'flat' : sim.decision] || 'Decision locked.'; msgHtmlBold = 'Decision locked. '; }
-    var show = !!msg;
-    if (E['act-status']._show !== show || E['act-status']._t !== msgHtmlBold + msg) {
-      E['act-status']._show = show; E['act-status']._t = msgHtmlBold + msg; E['act-status'].hidden = !show; E['act-status'].textContent = '';
-      if (msgHtmlBold) E['act-status'].appendChild(el('b', '', msgHtmlBold)); E['act-status'].appendChild(document.createTextNode(msg));
-    }
+    var layout = manage ? (shown === 4 ? 'manage' : 'manage3') : 'entry';
+    if (E['act-grid'].getAttribute('data-layout') !== layout) E['act-grid'].setAttribute('data-layout', layout);
+
+    var card = (notice && now < notice.until && ph === 'play' && !done) ? notice : baseCard(pf);
+    if (notice && now >= notice.until) notice = null;
+    setText(E['act-question'], card.title || '');
+    var sub = card.sub || ''; setText(E['act-status'], sub); E['act-status'].hidden = !sub;
+    if (E['act-card']._tone !== card.tone) { E['act-card']._tone = card.tone; E['act-card'].setAttribute('data-tone', card.tone || ''); }
+
     var ffShow = ph === 'play' && locked && !done;
     E['ff-wrap'].hidden = !ffShow;
     if (ffShow) { E['btn-ff'].setAttribute('aria-pressed', state.ff > 1 ? 'true' : 'false'); setText(E['ff-sub'], state.ff > 1 ? 'x' + CFG.fastForward + ' on' : 'x' + CFG.fastForward); }
@@ -301,20 +343,22 @@
       });
     }
     if (sim.log.length !== lastLogN) {
+      var grew = sim.log.length > lastLogN && lastLogN >= 0;
       lastLogN = sim.log.length; var tl = E['trades-list']; tl.textContent = '';
-      if (!sim.log.length) { var e0 = el('li'); e0.appendChild(el('span', 'empty', 'No actions yet.')); e0.style.gridTemplateColumns = '1fr'; tl.appendChild(e0); }
-      sim.log.slice().reverse().slice(0, 40).forEach(function (tr) {
-        var li = el('li'), t = el('time', '', fmt.clock(tr.t)), span = el('span');
-        var name = tr.type === 'buy' ? 'BUY' : tr.type === 'sell' ? 'SELL' : labelFor(tr.type);
-        var tag = el('span', tr.type === 'buy' ? 'buy' : tr.type === 'sell' ? 'sell' : '', name);
-        span.appendChild(tag);
-        var txt = ' ';
-        if (tr.type === 'buy') txt += fmt.usd(tr.usd) + ' @ ' + fmt.mcap(tr.mcap);
-        else if (tr.type === 'sell') txt += fmt.pct0(tr.pct) + ' for ' + fmt.usd(tr.usd) + ' @ ' + fmt.mcap(tr.mcap) + ' (' + fmt.signedUsd(tr.realizedDelta) + ')';
-        else txt += '@ ' + fmt.mcap(tr.mcap);
-        span.appendChild(document.createTextNode(txt)); li.appendChild(t); li.appendChild(span); tl.appendChild(li);
-      });
+      if (!sim.log.length) { var e0 = el('li'); e0.appendChild(el('span', 'empty', 'No decisions yet.')); e0.style.gridTemplateColumns = '1fr'; tl.appendChild(e0); }
+      sim.log.forEach(function (tr) { tl.appendChild(logRow(scen(), tr)); });
+      if (grew) tl.scrollTop = tl.scrollHeight;
     }
+  }
+
+  // One row of the decision history: "00:06 WAIT @ $101.4K". Shared by the live list and the results.
+  function logRow(sc, tr) {
+    var d = TYS.describeLog(sc, tr), li = el('li'), span = el('span');
+    span.appendChild(el('span', d.kind === 'buy' || d.kind === 'sell' || d.kind === 'wait' || d.kind === 'pass' || d.kind === 'hold' ? d.kind : '', d.name));
+    span.appendChild(document.createTextNode(' ' + d.detail));
+    if (d.extra) span.appendChild(el('span', 'dim', '  ' + d.extra));
+    li.appendChild(el('time', '', d.clock)); li.appendChild(span);
+    return li;
   }
 
   function render(dt) {
@@ -370,6 +414,11 @@
       var dl = el('dl', 'res-stats');
       recap.fields.forEach(function (f) { var d = el('div'); d.appendChild(el('dt', '', f.label)); d.appendChild(el('dd', '', f.value)); dl.appendChild(d); });
       art.appendChild(dl);
+      var log = el('div', 'res-log'); log.appendChild(el('h3', '', 'Your activity'));
+      var ul = el('ul'); ul.style.cssText = 'list-style:none;margin:0;padding:0';
+      if (!s.log.length) { var e0 = el('li'); e0.style.gridTemplateColumns = '1fr'; e0.appendChild(el('span', 'dim', 'No decisions recorded.')); ul.appendChild(e0); }
+      s.log.forEach(function (tr) { ul.appendChild(logRow(sc, tr)); });
+      log.appendChild(ul); art.appendChild(log);
       var note = el('div', 'res-note'); note.appendChild(el('span', 'k', sc.reflection.question));
       note.appendChild(el('p', r.note ? '' : 'none', r.note || 'No response entered.')); art.appendChild(note);
       host.appendChild(art);
