@@ -30,7 +30,7 @@
     'brief-lines', 'brief-setup', 'brief-question', 'btn-begin', 'resume-overlay', 'btn-resume', 'panel-stats', 'st-mcap', 'st-vol', 'st-liq', 'st-bs',
     'st-bar', 'st-bar2', 'st-mom', 'st-social', 'panel-port', 'pf-cash', 'pf-pos', 'pf-unreal', 'pf-real', 'pf-total', 'pf-detail', 'panel-actions',
     'am-mcap', 'am-pnl', 'act-card', 'act-question', 'act-grid', 'act-status', 'ff-wrap', 'btn-ff', 'ff-sub', 'panel-reflect', 'rf-label', 'rf-title', 'rf-none',
-    'rf-fields', 'rf-question', 'rf-input', 'btn-continue', 'feed-list', 'trades-list', 'res-rounds', 'res-title', 'btn-restart', 'presenter-bar',
+    'rf-fields', 'rf-question', 'rf-input', 'btn-continue', 'trades-list', 'res-rounds', 'res-title', 'btn-restart', 'presenter-bar',
     'btn-pause', 'btn-prestart', 'presenter-state', 'sr-live', 'intro-title'
   ].forEach(function (id) { E[id] = $(id); });
 
@@ -45,7 +45,7 @@
   /* ------------------------------------------------------------ state */
   var state = { phase: 'intro', round: 0, records: [], paused: false, gate: false, ff: 1 };
   var sim = null, chart = null, actionBtns = [], legendEls = null;
-  var lastTs = 0, lastSave = 0, cooldownUntil = 0, lastFeedN = -1, lastLogN = -1, markers = [], markersN = -1, noteTimer = 0;
+  var lastTs = 0, lastSave = 0, cooldownUntil = 0, lastLogN = -1, markers = [], markersN = -1, noteTimer = 0;
   var notice = null;   // transient confirmation shown in the order panel: {tone, title, sub, until}
 
   function newRecord() { return { started: false, elapsed: 0, actions: [], note: '' }; }
@@ -119,9 +119,13 @@
     return String(str == null ? '' : str).replace(/\{(\w+)\}/g, function (_, k) { return ctx[k] != null ? ctx[k] : ''; });
   }
   function fbCtx(t) {
-    var pf = sim.portfolio(), ctx = { entry: pf.avgEntry ? fmt.mcap(pf.avgEntry) : (sim.entry ? fmt.mcap(sim.entry.mcap) : ''),
-      mcap: fmt.mcap(t ? t.mcap : sim.price()), realized: fmt.signedUsd(pf.realized), waits: sim.log.filter(function (x) { return x.type === 'wait'; }).length };
-    if (t && t.type === 'sell') { ctx.pct = fmt.pct0(t.pct); ctx.delta = fmt.signedUsd(t.realizedDelta); }
+    var pf = sim.portfolio(), buy = sim.trades.filter(function (x) { return x.type === 'buy'; })[0], rem = sim.remainingFraction();
+    var ctx = { cost: buy ? fmt.usd0(buy.usd) : fmt.usd0(pf.cost), entry: sim.entry ? fmt.mcap(sim.entry.mcap) : (pf.avgEntry ? fmt.mcap(pf.avgEntry) : ''),
+      mcap: fmt.mcap(t ? t.mcap : sim.price()), realized: fmt.signedUsd(pf.realized), waits: sim.log.filter(function (x) { return x.type === 'wait'; }).length, left: '' };
+    if (t && t.type === 'sell') {
+      ctx.pct = fmt.pct0(t.pct); ctx.delta = fmt.signedUsd(t.realizedDelta);
+      if (rem > 0.0005 && pf.positionValue >= 0.005) ctx.left = ' ' + fmt.pct0(rem) + ' of the position is still open.';
+    }
     return ctx;
   }
   function flash(tone) {
@@ -136,13 +140,13 @@
     var sc = SCEN[i], r = state.records[i];
     sim = TYS.restoreSim(sc, CFG, r);
     state.paused = false; state.gate = false; state.ff = 1; cooldownUntil = 0;
-    lastFeedN = -1; lastLogN = -1; markersN = -1;
+    lastLogN = -1; markersN = -1;
     E['tt-round'].textContent = 'ROUND ' + (i + 1) + ' / ' + SCEN.length;
     E['tt-title'].textContent = sc.title;
     E['tt-ticker'].textContent = sc.token.ticker; E['tt-name'].textContent = sc.token.name;
     notice = null; E['act-card']._tone = undefined; E['act-card'].removeAttribute('data-tone');
     buildActions(sc); chart.reset();
-    E['feed-list']._t = undefined; E['trades-list']._t = undefined;
+    E['trades-list']._t = undefined;
     if (!r.started) state.phase = 'brief';
     else if (sim.done()) state.phase = 'reflect';
     else { state.phase = 'play'; if (opts.restored) { state.paused = true; state.gate = true; } }
@@ -243,22 +247,25 @@
       if (sc.startingPosition && sc.startingPosition.markerCandle != null) markers.push({ index: sc.startingPosition.markerCandle, type: 'entry' });
       sim.trades.forEach(function (tr) {
         var k = Math.min(sim.N - 1, Math.floor(tr.t / sim.candleMs));
-        markers.push({ index: sim.H + k, type: tr.type === 'sell' ? 'sell' : 'buy' });
+        markers.push({ index: sim.H + k, type: tr.type === 'sell' ? 'sell' : 'buy', note: tr.type === 'sell' ? fmt.pct0(tr.pct) : '' });
       });
     }
     var pf = sim.portfolio(), lines = [];
+    (sc.levels || []).forEach(function (lv) { lines.push({ price: lv.price * CFG.unit, label: lv.label, level: true }); });
     if (pf.avgEntry) lines.push({ price: pf.avgEntry, label: fmt.mcap(pf.avgEntry) });
     return { all: sim.all, formingIndex: f.index, forming: f, markers: markers, lines: lines };
   }
 
   function renderTop(price) {
-    var sc = scen(), first = sim.all[sim.H].o, chg = first > 0 ? price / first - 1 : 0, ph = state.phase;
+    var sc = scen(), ph = state.phase, hl = sc.headline || {}, ref = hl.mcap ? hl.mcap * CFG.unit : sim.firstShown, chg = ref > 0 ? price / ref - 1 : 0;
+    var branching = !!sc.branches;   // a branching round's length depends on the student's choices, so only elapsed time is shown
     setText(E['tt-mcap'], fmt.mcap(price));
-    setText(E['tt-change'], arrow(chg) + fmt.pct(chg) + ' since start');
+    setText(E['tt-change'], arrow(chg) + fmt.pct(chg) + ' ' + (hl.label || 'since start'));
     setCls(E['tt-change'], 'up', chg > 0.0005); setCls(E['tt-change'], 'down', chg < -0.0005); setCls(E['tt-change'], 'flat', Math.abs(chg) <= 0.0005);
     setText(E['tt-unit'], 'PRICE ' + fmt.price(price / CFG.supply));
-    setText(E['tt-timer'], fmt.clock(sim.elapsed) + ' / ' + fmt.clock(sim.duration));
-    E['tt-progress'].style.width = (sim.progress() * 100).toFixed(2) + '%';
+    setText(E['tt-timer'], fmt.clock(sim.elapsed) + (branching ? '' : ' / ' + fmt.clock(sim.duration)));
+    E['tt-progress'].parentNode.hidden = branching;
+    if (!branching) E['tt-progress'].style.width = (sim.progress() * 100).toFixed(2) + '%';
     var label = ph === 'brief' ? 'READY' : ph === 'reflect' ? 'ROUND COMPLETE' : state.paused ? 'PAUSED' : 'LIVE SIMULATION';
     setText(E['tt-status'], label);
     setCls(E['tt-live'], 'is-idle', ph === 'brief' || ph === 'reflect'); setCls(E['tt-live'], 'is-paused', ph === 'play' && state.paused);
@@ -292,13 +299,18 @@
     return pf;
   }
 
+  // The order panel's resting state, derived from the position so it is right after a refresh too.
   function baseCard(pf) {
     var ph = state.phase, open = pf.shares > 1e-12 && pf.positionValue >= 0.005, ctx = fbCtx(null), c;
+    var sold = sim.trades.some(function (x) { return x.type === 'sell'; });
+    function card(tone, key) { c = fbCopy(key); return { tone: tone, title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
+    ctx.open = fmt.pct0(sim.remainingFraction());
     if (ph === 'brief') return { tone: '', title: scen().brief.question, sub: 'Start the round to begin the market clock.' };
     if (sim.done()) return { tone: '', title: 'Round complete.', sub: '' };
-    if (sim.entry && open) { c = fbCopy('buy'); return { tone: 'buy', title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
-    if (sim.entry) { c = fbCopy('closed'); return { tone: 'sell', title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
-    if (sim.decision === 'pass') { c = fbCopy('pass'); return { tone: 'pass', title: fbFill(c.title, ctx), sub: fbFill(c.sub, ctx) }; }
+    if (open && sold) return card('sell', 'partial');                 // still exposed after taking some profit
+    if (!open && sold) return card('sell', 'closed');
+    if (open && sim.entry) return card('buy', 'buy');
+    if (sim.decision === 'pass') return card('pass', 'pass');
     if (!sim.locked && ctx.waits > 0 && !scen().startingPosition) return { tone: 'wait', title: scen().brief.question, sub: fbFill(fbCopy('watching').sub, ctx) };
     return { tone: '', title: scen().brief.question, sub: '' };
   }
@@ -334,14 +346,6 @@
   }
 
   function renderLists() {
-    var feed = sim.feed();
-    if (feed.length !== lastFeedN) {
-      lastFeedN = feed.length; var ul = E['feed-list']; ul.textContent = '';
-      if (!feed.length) ul.appendChild(el('li', '', 'Waiting for the market to open.'));
-      feed.slice().reverse().slice(0, 12).forEach(function (f) {
-        var li = el('li', f.tone), t = el('time', '', fmt.clock(f.t)); li.appendChild(t); li.appendChild(el('span', '', f.text)); ul.appendChild(li);
-      });
-    }
     if (sim.log.length !== lastLogN) {
       var grew = sim.log.length > lastLogN && lastLogN >= 0;
       lastLogN = sim.log.length; var tl = E['trades-list']; tl.textContent = '';
@@ -355,8 +359,7 @@
   function logRow(sc, tr) {
     var d = TYS.describeLog(sc, tr), li = el('li'), span = el('span');
     span.appendChild(el('span', d.kind === 'buy' || d.kind === 'sell' || d.kind === 'wait' || d.kind === 'pass' || d.kind === 'hold' ? d.kind : '', d.name));
-    span.appendChild(document.createTextNode(' ' + d.detail));
-    if (d.extra) span.appendChild(el('span', 'dim', '  ' + d.extra));
+    if (d.detail) span.appendChild(document.createTextNode(' ' + d.detail));
     li.appendChild(el('time', '', d.clock)); li.appendChild(span);
     return li;
   }

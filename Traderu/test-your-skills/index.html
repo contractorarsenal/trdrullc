@@ -149,11 +149,9 @@
   .p-stats { order: 4; } .p-port { order: 2; } .p-act { order: 99; } .p-reflect { order: 3; }
   .term-bottom { order: 5; display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--line); background: var(--surface); }
   .term-bottom > section { padding: 14px; min-width: 0; }
-  .term-bottom > section + section { border-top: 1px solid var(--line); }
-  .list { list-style: none; margin: 0; padding: 0; max-height: 158px; overflow-y: auto; }
+  .list { list-style: none; margin: 0; padding: 0; max-height: 176px; overflow-y: auto; }
   .list li { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 5px 0; font-size: 13px; line-height: 1.4; color: var(--ink2); border-bottom: 1px dashed rgba(255,255,255,0.06); }
   .list li time { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); padding-top: 1px; }
-  .list li.hot { color: var(--ink); } .list li.warn { color: #F4B183; }
   .list li .buy { color: var(--up); font-weight: 600; } .list li .sell { color: var(--down); font-weight: 600; }
   .list li .wait { color: var(--accent); font-weight: 600; } .list li .pass { color: var(--ink); font-weight: 600; } .list li .hold { color: var(--ink); font-weight: 600; }
   .list li .dim { color: var(--ink3); }
@@ -212,8 +210,7 @@
     .term-body { display: grid; grid-template-columns: minmax(0, 1fr) 344px; grid-template-rows: auto 1fr; grid-template-areas: "chart side" "bottom side"; align-items: start; }
     .term-side { display: flex; flex-direction: column; grid-area: side; border-left: 1px solid var(--line); align-self: stretch; }
     .term-chart { grid-area: chart; }
-    .term-bottom { grid-area: bottom; grid-template-columns: 1fr 1fr; align-self: stretch; }
-    .term-bottom > section + section { border-top: 0; border-left: 1px solid var(--line); }
+    .term-bottom { grid-area: bottom; align-self: stretch; }
     .term-side .panel:first-child { border-top: 0; }
     .p-stats, .p-port, .p-act, .p-reflect { order: 0; }
     .p-act { margin-top: 0; }
@@ -431,7 +428,6 @@
           </div>
 
           <div class="term-bottom">
-            <section aria-label="Market feed"><h3 class="panel-h">Market feed</h3><ul class="list" id="feed-list"></ul></section>
             <section aria-label="Your activity"><h3 class="panel-h">Your activity</h3><ul class="list" id="trades-list"></ul></section>
           </div>
         </div>

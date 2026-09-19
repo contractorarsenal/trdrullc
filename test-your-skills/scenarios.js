@@ -10,57 +10,58 @@
  *   - `candles` are the live, scripted candles. Each one lasts `candleMs` of simulation time.
  *   - The first live candle should open where the last history candle closed.
  *   - Highs/lows are auto-corrected if they do not contain the open/close.
- *   - The market path is fixed data. Nothing here is random, and nothing reacts to the user's clicks.
+ *   - Nothing here is random. The same decisions always produce the same chart.
+ *
+ * BRANCHING (rounds 1 and 3)
+ *   `entryZones` classify where the student bought (first match wins). A zone is matched on any of:
+ *   minPrice / maxPrice ($K), from / to (candles into the round), phases (ids from `phases`).
+ *   `branches` say what happens next. A branch {id, zone, reversalAt, candles} replaces the rest of the
+ *   chart from the next price tick after the BUY. Its candles are RATIOS of the price at that moment
+ *   (1.00 = the price the student paid). Candle 0 is the remainder of the candle the BUY happened in,
+ *   the others are full candles. `reversalAt` is the candle where the drop begins (recap only).
+ *   A zone with no branch just plays the main path. If the student never buys, the main path plays.
  *
  * TIMING
- *   Scenario length = candles.length x candleMs (per scenario, falling back to CONFIG.candleMs).
- *   Playback speed multipliers live in CONFIG.speeds (?presenter=true and ?speed=dev use them).
+ *   Main path length = candles.length x candleMs. A branch adds its own candles after the BUY, so a
+ *   branching round ends when its branch ends. Speed multipliers live in CONFIG.speeds.
  *
- * STATS
- *   `stats` are keyframes at candle indexes. Numbers interpolate between keyframes; `momentum`
- *   steps to the label of the latest keyframe. volume/liquidity are $K, buys is % of trades that are buys.
- *
- * EVENTS
- *   Lines that appear in the market feed when the clock reaches candle index `at`.
- *
- * PHASES (optional, used only by the recap)
- *   `phases` label stretches of the scripted path by candle index ({id, from, to}, `to` exclusive).
- *   The phase with `reversal: true` marks where the scripted reversal starts. The recap uses the
- *   phase a decision was made in. Phases are never shown during play and never change the market.
+ * PHASES (optional, recap only)
+ *   `phases` label stretches of the main path by candle index ({id, from, to}, `to` exclusive).
+ *   The phase with `reversal: true` marks where the scripted reversal starts.
  *
  * ACTIONS
  *   Each action is {id, label, pct?, group?}. group 'entry' (buy / wait / pass) is shown while the
- *   user has no position, group 'manage' (sell / hold) once they hold one. Defaults: buy, wait and
- *   pass are 'entry', sell and hold are 'manage'.
+ *   student has no position, group 'manage' (sell / hold) once they hold one.
  *
  * FEEDBACK
  *   CONFIG.feedback holds the confirmation copy shown in the order panel. A scenario may override
- *   any key with its own `feedback`. Tokens: {entry} {mcap} {delta} {realized} {pct} {waits}.
+ *   any key with its own `feedback`. Tokens: {cost} {entry} {mcap} {delta} {realized} {pct} {left} {open} {waits}.
  */
 (function (root) {
   'use strict';
   var TYS = root.TYS = root.TYS || {};
 
   TYS.CONFIG = {
-    version: '2',
-    storageKey: 'tys.session.v2',
+    version: '3',
+    storageKey: 'tys.session.v3',
     supply: 1000000000,          // fictional token supply (price = market cap / supply)
     unit: 1000,                  // candle numbers are in $K
     candleMs: 1000,              // simulation ms per candle at speed 1
     ticksPerCandle: 12,          // price steps inside each candle
     speeds: { normal: 1, presenter: 0.8, dev: 12 },
-    fastForward: 3,              // available only after the user's decision is locked
+    fastForward: 3,              // available only once the student has nothing left to decide
     actionCooldownMs: 450,       // ignores accidental double-clicks
     baselineCapital: 100,
     waitFeedbackMs: 3500,        // how long the WAIT / HOLD / SELL confirmation stays on screen
     feedback: {
-      buy:     { title: 'POSITION OPEN', sub: 'Entry: {entry}' },
-      wait:    { title: 'WAITING', sub: 'No entry. Watching for more confirmation.' },
-      watching:{ sub: 'No position. Waited {waits}x so far.' },
-      pass:    { title: 'PASSED', sub: 'You chose not to enter this setup.' },
-      hold:    { title: 'HOLDING', sub: 'Position unchanged at {mcap}.' },
-      sell:    { title: 'SOLD {pct}', sub: 'Sold at {mcap}. Realized {delta}.' },
-      closed:  { title: 'POSITION CLOSED', sub: 'Realized {realized}. Watch how the rest of the move plays out.' }
+      buy:      { title: 'POSITION OPEN', sub: '{cost} @ {entry}' },
+      wait:     { title: 'WAITING', sub: 'Watching for another setup.' },
+      watching: { sub: 'No position. Waited {waits}x so far.' },
+      pass:     { title: 'PASSED', sub: 'No position opened.' },
+      hold:     { title: 'HOLDING', sub: 'Position unchanged at {mcap}.' },
+      sell:     { title: 'SOLD {pct}', sub: 'Sold at {mcap}. Realized {delta}.{left}' },
+      partial:  { title: '{open} STILL OPEN', sub: 'Realized {realized} so far.' },
+      closed:   { title: 'POSITION CLOSED', sub: 'Realized {realized}. Watch how the rest of the move plays out.' }
     }
   };
 
@@ -75,6 +76,8 @@
       startingCash: 100,
       startingPosition: null,
       baselineCapital: 100,
+      headline: { label: 'from ATH', mcap: 100 },       // the top bar shows the change from the $100K all-time high
+      levels: [{ price: 100, label: 'ATH' }],           // drawn on the chart while in view
       actions: [
         { id: 'buy', label: 'BUY', group: 'entry' },
         { id: 'wait', label: 'WAIT', group: 'entry' },
@@ -84,142 +87,110 @@
         { id: 'sell', pct: 1,    label: 'SELL 100%', group: 'manage' }
       ],
       lockOn: ['pass'],            // PASS is final. BUY opens a position that can then be managed.
-      lockWhenFlat: true,          // once the position is fully sold the round's decisions are done
+      lockWhenFlat: true,
+      feedback: { wait: { sub: 'Watching for a better entry.' } },
       brief: {
         lines: [
-          'You just found a coin.',
-          "It's trading around a $100K market cap.",
-          "There's some buying activity.",
-          "The setup isn't obvious yet."
+          'This coin ran to a $100K all-time high.',
+          "Now it's pulling back.",
+          'Where do you want to get in?'
         ],
         setup: ['$100 simulated cash', 'No open position', 'Wait as often as you like. Pass is final.'],
-        question: 'What do you do?'
+        question: 'Where do you enter?'
       },
-      // Fixed path, 60 candles (1 candle = 1 second at normal speed):
-      //   0-17  early / unclear   ~$93K-$104K, choppy, a dip to ~$93K around 00:10
-      //   18-35 developing        $104K -> $160K, volume and social building, pullbacks at 00:23 and 00:28
-      //   36-45 FOMO              $160K -> $290K (peak print $300K in candle 45), large green candles
-      //   46-59 reversal          $290K -> $106K, heavy sells, one dead-cat bounce at 00:51
-      // The same candles play for every user. Nothing here reacts to BUY, WAIT, PASS or SELL.
+      // 30 live candles (about 30 seconds). Main path: a pullback from the ATH to about $50K, a base, then a
+      // recovery to $76K.
+      //   0-10  pullback    $93K -> $54K      11-16 base    ~$50K low       17-29 recovery    $54K -> $76K
+      // Entries at or under ~$62K are 'zone' entries (near the low). Entries above $62K while still falling
+      // are 'falling'. A BUY once the recovery is already extended (above $62K) branches to a brief
+      // continuation and then a sharp reversal.
       phases: [
-        { id: 'early',      from: 0,  to: 18 },
-        { id: 'developing', from: 18, to: 36 },
-        { id: 'fomo',       from: 36, to: 46 },
-        { id: 'reversal',   from: 46, to: 60, reversal: true }
+        { id: 'pullback', from: 0,  to: 11 },
+        { id: 'base',     from: 11, to: 17 },
+        { id: 'recovery', from: 17, to: 30 }
+      ],
+      entryZones: [
+        { id: 'late',    phases: ['recovery'], minPrice: 62 },
+        { id: 'zone',    maxPrice: 61.99 },
+        { id: 'falling', minPrice: 62 }
+      ],
+      branches: [
+        { id: 'late', zone: 'late', reversalAt: 2, candles: [
+        [1.0000, 1.0104, 0.9985, 1.0060, 7.4000],  // 0
+        [1.0060, 1.0146, 0.9983, 1.0120, 9.1000],
+        [1.0120, 1.0147, 0.9604, 0.9665, 11.1000],
+        [0.9665, 0.9694, 0.9129, 0.9133, 12.0000],
+        [0.9133, 0.9146, 0.8813, 0.8859, 11.7000],
+        [0.8859, 0.8999, 0.8852, 0.8992, 7.2000],
+        [0.8992, 0.8992, 0.8448, 0.8453, 11.0000],
+        [0.8453, 0.8464, 0.8003, 0.8030, 12.0000],
+        [0.8030, 0.8079, 0.7675, 0.7709, 8.4000],
+        [0.7709, 0.7715, 0.7413, 0.7439, 11.1000]
+      ] }
       ],
       history: [
-        [96.0, 97.5, 95.9, 97.0, 2.1],  // 0
-        [97.0, 97.8, 96.5, 97.6, 1.9],
-        [97.6, 97.7, 95.8, 95.9, 2.1],
-        [95.9, 96.0, 94.7, 95.1, 1.9],
-        [95.1, 95.2, 94.9, 95.0, 1.7],
-        [95.0, 95.1, 94.6, 95.0, 2.9],
-        [95.0, 97.1, 94.8, 96.2, 2.1],
-        [96.2, 97.1, 96.0, 96.8, 1.7],
-        [96.8, 98.2, 96.2, 97.6, 1.9],
-        [97.6, 98.7, 97.0, 98.3, 2.1],
-        [98.3, 99.5, 98.1, 99.0, 4.2],  // 10
-        [99.0, 99.1, 97.9, 98.3, 2.5],
-        [98.3, 99.2, 97.7, 98.9, 3.3],
-        [98.9, 100.5, 98.3, 100.0, 2.1],
-        [100.0, 100.5, 100.0, 100.4, 1.7],
-        [100.4, 101.6, 99.9, 100.0, 2.0]
+        [31.0, 32.3, 30.9, 32.0, 4.5],  // 0
+        [32.0, 34.4, 31.7, 34.3, 6.0],
+        [34.3, 35.3, 34.2, 35.2, 4.8],
+        [35.2, 35.4, 34.9, 35.4, 4.1],
+        [35.4, 38.0, 35.3, 37.9, 7.4],
+        [37.9, 39.7, 37.6, 39.7, 9.6],
+        [39.7, 42.8, 39.5, 42.0, 8.1],
+        [42.0, 44.5, 41.9, 44.2, 7.3],
+        [44.2, 45.4, 43.7, 44.8, 5.9],
+        [44.8, 48.3, 44.3, 47.9, 10.0],
+        [47.9, 50.4, 47.8, 50.0, 15.5],  // 10
+        [50.0, 51.7, 49.6, 51.6, 9.9],
+        [51.6, 55.4, 51.0, 55.0, 15.4],
+        [55.0, 58.4, 54.4, 57.8, 10.2],
+        [57.8, 58.5, 57.8, 58.3, 6.5],
+        [58.3, 62.1, 58.2, 60.7, 10.2],
+        [60.7, 64.8, 60.2, 64.5, 11.7],
+        [64.5, 67.5, 64.5, 66.9, 10.1],
+        [66.9, 69.1, 66.0, 68.0, 10.0],
+        [68.0, 73.7, 67.3, 71.8, 13.7],
+        [71.8, 74.6, 69.6, 73.8, 12.5],  // 20
+        [73.8, 78.9, 73.4, 78.7, 19.9],
+        [78.7, 81.8, 77.3, 81.6, 13.2],
+        [81.6, 84.5, 81.2, 84.0, 12.0],
+        [84.0, 85.3, 82.4, 83.1, 17.3],
+        [83.1, 95.6, 82.8, 94.1, 22.9],
+        [94.1, 96.2, 94.0, 96.0, 14.8],
+        [96.0, 100.0, 95.0, 98.5, 12.0],
+        [98.5, 98.5, 95.2, 96.0, 18.4],
+        [96.0, 96.1, 92.5, 93.0, 11.9]
       ],
       candles: [
-        [100.0, 100.9, 99.9, 100.0, 3.5],  // 0
-        [100.0, 101.8, 99.6, 101.5, 2.3],
-        [101.5, 103.4, 101.3, 103.0, 3.4],
-        [103.0, 103.0, 100.6, 100.7, 3.4],
-        [100.7, 101.9, 100.6, 101.4, 2.2],
-        [101.4, 101.5, 99.5, 100.0, 2.9],
-        [100.0, 100.3, 95.9, 96.9, 3.6],
-        [96.9, 97.4, 94.8, 95.2, 4.4],
-        [95.2, 95.6, 93.7, 94.0, 4.4],
-        [94.0, 94.2, 93.9, 94.0, 2.1],
-        [94.0, 94.3, 93.2, 93.5, 3.4],  // 10
-        [93.5, 96.8, 93.3, 96.3, 4.6],
-        [96.3, 97.2, 96.1, 97.0, 2.3],
-        [97.0, 99.7, 96.5, 99.4, 3.9],
-        [99.4, 100.2, 98.4, 99.1, 2.4],
-        [99.1, 102.6, 98.9, 102.0, 3.3],
-        [102.0, 102.9, 101.5, 101.9, 2.9],
-        [101.9, 104.2, 101.8, 104.0, 3.0],
-        [104.0, 108.9, 103.5, 108.1, 5.1],
-        [108.1, 111.2, 107.9, 110.2, 5.9],
-        [110.2, 111.2, 110.1, 111.0, 4.3],  // 20
-        [111.0, 116.2, 110.4, 115.6, 10.1],
-        [115.6, 122.6, 115.2, 121.0, 9.1],
-        [121.0, 121.1, 114.5, 114.7, 10.0],
-        [114.7, 117.8, 114.6, 117.0, 10.0],
-        [117.0, 120.2, 116.6, 120.0, 7.8],
-        [120.0, 127.2, 119.5, 126.7, 13.8],
-        [126.7, 131.5, 125.9, 131.0, 10.8],
-        [131.0, 131.4, 129.3, 130.2, 10.9],
-        [130.2, 139.8, 130.1, 138.5, 16.4],
-        [138.5, 140.2, 137.2, 139.0, 9.8],  // 30
-        [139.0, 142.4, 138.8, 140.3, 13.3],
-        [140.3, 140.7, 138.4, 140.0, 8.5],
-        [140.0, 144.7, 139.7, 143.6, 13.9],
-        [143.6, 154.0, 141.9, 153.0, 23.1],
-        [153.0, 161.1, 151.1, 160.0, 19.7],
-        [160.0, 168.4, 159.5, 166.5, 16.5],
-        [166.5, 182.8, 164.4, 182.0, 28.7],
-        [182.0, 205.4, 181.4, 204.3, 37.3],
-        [204.3, 214.5, 200.3, 212.0, 33.5],
-        [212.0, 217.1, 211.4, 215.2, 18.9],  // 40
-        [215.2, 238.2, 209.1, 236.0, 52.5],
-        [236.0, 239.1, 229.2, 231.9, 22.9],
-        [231.9, 262.9, 230.7, 262.0, 53.8],
-        [262.0, 287.2, 251.2, 278.6, 44.9],
-        [278.6, 300.0, 269.8, 290.0, 38.6],
-        [290.0, 295.5, 269.2, 272.0, 55.3],
-        [272.0, 278.5, 233.0, 240.0, 67.9],
-        [240.0, 243.8, 210.1, 212.0, 59.2],
-        [212.0, 212.7, 188.9, 192.4, 56.1],
-        [192.4, 192.7, 175.4, 178.0, 42.1],  // 50
-        [178.0, 187.2, 173.2, 187.0, 38.0],
-        [187.0, 187.2, 154.9, 155.8, 62.1],
-        [155.8, 156.0, 148.3, 150.0, 34.0],
-        [150.0, 155.0, 148.4, 152.3, 17.8],
-        [152.3, 153.7, 137.2, 138.0, 41.6],
-        [138.0, 139.2, 127.1, 128.6, 25.2],
-        [128.6, 129.5, 120.0, 121.0, 22.5],
-        [121.0, 122.3, 113.9, 114.1, 18.1],
-        [114.1, 115.1, 105.3, 106.0, 18.3]
-      ],
-      stats: [
-        { at: 0,  volume: 95,   liquidity: 32, buys: 51, social: 8,   momentum: 'LOW' },
-        { at: 8,  volume: 105,  liquidity: 31, buys: 46, social: 10,  momentum: 'LOW' },
-        { at: 14, volume: 135,  liquidity: 33, buys: 53, social: 22,  momentum: 'LOW' },
-        { at: 18, volume: 200,  liquidity: 38, buys: 57, social: 45,  momentum: 'BUILDING' },
-        { at: 26, volume: 430,  liquidity: 48, buys: 62, social: 95,  momentum: 'BUILDING' },
-        { at: 30, volume: 580,  liquidity: 56, buys: 64, social: 140, momentum: 'HIGH' },
-        { at: 36, volume: 840,  liquidity: 66, buys: 68, social: 230, momentum: 'HIGH' },
-        { at: 40, volume: 1200, liquidity: 76, buys: 74, social: 380, momentum: 'EXTREME' },
-        { at: 45, volume: 1680, liquidity: 92, buys: 78, social: 520, momentum: 'EXTREME' },
-        { at: 47, volume: 1800, liquidity: 84, buys: 40, social: 420, momentum: 'FADING' },
-        { at: 50, volume: 1920, liquidity: 70, buys: 27, social: 300, momentum: 'WEAKENING' },
-        { at: 59, volume: 2050, liquidity: 52, buys: 24, social: 150, momentum: 'WEAKENING' }
-      ],
-      events: [
-        { at: 0,  text: 'New pair spotted. Market cap around $100K.' },
-        { at: 4,  text: 'A few small buys. Nothing decisive yet.' },
-        { at: 8,  text: 'Sells slightly ahead of buys. Price drifting lower.' },
-        { at: 13, text: 'Buyers return. Volume still light.' },
-        { at: 18, text: 'Volume ticking up. Buys ahead of sells.' },
-        { at: 22, text: 'Mentions on X starting to climb.' },
-        { at: 25, text: 'More wallets buying. Holder count rising.' },
-        { at: 28, text: 'A few larger buys in the last several candles.', tone: 'hot' },
-        { at: 33, text: 'Social activity increasing. Chart moving faster.', tone: 'hot' },
-        { at: 37, text: 'Candles getting larger. Mentions up sharply.', tone: 'hot' },
-        { at: 40, text: 'New wallets entering fast. Volume spike.', tone: 'hot' },
-        { at: 43, text: 'Timelines full of this ticker. Pushing new highs.', tone: 'hot' },
-        { at: 45, text: 'New high. Buyers still piling in.', tone: 'hot' },
-        { at: 46, text: 'Large sell hitting. Price rejected at the highs.', tone: 'warn' },
-        { at: 47, text: 'Sell pressure surging. Buy pressure fading fast.', tone: 'warn' },
-        { at: 49, text: 'Large wallets selling into the move.', tone: 'warn' },
-        { at: 52, text: 'Another heavy sell. Bids thinning out.', tone: 'warn' },
-        { at: 55, text: 'Volume dropping. Buyers stepping back.', tone: 'warn' }
+        [93.0, 93.4, 87.3, 88.0, 15.8],  // 0
+        [88.0, 88.2, 82.2, 84.0, 17.0],
+        [84.0, 87.5, 83.0, 86.0, 10.7],
+        [86.0, 86.1, 77.1, 78.0, 20.2],
+        [78.0, 78.2, 70.9, 72.0, 17.0],
+        [72.0, 74.2, 70.4, 74.0, 13.4],
+        [74.0, 74.5, 65.0, 66.0, 30.9],
+        [66.0, 66.2, 61.7, 62.0, 16.5],
+        [62.0, 62.2, 57.2, 58.0, 19.0],
+        [58.0, 60.3, 57.2, 60.0, 16.1],
+        [60.0, 60.2, 53.8, 54.0, 23.1],  // 10
+        [54.0, 54.6, 50.8, 51.0, 18.4],
+        [51.0, 52.2, 49.3, 49.5, 8.2],
+        [49.5, 52.3, 49.4, 52.0, 14.9],
+        [52.0, 52.5, 50.2, 50.5, 8.2],
+        [50.5, 53.4, 50.3, 53.0, 10.2],
+        [53.0, 55.3, 52.6, 55.0, 6.4],
+        [55.0, 55.2, 53.8, 54.0, 7.4],
+        [54.0, 57.5, 53.6, 57.0, 13.6],
+        [57.0, 60.2, 56.6, 60.0, 9.7],
+        [60.0, 60.3, 58.9, 59.0, 8.2],  // 20
+        [59.0, 62.3, 58.5, 62.0, 9.4],
+        [62.0, 65.3, 61.6, 65.0, 11.6],
+        [65.0, 66.0, 63.5, 64.0, 7.7],
+        [64.0, 68.0, 63.4, 68.0, 10.9],
+        [68.0, 72.5, 67.7, 71.0, 14.5],
+        [71.0, 71.2, 69.8, 70.0, 10.7],
+        [70.0, 73.1, 67.8, 73.0, 10.7],
+        [73.0, 75.3, 72.7, 75.0, 7.7],
+        [75.0, 76.5, 74.5, 76.0, 11.0]
       ],
       reflection: {
         question: 'What information influenced your decision?',
@@ -229,7 +200,7 @@
           { label: 'Your Entry', key: 'entryMcap', fmt: 'mcap' },
           { label: 'Entry Time', key: 'entryT', fmt: 'clock' },
           { label: 'Waits Before Entry', key: 'waitsBeforeEntry', fmt: 'int' },
-          { label: 'Scenario Peak', key: 'peakMcap', fmt: 'mcap' },
+          { label: 'All-Time High', key: 'athMcap', fmt: 'mcap' },
           { label: 'Final Market Cap', key: 'finalMcap', fmt: 'mcap' },
           { label: 'Net Result', key: 'positionPnl', fmt: 'pnl', pct: 'positionPnlPct' }
         ],
@@ -237,44 +208,39 @@
         noEntryFields: [
           { label: 'Waits', key: 'waitCount', fmt: 'int' },
           { label: 'Market Cap At Your Decision', key: 'decisionMcap', fmt: 'mcap', empty: 'No decision' },
-          { label: 'Scenario Peak', key: 'peakMcap', fmt: 'mcap' },
+          { label: 'Lowest Price', key: 'lowMcap', fmt: 'mcap' },
           { label: 'Final Market Cap', key: 'finalMcap', fmt: 'mcap' }
         ]
       },
       recap: {
         heading: 'ENTRY',
         rules: [
-          // when the user entered, and what the market looked like
-          { when: ['entered', 'entry_early', 'noWaitBefore'],       text: 'You entered right away, at {entryT:clock} and {entryMcap:mcap}, before the chart or the feed had shown much.' },
-          { when: ['entered', 'entry_early', 'waitedBefore'],       text: 'You waited {waitsBeforeEntryText} and entered at {entryT:clock} ({entryMcap:mcap}), while the setup was still unclear.' },
-          { when: ['entered', 'entry_developing', 'noWaitBefore'],  text: 'You entered at {entryT:clock} ({entryMcap:mcap}) without waiting, while the setup was still developing.' },
-          { when: ['entered', 'entry_developing', 'waitedBefore'],  text: 'You waited while momentum developed and entered at {entryT:clock} ({entryMcap:mcap}), before the move had accelerated.' },
-          { when: ['entered', 'entry_fomo', 'waitedBefore'],        text: 'You waited while momentum developed, but entered after the move had already accelerated. Your entry at {entryMcap:mcap} left little room between you and the reversal.' },
-          { when: ['entered', 'entry_fomo', 'noWaitBefore'],        text: 'You entered at {entryT:clock} ({entryMcap:mcap}) after the chart had already accelerated. Your entry left little room between you and the reversal.' },
-          { when: ['entered', 'entry_reversal'],                    text: 'You entered at {entryT:clock} ({entryMcap:mcap}), after the reversal had already started.' },
-          { when: 'entered', text: 'What the market showed at your entry: momentum {entryMomentum}, social activity {entrySocial:signed}, {entryBuys:int}% of trades were buys.' },
-          { when: 'entered', text: 'After your entry the market cap peaked at {peakAfterEntry:mcap} ({peakGainPct:pct}) and finished at {finalMcap:mcap} ({finalVsEntryPct:pct} from your entry).' },
-          { when: 'hadDrawdown', text: 'At its worst the position was down {troughUnrealPct:pctAbs}.' },
+          // where they entered
+          { when: ['entered', 'zone_zone'],    text: 'You entered at {entryT:clock} near {entryMcap:mcap}, {entryBelowAth:pct0} below the all-time high and close to the low of the pullback.' },
+          { when: ['entered', 'zone_zone', 'waitedBefore'], text: 'You waited {waitsBeforeEntryText} for a better price first.' },
+          { when: ['entered', 'zone_zone'],    text: 'The price stabilized and recovered to {finalMcap:mcap}, {finalVsEntryPct:pct} from your entry.' },
+          { when: ['entered', 'zone_falling'], text: 'You entered at {entryT:clock} ({entryMcap:mcap}) while the price was still falling, only {entryBelowAth:pct0} below the all-time high.' },
+          { when: ['entered', 'zone_falling'], text: 'The pullback kept going to {lowAfterEntry:mcap}, and the position was down as much as {troughUnrealPct:pctAbs}. The recovery later took the market cap to {finalMcap:mcap}.' },
+          { when: ['entered', 'zone_late'],    text: 'You entered at {entryT:clock} ({entryMcap:mcap}) after the recovery had already extended, {entryAboveLow:pct0} above the low.' },
+          { when: ['entered', 'zone_late', 'waitedBefore'], text: 'You waited {waitsBeforeEntryText} and bought once the chart looked obvious.' },
+          { when: ['entered', 'zone_late'],    text: 'The move reversed almost immediately and the price finished at {finalMcap:mcap}, {finalVsEntryPct:pct} from your entry. Entering after the move has already happened leaves little room.' },
           // what they did with the position
-          { when: ['entered', 'soldBeforeReversal'],                text: 'You reduced {soldBeforeReversalPct:pct0} of the position before the reversal began, starting at {firstExitMcap:mcap}.' },
-          { when: ['entered', 'soldBeforeReversal', 'heldIntoReversal'], text: '{heldAtReversalPct:pct0} of the position was still open when the reversal began.' },
-          { when: ['entered', 'enteredNoSells', 'heldIntoReversal'], text: 'You did not sell, so the full position was still open when the reversal began.' },
-          { when: ['entered', 'firstSellAfterReversal'],            text: 'You were still holding when the reversal began and made your first sale at {firstExitMcap:mcap}.' },
+          { when: ['entered', 'enteredNoSells', 'zone_late'], text: 'You held the full position through the reversal.' },
+          { when: ['entered', 'enteredNoSells'], unless: 'zone_late', text: 'You did not sell, so the position stayed open to the end of the round.' },
+          { when: ['entered', 'quickExit', 'zone_late'], text: 'You sold {secsToFirstExit} seconds after entering. Selling that quickly avoided the reversal, but the entry itself left almost no room.' },
+          { when: ['entered', 'hasSells'], unless: ['quickExit'], text: 'Your first sale came {secsToFirstExit} seconds after you entered, at {firstExitMcap:mcap}.' },
           { when: 'flat',      text: 'You closed the full position at {finalExitMcap:mcap}.' },
-          { when: 'stillOpen', text: 'You still held {remainingPct:pct0} of the position when the scenario ended.' },
+          { when: 'stillOpen', text: 'You still held {remainingPct:pct0} of the position when the round ended.' },
           { when: 'entered',   text: 'Result: {realizedPnl:signedUsd} realized, {unrealizedPnl:signedUsd} unrealized, {positionPnl:signedUsd} in total.' },
           // passing / never entering
-          { when: ['passed', 'waited'],      text: 'You waited {waitText} before passing.' },
-          { when: ['passed', 'pass_early'],      text: 'You passed at {passT:clock}, before the setup had developed. The market cap went on to reach {peakMcap:mcap}, then fell to {finalMcap:mcap}. Missing a move is not the same as losing a trade.' },
-          { when: ['passed', 'pass_developing'], text: 'You passed at {passT:clock}, while the setup was developing. The market cap went on to reach {peakMcap:mcap}, then fell to {finalMcap:mcap}. Missing a move is not the same as losing a trade.' },
-          { when: ['passed', 'pass_fomo'],       text: 'You passed while the chart was accelerating. Within {secsToReversal} seconds the move reversed and the market cap fell from {peakMcap:mcap} to {finalMcap:mcap}. Missing a move is not the same as losing a trade.' },
-          { when: ['passed', 'pass_reversal'],   text: 'You stayed out through the acceleration and passed at {passT:clock}, after the reversal had started. The market cap went from {peakMcap:mcap} to {finalMcap:mcap}, so you did not chase the top.' },
-          { when: ['none', 'waited'],        text: 'You waited {waitText} and never entered or passed. The market cap went on to reach {peakMcap:mcap}, then fell to {finalMcap:mcap}.' },
-          { when: 'none', unless: 'waited', text: 'You watched the whole move without entering or passing.' }
+          { when: ['passed', 'waited'], text: 'You waited {waitText} before passing.' },
+          { when: 'passed', text: 'You passed at {passT:clock} ({passMcap:mcap}). From there the price went as low as {lowAfterPass:mcap} and finished at {finalMcap:mcap}. Passing meant no exposure to the drop, and none to the recovery either.' },
+          { when: ['none', 'waited'], text: 'You waited {waitText} and never entered or passed. The price fell to {lowMcap:mcap} before recovering to {finalMcap:mcap}.' },
+          { when: 'none', unless: 'waited', text: 'You watched the whole move without acting.' }
         ],
         fields: [
           { label: 'Your Entry', key: 'entryMcap', fmt: 'mcap', empty: 'No entry' },
-          { label: 'Scenario Peak', key: 'peakMcap', fmt: 'mcap' },
+          { label: 'All-Time High', key: 'athMcap', fmt: 'mcap' },
           { label: 'Waits', key: 'waitCount', fmt: 'int' },
           { label: 'Net Result', key: 'positionPnl', fmt: 'pnl', pct: 'positionPnlPct', needsEntry: true, empty: 'No entry' }
         ]
@@ -290,6 +256,7 @@
       startingCash: 50,
       startingPosition: { costUsd: 50, entryMcap: 200000, markerCandle: 6 },
       baselineCapital: 100,
+      headline: { label: 'from your entry', mcap: 200 },
       actions: [
         { id: 'sell', pct: 0.25, label: 'SELL 25%' },
         { id: 'sell', pct: 0.5,  label: 'SELL 50%' },
@@ -308,6 +275,16 @@
         setup: ['$50 position, $50 cash', 'Entry: $200K market cap', 'Now: $400K market cap (+$50, +100%)'],
         question: 'What do you do now?'
       },
+      // 30 live candles. One fixed path with several moments to decide:
+      //   0-5 first push  $400K -> $480K     6-9 pullback  -> $432K     10-16 second push  -> $524K (new high)
+      //   17-29 reversal  $524K -> $344K
+      // Selling part of the position leaves the rest exposed to everything that follows.
+      phases: [
+        { id: 'leg1',     from: 0,  to: 6 },
+        { id: 'pullback', from: 6,  to: 10 },
+        { id: 'leg2',     from: 10, to: 17 },
+        { id: 'reversal', from: 17, to: 30, reversal: true }
+      ],
       history: [
         [172.0, 173.4, 170.2, 172.0, 5.3],  // 0
         [172.0, 177.9, 171.7, 176.5, 8.3],
@@ -355,72 +332,36 @@
         [394.8, 401.6, 394.3, 400.0, 13.5]
       ],
       candles: [
-        [400.0, 401.9, 399.5, 400.0, 10.2],  // 0
-        [400.0, 402.4, 396.5, 399.5, 16.7],
-        [399.5, 428.2, 396.0, 419.5, 18.7],
-        [419.5, 422.8, 417.9, 420.0, 11.3],
-        [420.0, 421.4, 411.2, 415.7, 11.7],
-        [415.7, 443.8, 413.4, 430.0, 15.2],
-        [430.0, 434.5, 426.3, 426.3, 11.2],
-        [426.3, 431.5, 426.1, 428.5, 10.7],
-        [428.5, 437.7, 427.9, 436.0, 21.1],
-        [436.0, 443.8, 423.9, 430.6, 13.5],
-        [430.6, 446.2, 425.7, 445.0, 16.4],  // 10
-        [445.0, 448.5, 443.5, 444.8, 11.1],
-        [444.8, 446.8, 410.2, 411.4, 26.4],
-        [411.4, 438.3, 409.3, 429.8, 17.7],
-        [429.8, 433.8, 427.6, 430.4, 19.3],
-        [430.4, 432.7, 418.3, 420.0, 17.7],
-        [420.0, 434.8, 413.9, 434.7, 28.5],
-        [434.7, 439.3, 431.6, 437.5, 11.6],
-        [437.5, 442.9, 435.2, 441.4, 11.2],
-        [441.4, 460.0, 434.3, 453.7, 21.8],
-        [453.7, 462.5, 451.4, 460.0, 13.8],  // 20
-        [460.0, 472.5, 455.1, 463.1, 21.5],
-        [463.1, 463.2, 446.2, 451.6, 26.8],
-        [451.6, 469.6, 448.4, 465.4, 17.6],
-        [465.4, 475.2, 445.9, 457.3, 15.3],
-        [457.3, 490.0, 454.2, 482.7, 23.4],
-        [482.7, 482.7, 469.1, 476.3, 15.1],
-        [476.3, 480.8, 444.8, 447.3, 21.1],
-        [447.3, 477.4, 437.6, 476.3, 29.4],
-        [476.3, 481.2, 468.7, 476.3, 13.8],
-        [476.3, 476.5, 460.2, 470.0, 18.0],  // 30
-        [470.0, 470.8, 461.1, 467.3, 12.0],
-        [467.3, 469.4, 455.1, 455.3, 20.6],
-        [455.3, 459.0, 444.8, 447.4, 16.3],
-        [447.4, 454.3, 425.7, 432.9, 17.6],
-        [432.9, 436.0, 427.0, 430.0, 16.9],
-        [430.0, 432.0, 411.7, 412.3, 25.0],
-        [412.3, 417.2, 404.5, 405.3, 26.2],
-        [405.3, 407.1, 405.2, 406.4, 13.3],
-        [406.4, 410.2, 392.5, 402.5, 16.0],
-        [402.5, 408.8, 389.8, 390.0, 19.6],  // 40
-        [390.0, 393.3, 364.1, 366.5, 28.4],
-        [366.5, 381.5, 358.2, 370.6, 26.1],
-        [370.6, 385.2, 359.7, 361.1, 20.5],
-        [361.1, 370.0, 350.0, 350.0, 23.0]
-      ],
-      stats: [
-        { at: 0,  volume: 2100, liquidity: 196, buys: 60, social: 120, momentum: 'HIGH' },
-        { at: 10, volume: 2300, liquidity: 205, buys: 58, social: 110, momentum: 'HIGH' },
-        { at: 16, volume: 2450, liquidity: 196, buys: 47, social: 85,  momentum: 'STEADY' },
-        { at: 22, volume: 2700, liquidity: 214, buys: 59, social: 130, momentum: 'HIGH' },
-        { at: 26, volume: 2850, liquidity: 220, buys: 54, social: 90,  momentum: 'STEADY' },
-        { at: 32, volume: 3000, liquidity: 208, buys: 44, social: 60,  momentum: 'FADING' },
-        { at: 38, volume: 3150, liquidity: 190, buys: 38, social: 35,  momentum: 'WEAKENING' },
-        { at: 44, volume: 3250, liquidity: 172, buys: 34, social: 10,  momentum: 'WEAKENING' }
-      ],
-      events: [
-        { at: 0,  text: 'Position open. Entry $200K. Market cap now $400K.' },
-        { at: 6,  text: 'Volume steady. Buyers still active.' },
-        { at: 11, text: 'Price slowing near the recent highs.' },
-        { at: 15, text: 'Pullback. Sells picking up.', tone: 'warn' },
-        { at: 21, text: 'Buyers return. Push higher.', tone: 'hot' },
-        { at: 26, text: 'New high on lower volume.' },
-        { at: 31, text: 'Sell pressure rising.', tone: 'warn' },
-        { at: 36, text: 'Momentum fading. Lower highs forming.', tone: 'warn' },
-        { at: 41, text: 'Large holder moving tokens to exchanges.', tone: 'warn' }
+        [400.0, 410.6, 395.7, 410.0, 10.8],  // 0
+        [410.0, 428.4, 410.0, 425.0, 15.2],
+        [425.0, 440.7, 421.6, 440.0, 14.6],
+        [440.0, 457.0, 426.2, 455.0, 15.3],
+        [455.0, 468.8, 451.7, 468.0, 14.7],
+        [468.0, 488.3, 451.5, 480.0, 19.1],
+        [480.0, 480.3, 459.3, 468.0, 23.4],
+        [468.0, 472.8, 449.9, 452.0, 21.0],
+        [452.0, 459.9, 439.0, 440.0, 18.5],
+        [440.0, 444.7, 430.3, 432.0, 19.0],
+        [432.0, 442.0, 431.5, 440.0, 13.2],  // 10
+        [440.0, 458.9, 436.3, 452.0, 19.1],
+        [452.0, 471.3, 444.8, 468.0, 21.7],
+        [468.0, 488.0, 467.8, 486.0, 19.7],
+        [486.0, 500.3, 481.1, 500.0, 15.6],
+        [500.0, 514.1, 486.7, 512.0, 24.1],
+        [512.0, 528.3, 511.5, 524.0, 15.5],
+        [524.0, 526.6, 502.1, 512.0, 22.6],
+        [512.0, 514.5, 489.6, 490.0, 21.9],
+        [490.0, 490.6, 463.5, 468.0, 28.5],
+        [468.0, 473.5, 444.5, 452.0, 34.6],  // 20
+        [452.0, 453.9, 428.6, 440.0, 33.3],
+        [440.0, 444.3, 419.6, 425.0, 22.4],
+        [425.0, 426.6, 400.6, 405.0, 22.6],
+        [405.0, 414.9, 387.0, 388.0, 29.8],
+        [388.0, 388.5, 370.1, 372.0, 20.2],
+        [372.0, 373.1, 350.8, 360.0, 27.3],
+        [360.0, 362.8, 351.1, 352.0, 18.9],
+        [352.0, 354.5, 342.4, 347.0, 21.0],
+        [347.0, 352.4, 340.9, 344.0, 17.5]
       ],
       reflection: {
         question: 'What changed between the peak and your final decision?',
@@ -440,11 +381,15 @@
       recap: {
         heading: 'MANAGING THE POSITION',
         rules: [
-          { when: 'noSells',            text: 'You held the entire position through the whole scenario.' },
+          { when: 'noSells', text: 'You held the entire position through both pushes and the reversal. It was worth {peakPositionValue:usd} at its peak and {positionValue:usd} at the end.' },
+          { when: 'firstSell_leg1',     text: 'You took your first profit during the first push, at {firstExitMcap:mcap}.' },
+          { when: 'firstSell_pullback', text: 'Your first sale came during the pullback, at {firstExitMcap:mcap}.' },
+          { when: 'firstSell_leg2',     text: 'Your first sale came during the second push, at {firstExitMcap:mcap}.' },
+          { when: 'firstSell_reversal', text: 'Your first sale came after the second push had already reversed, at {firstExitMcap:mcap}.' },
           { when: 'soldBeforePeak',     text: 'You reduced {soldBeforePeakPct:pct0} of the position before the scenario peak.' },
-          { when: 'firstSellAfterPeak', text: 'Your first reduction came after the scenario peak.' },
-          { when: 'flat',               text: 'You closed the full position at {finalExitMcap:mcap} market cap.' },
-          { when: 'stillOpen',          text: 'You still held {remainingPct:pct0} of the position when the scenario ended.' }
+          { when: 'flat',               text: 'You closed the full position at {finalExitMcap:mcap}. After that the market cap reached as high as {highAfterFinalExit:mcap} and finished at {finalMcap:mcap}.' },
+          { when: 'stillOpen',          text: 'You still held {remainingPct:pct0} of the position when the scenario ended.' },
+          { when: 'hasSells',           text: 'Result: {realizedPnl:signedUsd} realized, {unrealizedPnl:signedUsd} unrealized.' }
         ],
         fields: [
           { label: 'First Reduction', key: 'firstExitMcap', fmt: 'mcap', empty: 'None' },
@@ -464,173 +409,188 @@
       startingPosition: null,
       baselineCapital: 100,
       actions: [
-        { id: 'buy', label: 'BUY' },
-        { id: 'wait', label: 'WAIT' },
-        { id: 'pass', label: 'MOVE ON' }
+        { id: 'buy', label: 'BUY', group: 'entry' },
+        { id: 'wait', label: 'WAIT', group: 'entry' },
+        { id: 'pass', label: 'PASS', group: 'entry' },
+        { id: 'sell', pct: 0.25, label: 'SELL 25%', group: 'manage' },
+        { id: 'sell', pct: 0.5,  label: 'SELL 50%', group: 'manage' },
+        { id: 'sell', pct: 1,    label: 'SELL 100%', group: 'manage' }
       ],
-      lockOn: ['buy', 'pass'],
-      lockWhenFlat: false,
-      feedback: {
-        buy:  { title: 'POSITION OPEN', sub: 'Entry: {entry}. Watch how the market plays out.' },
-        pass: { title: 'MOVED ON', sub: 'You chose not to chase this move.' }
-      },
+      lockOn: ['pass'],
+      lockWhenFlat: true,
       brief: {
         lines: [
-          'You saw this coin earlier but never entered.',
-          'It has continued running and is now near a new all-time high.',
-          'Momentum still looks strong.'
+          'This coin is already running.',
+          'Green candles. Momentum. Everyone is talking about it.',
+          "You don't have a position yet."
         ],
-        setup: ['$100 simulated cash', 'No open position'],
+        setup: ['$100 simulated cash', 'No open position', 'Wait as often as you like. Pass is final.'],
         question: 'What do you do?'
       },
+      // Main path: 26 candles of strong, tempting upside ($170K -> $372K). While the student WAITS or PASSES it
+      // keeps climbing to the end. A BUY branches into a very brief continuation and then a reversal that
+      // keeps falling for the rest of the branch. The later the BUY, the shorter the continuation.
+      //   early    (BUY in the first 6 candles)   4 candles of small green, then about -25%   (18 candles)
+      //   mid      (BUY at 6-16 candles)          2 candles of small green, then about -27%   (14 candles)
+      //   extended (BUY after 16 candles)         about +0.2%, then an immediate drop, -28%   (10 candles)
+      entryZones: [
+        { id: 'early',    to: 6 },
+        { id: 'mid',      to: 16 },
+        { id: 'extended' }
+      ],
+      branches: [
+        { id: 'early',    zone: 'early',    reversalAt: 4, candles: [
+        [1.0000, 1.0141, 0.9958, 1.0050, 35.2000],  // 0
+        [1.0050, 1.0153, 1.0007, 1.0130, 23.3000],
+        [1.0130, 1.0197, 0.9964, 1.0191, 31.9000],
+        [1.0191, 1.0258, 1.0149, 1.0222, 23.3000],
+        [1.0222, 1.0223, 0.9783, 0.9864, 34.2000],
+        [0.9864, 0.9908, 0.9399, 0.9469, 38.8000],
+        [0.9469, 0.9490, 0.9170, 0.9233, 21.9000],
+        [0.9233, 0.9413, 0.9218, 0.9325, 26.4000],
+        [0.9325, 0.9379, 0.8822, 0.8905, 33.3000],
+        [0.8905, 0.8977, 0.8528, 0.8594, 27.1000],
+        [0.8594, 0.8612, 0.8334, 0.8336, 23.4000],  // 10
+        [0.8336, 0.8423, 0.8124, 0.8128, 22.7000],
+        [0.8128, 0.8195, 0.7909, 0.7965, 27.7000],
+        [0.7965, 0.8019, 0.7715, 0.7845, 29.6000],
+        [0.7845, 0.7915, 0.7715, 0.7767, 23.4000],
+        [0.7767, 0.7865, 0.7712, 0.7806, 19.7000],
+        [0.7806, 0.7812, 0.7635, 0.7650, 21.3000],
+        [0.7650, 0.7718, 0.7529, 0.7535, 33.4000]
+      ] },
+        { id: 'mid',      zone: 'mid',      reversalAt: 2, candles: [
+        [1.0000, 1.0080, 0.9993, 1.0040, 19.9000],  // 0
+        [1.0040, 1.0179, 1.0004, 1.0100, 25.7000],
+        [1.0100, 1.0176, 0.9647, 0.9696, 49.4000],
+        [0.9696, 0.9741, 0.9196, 0.9260, 35.9000],
+        [0.9260, 0.9275, 0.8941, 0.8982, 28.9000],
+        [0.8982, 0.9085, 0.8961, 0.9072, 25.0000],
+        [0.9072, 0.9078, 0.8596, 0.8618, 41.9000],
+        [0.8618, 0.8623, 0.8268, 0.8274, 56.6000],
+        [0.8274, 0.8278, 0.7906, 0.7984, 45.3000],
+        [0.7984, 0.8028, 0.7722, 0.7744, 33.1000],
+        [0.7744, 0.7763, 0.7536, 0.7551, 32.0000],  // 10
+        [0.7551, 0.7554, 0.7360, 0.7400, 28.8000],
+        [0.7400, 0.7463, 0.7384, 0.7437, 23.7000],
+        [0.7437, 0.7473, 0.7275, 0.7288, 41.2000]
+      ] },
+        { id: 'extended', zone: 'extended', reversalAt: 1, candles: [
+        [1.0000, 1.0073, 0.9926, 1.0020, 27.2000],  // 0
+        [1.0020, 1.0048, 0.9595, 0.9619, 44.5000],
+        [0.9619, 0.9678, 0.9117, 0.9138, 46.6000],
+        [0.9138, 0.9144, 0.8807, 0.8818, 37.3000],
+        [0.8818, 0.8977, 0.8805, 0.8924, 42.1000],
+        [0.8924, 0.8954, 0.8351, 0.8389, 49.6000],
+        [0.8389, 0.8503, 0.7943, 0.7969, 39.4000],
+        [0.7969, 0.8008, 0.7629, 0.7651, 58.1000],
+        [0.7651, 0.7665, 0.7359, 0.7383, 58.5000],
+        [0.7383, 0.7387, 0.7139, 0.7161, 46.7000]
+      ] }
+      ],
       history: [
-        [140.0, 152.2, 139.2, 150.0, 15.3],  // 0
-        [150.0, 164.0, 148.1, 160.1, 13.8],
-        [160.1, 164.9, 159.4, 161.7, 10.8],
-        [161.7, 161.9, 154.1, 154.6, 15.3],
-        [154.6, 164.1, 154.0, 163.3, 19.9],
-        [163.3, 165.4, 163.2, 164.9, 14.2],
-        [164.9, 169.6, 164.4, 168.7, 20.5],
-        [168.7, 181.3, 167.6, 180.0, 29.5],
-        [180.0, 190.6, 178.7, 189.7, 33.9],
-        [189.7, 194.5, 183.2, 185.9, 25.0],
-        [185.9, 201.8, 184.9, 201.0, 36.9],  // 10
-        [201.0, 213.1, 197.0, 212.2, 31.2],
-        [212.2, 212.4, 203.6, 206.9, 47.4],
-        [206.9, 231.8, 206.1, 224.2, 38.6],
-        [224.2, 231.3, 222.3, 230.0, 31.3],
-        [230.0, 233.5, 229.7, 231.7, 21.8],
-        [231.7, 265.1, 231.4, 264.2, 77.6],
-        [264.2, 282.3, 261.6, 276.0, 39.9],
-        [276.0, 283.4, 275.8, 277.0, 22.2],
-        [277.0, 277.7, 268.6, 272.4, 27.0],
-        [272.4, 298.5, 269.7, 296.5, 62.6],  // 20
-        [296.5, 316.7, 293.1, 310.0, 45.7],
-        [310.0, 319.1, 308.5, 312.7, 50.3],
-        [312.7, 343.2, 312.3, 341.0, 86.0],
-        [341.0, 359.7, 338.3, 358.8, 58.7],
-        [358.8, 384.4, 357.7, 381.9, 59.8],
-        [381.9, 419.4, 371.9, 417.5, 84.3],
-        [417.5, 431.1, 413.6, 430.3, 46.2],
-        [430.3, 443.8, 411.3, 440.0, 38.7],
-        [440.0, 440.0, 416.5, 423.1, 74.8],
-        [423.1, 467.6, 414.9, 462.0, 74.9],  // 30
-        [462.0, 486.4, 458.8, 483.9, 76.9],
-        [483.9, 512.4, 482.4, 501.8, 55.0],
-        [501.8, 521.6, 495.8, 510.3, 77.9],
-        [510.3, 557.3, 493.6, 550.2, 106.6],
-        [550.2, 610.2, 547.0, 590.0, 87.0]
+        [52.0, 56.0, 51.6, 55.0, 8.3],  // 0
+        [55.0, 63.8, 54.5, 62.0, 21.2],
+        [62.0, 69.6, 62.0, 68.0, 16.9],
+        [68.0, 71.4, 67.4, 71.0, 13.5],
+        [71.0, 76.7, 70.3, 76.2, 14.3],
+        [76.2, 79.7, 76.0, 79.5, 11.9],
+        [79.5, 90.2, 77.0, 88.0, 21.4],
+        [88.0, 94.3, 86.4, 94.1, 24.9],
+        [94.1, 101.0, 91.7, 100.4, 19.1],
+        [100.4, 108.0, 99.7, 108.0, 22.6],
+        [108.0, 111.4, 107.4, 110.6, 21.2],  // 10
+        [110.6, 121.4, 110.2, 120.3, 29.4],
+        [120.3, 127.4, 119.2, 127.0, 24.6],
+        [127.0, 129.8, 126.6, 129.3, 20.5],
+        [129.3, 137.9, 126.7, 136.8, 23.5],
+        [136.8, 147.6, 134.9, 146.0, 28.8],
+        [146.0, 148.5, 144.9, 147.7, 22.4],
+        [147.7, 153.6, 145.7, 152.1, 24.4],
+        [152.1, 159.1, 151.4, 157.0, 23.5],
+        [157.0, 163.3, 156.2, 161.7, 24.3],
+        [161.7, 164.0, 160.6, 160.7, 21.9],  // 20
+        [160.7, 163.7, 157.8, 163.0, 22.0],
+        [163.0, 170.0, 162.1, 165.6, 22.5],
+        [165.6, 172.1, 164.1, 170.0, 25.1]
       ],
       candles: [
-        [590.0, 592.0, 589.0, 590.0, 44.3],  // 0
-        [590.0, 607.3, 578.3, 602.6, 60.0],
-        [602.6, 634.0, 587.6, 626.4, 71.4],
-        [626.4, 687.0, 622.9, 679.1, 93.5],
-        [679.1, 692.7, 670.8, 681.1, 39.3],
-        [681.1, 722.8, 674.1, 720.0, 112.5],
-        [720.0, 736.1, 716.6, 732.9, 50.5],
-        [732.9, 736.7, 690.8, 704.1, 75.9],
-        [704.1, 754.0, 701.2, 750.4, 122.9],
-        [750.4, 812.5, 742.1, 810.8, 98.2],
-        [810.8, 865.5, 801.7, 850.0, 100.0],  // 10
-        [850.0, 892.7, 841.6, 862.5, 56.0],
-        [862.5, 865.9, 833.4, 836.1, 91.1],
-        [836.1, 884.0, 833.2, 874.2, 82.5],
-        [874.2, 930.4, 868.5, 927.4, 105.3],
-        [927.4, 931.4, 915.8, 920.0, 113.3],
-        [920.0, 920.5, 910.3, 919.9, 59.3],
-        [919.9, 931.8, 889.1, 899.0, 81.7],
-        [899.0, 915.2, 896.9, 910.3, 79.5],
-        [910.3, 994.4, 892.1, 965.5, 140.6],
-        [965.5, 1024.4, 950.1, 1020.0, 131.3],  // 20
-        [1020.0, 1083.5, 984.9, 1069.2, 104.5],
-        [1069.2, 1071.1, 991.1, 1016.6, 98.4],
-        [1016.6, 1072.0, 1009.2, 1066.6, 131.3],
-        [1066.6, 1069.2, 1052.1, 1054.5, 84.2],
-        [1054.5, 1070.1, 1038.1, 1069.2, 114.5],
-        [1069.2, 1082.8, 1066.3, 1069.2, 67.8],
-        [1069.2, 1074.1, 953.9, 1000.9, 174.2],
-        [1000.9, 1056.6, 996.4, 1050.7, 144.4],
-        [1050.7, 1076.4, 1046.9, 1060.6, 98.1],
-        [1060.6, 1100.0, 1018.4, 1083.5, 90.1],  // 30
-        [1083.5, 1083.5, 1024.4, 1051.1, 98.3],
-        [1051.1, 1071.0, 1035.4, 1044.6, 75.5],
-        [1044.6, 1052.4, 966.1, 1003.2, 106.6],
-        [1003.2, 1038.9, 978.7, 982.8, 147.1],
-        [982.8, 988.6, 957.5, 980.0, 62.4],
-        [980.0, 994.5, 975.4, 987.6, 81.4],
-        [987.6, 1002.1, 931.7, 941.7, 117.7],
-        [941.7, 953.2, 905.4, 923.1, 79.8],
-        [923.1, 932.6, 819.8, 834.1, 140.9],
-        [834.1, 840.5, 833.8, 840.0, 82.9],  // 40
-        [840.0, 841.6, 791.1, 802.9, 98.3],
-        [802.9, 837.1, 756.3, 763.2, 145.6],
-        [763.2, 763.5, 710.7, 711.0, 114.2],
-        [711.0, 726.1, 662.1, 667.1, 128.2],
-        [667.1, 696.4, 651.5, 690.0, 89.7],
-        [690.0, 694.2, 640.9, 641.0, 135.6],
-        [641.0, 651.5, 629.3, 632.6, 62.6],
-        [632.6, 648.2, 628.4, 635.6, 83.9],
-        [635.6, 657.4, 634.3, 656.1, 100.4],
-        [656.1, 667.5, 631.5, 632.1, 86.8],  // 50
-        [632.1, 638.2, 591.1, 610.0, 87.8]
-      ],
-      stats: [
-        { at: 0,  volume: 6800,  liquidity: 410, buys: 64, social: 520,  momentum: 'HIGH' },
-        { at: 10, volume: 9500,  liquidity: 480, buys: 68, social: 680,  momentum: 'EXTREME' },
-        { at: 20, volume: 13800, liquidity: 560, buys: 71, social: 900,  momentum: 'EXTREME' },
-        { at: 30, volume: 17500, liquidity: 610, buys: 66, social: 1010, momentum: 'EXTREME' },
-        { at: 35, volume: 19200, liquidity: 590, buys: 48, social: 760,  momentum: 'FADING' },
-        { at: 42, volume: 20400, liquidity: 520, buys: 39, social: 430,  momentum: 'WEAKENING' },
-        { at: 51, volume: 21200, liquidity: 460, buys: 36, social: 220,  momentum: 'WEAKENING' }
-      ],
-      events: [
-        { at: 0,  text: 'Chart already extended. Price near its all-time high.' },
-        { at: 6,  text: 'Timelines full of this ticker.', tone: 'hot' },
-        { at: 12, text: 'Volume surging. Buyers stepping in fast.', tone: 'hot' },
-        { at: 20, text: 'Above $1M market cap. Attention at its highest.', tone: 'hot' },
-        { at: 27, text: 'Price still pushing higher.' },
-        { at: 31, text: 'New all-time high.' },
-        { at: 36, text: 'First sharp red candle. Sells increasing.', tone: 'warn' },
-        { at: 41, text: 'Buyers stepping in less aggressively.', tone: 'warn' },
-        { at: 46, text: 'Volume dropping. Bids thinning out.', tone: 'warn' }
+        [170.0, 174.0, 169.1, 174.0, 19.8],  // 0
+        [174.0, 179.5, 173.0, 179.0, 28.5],
+        [179.0, 185.1, 178.4, 185.0, 26.7],
+        [185.0, 187.2, 181.2, 183.0, 25.5],
+        [183.0, 190.7, 182.8, 190.0, 31.1],
+        [190.0, 197.8, 188.5, 197.0, 46.6],
+        [197.0, 205.0, 197.0, 204.0, 28.7],
+        [204.0, 212.6, 203.5, 212.0, 27.9],
+        [212.0, 212.9, 207.4, 208.0, 33.1],
+        [208.0, 217.6, 207.2, 217.0, 36.0],
+        [217.0, 226.1, 216.4, 226.0, 52.5],  // 10
+        [226.0, 238.0, 224.7, 236.0, 39.5],
+        [236.0, 236.4, 232.9, 233.0, 34.1],
+        [233.0, 244.0, 228.5, 244.0, 51.1],
+        [244.0, 259.6, 243.9, 256.0, 47.9],
+        [256.0, 270.5, 252.3, 268.0, 37.8],
+        [268.0, 271.4, 260.6, 262.0, 38.3],
+        [262.0, 274.3, 261.9, 274.0, 43.1],
+        [274.0, 288.0, 268.4, 288.0, 50.6],
+        [288.0, 302.7, 287.7, 301.0, 47.8],
+        [301.0, 306.5, 297.5, 298.0, 35.0],  // 20
+        [298.0, 312.5, 295.0, 312.0, 56.7],
+        [312.0, 328.3, 306.4, 326.0, 54.9],
+        [326.0, 341.4, 324.0, 341.0, 46.9],
+        [341.0, 357.3, 339.4, 356.0, 44.4],
+        [356.0, 377.2, 355.9, 372.0, 49.7]
       ],
       reflection: {
-        question: 'What made you enter, wait, or move on?',
+        question: 'What made you enter, wait, or pass?',
         placeholder: 'A sentence or two is enough.',
         continueLabel: 'SEE YOUR DECISIONS',
         fields: [
-          { label: 'Entry Market Cap', key: 'entryMcap', fmt: 'mcap' },
-          { label: 'Peak After Entry', key: 'peakAfterEntry', fmt: 'mcap' },
+          { label: 'Your Entry', key: 'entryMcap', fmt: 'mcap' },
+          { label: 'Entry Time', key: 'entryT', fmt: 'clock' },
+          { label: 'Waits Before Entry', key: 'waitsBeforeEntry', fmt: 'int' },
+          { label: 'Lowest After Entry', key: 'lowAfterEntry', fmt: 'mcap' },
           { label: 'Final Market Cap', key: 'finalMcap', fmt: 'mcap' },
-          { label: 'Peak P&L', key: 'peakUnrealizedPnl', fmt: 'pnl', pct: 'peakUnrealizedPnlPct' },
-          { label: 'Final P&L', key: 'positionPnl', fmt: 'pnl', pct: 'positionPnlPct' }
+          { label: 'Net Result', key: 'positionPnl', fmt: 'pnl', pct: 'positionPnlPct' }
         ],
         noEntryTitle: 'No position entered.',
         noEntryFields: [
+          { label: 'Waits', key: 'waitCount', fmt: 'int' },
           { label: 'Market Cap When First Shown', key: 'firstShownMcap', fmt: 'mcap' },
-          { label: 'Scenario Peak', key: 'peakMcap', fmt: 'mcap' },
+          { label: 'Highest Price', key: 'peakMcap', fmt: 'mcap' },
           { label: 'Final Market Cap', key: 'finalMcap', fmt: 'mcap' }
         ]
       },
       recap: {
         heading: 'FOMO',
-        entryBands: [
-          { max: 0.62, text: 'before the final push higher' },
-          { max: 0.80, text: 'while the price was still extending' },
-          { max: 0.93, text: 'after a large extension' },
-          { max: 9,    text: 'near the scenario high' }
-        ],
         rules: [
-          { when: 'entered', text: 'You entered {band}.' },
-          { when: 'streak2', text: 'The {streak} candles before your entry all closed green.' },
-          { when: 'entered', text: 'After your entry the market cap peaked at {peakAfterEntry:mcap} and finished at {finalMcap:mcap}.' },
-          { when: 'passed',  text: 'You remained out of the market while the price reached {peakMcap:mcap} and then reversed.' },
-          { when: 'none',    text: 'You watched the whole move without entering or moving on.' }
+          // entered
+          { when: ['entered', 'waitedBefore'], text: 'You watched the move climb, waited {waitsBeforeEntryText}, and eventually entered at {entryT:clock} ({entryMcap:mcap}), {entryFromStartPct:pct0} above where the round started.' },
+          { when: ['entered', 'noWaitBefore'], text: 'You entered at {entryT:clock} ({entryMcap:mcap}), {entryFromStartPct:pct0} above where the round started, without waiting.' },
+          { when: ['entered', 'zone_mid'],      text: 'The move was already extended when you bought. The problem was not the coin. It was where you entered.' },
+          { when: ['entered', 'zone_extended'], text: 'The move was very extended when you bought. The problem was not the coin. It was where you entered.' },
+          { when: ['entered', 'zone_early'],    text: 'You entered early in the run-up, but the move still reversed. Being early did not remove the need for an exit plan.' },
+          { when: 'entered', text: 'The price turned right after your entry and fell to {lowAfterEntry:mcap}. The position was down as much as {troughUnrealPct:pctAbs}.' },
+          // exits
+          { when: ['entered', 'enteredNoSells'], text: 'You did not sell while the position lost value.' },
+          { when: ['entered', 'quickExit'], text: 'You exited {secsToFirstExit} seconds after entering.' },
+          { when: ['entered', 'hasSells'], unless: 'quickExit', text: 'You started selling {secsToFirstExit} seconds after entering, at {firstExitMcap:mcap}.' },
+          { when: 'flat',      text: 'You closed the full position at {finalExitMcap:mcap}.' },
+          { when: 'stillOpen', text: 'You still held {remainingPct:pct0} of the position when the round ended.' },
+          { when: 'entered',   text: 'Result: {realizedPnl:signedUsd} realized, {unrealizedPnl:signedUsd} unrealized, {positionPnl:signedUsd} in total.' },
+          // did not enter
+          { when: ['passed', 'waited'], text: 'You kept waiting while the chart climbed, then passed at {passT:clock}. You missed the move, but you also avoided chasing an extended entry.' },
+          { when: ['passed'], unless: 'waited', text: 'You passed at {passT:clock} while the chart kept climbing. You missed the move, but you also avoided chasing an extended entry.' },
+          { when: ['none', 'waited'], text: 'You kept waiting while the chart climbed and never entered. You missed the move, but you also avoided chasing an extended entry.' },
+          { when: ['none'], unless: 'waited', text: 'You watched the move climb without acting. You missed it, and you also avoided chasing an extended entry.' },
+          { when: 'notEntered', text: 'The market cap climbed {moveSinceStartPct:pct0} during the round. You do not have to catch every move.' }
         ],
         fields: [
-          { label: 'Entry', key: 'entryMcap', fmt: 'mcap', empty: 'No entry' },
-          { label: 'Final', key: 'finalMcap', fmt: 'mcap' }
+          { label: 'Your Entry', key: 'entryMcap', fmt: 'mcap', empty: 'No entry' },
+          { label: 'Waits', key: 'waitCount', fmt: 'int' },
+          { label: 'Final Market Cap', key: 'finalMcap', fmt: 'mcap' },
+          { label: 'Net Result', key: 'positionPnl', fmt: 'pnl', pct: 'positionPnlPct', needsEntry: true, empty: 'No entry' }
         ]
       }
     }
