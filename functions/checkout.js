@@ -1,16 +1,16 @@
-// Server-side checkout link rotator.
+// Server-side /checkout redirect (Cloudflare Pages Functions format).
 //
-// Rotation pattern (5 regular : 2 affiliate, repeating forever):
-//   position = ((counter - 1) % 7) + 1
-//   position 1-5 -> regular checkout link
-//   position 6-7 -> affiliate checkout link
+// Fixed, uncached 302 redirect to CHECKOUT_URL below. Every visitor -
+// including Instagram/Facebook in-app browsers - gets the same
+// destination. There is no regular/affiliate split, no D1 lookup, and no
+// intermediate instruction page.
 //
-// The counter lives in D1 (binding: CHECKOUT_DB, see schema.sql) and is
-// incremented with a single `UPDATE ... RETURNING` statement, which D1
-// executes as one atomic write - no read-modify-write race between
-// concurrent requests. Destination URLs come from server-only env vars
-// (CHECKOUT_URL_REGULAR / CHECKOUT_URL_AFFILIATE) and are never sent to
-// the client except as the Location header of the final redirect.
+// Note: the live deployment is the Worker in src/index.js (see
+// wrangler.toml: run_worker_first = ["/checkout"], main = "src/index.js").
+// This file is kept consistent in case a Pages deployment of this repo
+// ever picks it up instead.
+
+const CHECKOUT_URL = "https://whop.com/checkout/plan_ZGMrESSXs8qbw";
 
 const NO_STORE_HEADERS = {
   "Cache-Control": "no-store, no-cache",
@@ -28,43 +28,25 @@ function isPrefetchRequest(request) {
 }
 
 export async function onRequestGet(context) {
-  const { request, env } = context;
+  const { request } = context;
 
   // Speculative/preloading requests (Chrome/Edge preload, Firefox link
-  // prefetch, etc.) must not advance the counter.
+  // prefetch, etc.) must not be sent to Whop early.
   if (isPrefetchRequest(request)) {
     return new Response(null, { status: 204, headers: NO_STORE_HEADERS });
   }
 
-  const regularUrl = env.CHECKOUT_URL_REGULAR;
-  const affiliateUrl = env.CHECKOUT_URL_AFFILIATE;
-
-  if (!regularUrl || !affiliateUrl || !env.CHECKOUT_DB) {
-    return new Response("Checkout is temporarily unavailable.", {
-      status: 500,
-      headers: NO_STORE_HEADERS,
-    });
-  }
-
-  const row = await env.CHECKOUT_DB.prepare(
-    "UPDATE checkout_counter SET value = value + 1 WHERE id = 1 RETURNING value"
-  ).first();
-
-  const counter = row.value;
-  const position = ((counter - 1) % 7) + 1;
-  const destination = position <= 5 ? regularUrl : affiliateUrl;
-
   return new Response(null, {
     status: 302,
     headers: {
-      Location: destination,
+      Location: CHECKOUT_URL,
       ...NO_STORE_HEADERS,
     },
   });
 }
 
-// HEAD/OPTIONS/prefetch must never reveal a destination or touch the
-// counter, so they always get an empty, uncached response.
+// HEAD/OPTIONS must never touch anything, so they always get an empty,
+// uncached response.
 export async function onRequestHead() {
   return new Response(null, { status: 204, headers: NO_STORE_HEADERS });
 }
