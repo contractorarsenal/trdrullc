@@ -1,0 +1,11 @@
+# Excluded from the Worker's static-asset upload (NOT the same as .gitignore).
+# [assets] directory = "." in wrangler.toml means the whole repo root is
+# otherwise eligible for upload as a publicly-servable asset.
+.git
+.wrangler
+.gitignore
+.assetsignore
+*.toml
+schema.sql
+src
+functions
