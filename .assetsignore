@@ -9,3 +9,6 @@
 schema.sql
 src
 functions
+CLAUDE.md
+AGENTS.md
+.claude
