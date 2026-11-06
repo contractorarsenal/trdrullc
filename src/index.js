@@ -65,12 +65,50 @@ function handleCheckout(request) {
   }
 }
 
+// Same-origin caption route. The WebVTT file lives in the R2 bucket bound as
+// MEDIA (not in the Git repo), so the homepage <track> loads it without a
+// cross-origin request and without needing CORS on the bucket.
+const CAPTION_ROUTES = {
+  "/media/captions/traderu-v20.en.vtt": "captions/traderu-v20.en.vtt",
+};
+
+async function handleCaptions(request, env, key) {
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    return new Response(null, {
+      status: 405,
+      headers: { ...NO_STORE_HEADERS, ...ALLOW_HEADER },
+    });
+  }
+
+  const object = await env.MEDIA.get(key);
+  if (!object) {
+    return new Response("Not found", {
+      status: 404,
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  }
+
+  return new Response(request.method === "HEAD" ? null : object.body, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/vtt; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+      ETag: object.httpEtag,
+    },
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.pathname === "/checkout") {
       return handleCheckout(request);
+    }
+
+    const captionKey = CAPTION_ROUTES[url.pathname];
+    if (captionKey) {
+      return handleCaptions(request, env, captionKey);
     }
 
     return env.ASSETS.fetch(request);
