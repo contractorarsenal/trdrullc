@@ -30,12 +30,12 @@ function isPrefetchRequest(request) {
   return purpose.includes("prefetch") || purpose.includes("preview");
 }
 
-// Rotation: in each eight-visit cycle, positions 1-6 go to the regular checkout
-// and positions 7-8 go to the affiliate checkout (CHECKOUT_URL_AFFILIATE secret).
+// Rotation: in each seven-visit cycle, positions 1-5 go to the regular checkout
+// and positions 6-7 go to the affiliate checkout (CHECKOUT_URL_AFFILIATE secret).
 // The position comes from the shared D1 counter in checkout_counter
 // (CHECKOUT_DB binding).
-const CHECKOUT_CYCLE = 8;
-const CHECKOUT_AFFILIATE_FIRST_SLOT = 7;
+const CHECKOUT_CYCLE = 7;
+const CHECKOUT_AFFILIATE_FIRST_SLOT = 6;
 
 function isInstagramBrowser(request) {
   // Best-effort: Instagram's in-app browser identifies itself in the UA.
